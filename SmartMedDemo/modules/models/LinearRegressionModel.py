@@ -9,6 +9,5 @@ from .BaseModel import BaseModel
 
 
 class LinearRegressionModel(BaseModel):
-
     def __init__(self, x, y):
         super().__init__(LinearRegression, x, y)

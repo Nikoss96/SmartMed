@@ -2,9 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict
 
 
-
 class Module(ABC):
-
     def __init__(self, settings: Dict):
         # get settings['MODULE_SETTINGS']
         self.settings = settings
@@ -14,24 +12,24 @@ class Module(ABC):
 
     @abstractmethod
     def _prepare_data(self):
-        '''manipulate data according to settings'''
+        """manipulate data according to settings"""
         raise NotImplementedError
 
     @abstractmethod
     def _prepare_dashboard_settings(self):
-        '''
+        """
         construct dashboard settings
         here you can start model or make any other calculations
-        '''
+        """
         raise NotImplementedError
 
     @abstractmethod
     def _prepare_dashboard(self):
-        '''generate dash using DashContsructor'''
+        """generate dash using DashContsructor"""
         raise NotImplementedError
 
     def run(self):
-        '''
+        """
         A standard instructuion to start module
 
         1. prepare data using dataprep.PandasPreprocessor
@@ -39,7 +37,7 @@ class Module(ABC):
         3. prepare dashboard (if it is needed)
         4. start dashboard on localhost
 
-        '''
+        """
 
         # create .data attribute in Module
         self.data = self._prepare_data()

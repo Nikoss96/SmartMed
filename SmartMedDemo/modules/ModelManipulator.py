@@ -8,20 +8,20 @@ class ModelChooseException(Exception):
     pass
 
 
-class ModelManipulator():
-
-    def __init__(self, model_type: str, x: np.array, y: np.array, extra_param: np.array = None):
-
-        if model_type == 'linreg':
+class ModelManipulator:
+    def __init__(
+        self, model_type: str, x: np.array, y: np.array, extra_param: np.array = None
+    ):
+        if model_type == "linreg":
             self.model = LinearRegressionModel(x, y)
 
-        elif model_type == 'logreg':
+        elif model_type == "logreg":
             self.model = LogisticRegressionModel(x, y)
 
-        elif model_type == 'polyreg':
+        elif model_type == "polyreg":
             self.model = PolynomialRegressionModel(x, y)
 
-        elif model_type == 'tree':
+        elif model_type == "tree":
             self.model = TreeModel(x, y, extra_param)
         else:
             raise ModelChooseException

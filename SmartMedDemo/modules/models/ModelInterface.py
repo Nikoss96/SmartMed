@@ -4,7 +4,6 @@ import numpy as np
 
 
 class Model(ABC):
-    
     def __init__(self, x: np.array, y: np.array):
         self.x = x
         self.y = y

@@ -5,5 +5,3 @@ from .PredictionDashboard import PredictionDashboard
 from .ComparativeDashboard import ComparativeDashboard
 from .ClusterDashboard import ClusterDashboard
 from .LifelineDashboard import LifelineDashboard
-
-

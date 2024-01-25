@@ -9,12 +9,13 @@ from .ModelInterface import Model
 
 
 class BaseModel(Model):
-
     def __init__(self, math_model_class, x, y, extra_param=None):
-
         if math_model_class == DecisionTreeClassifier:
-            self.model = math_model_class(max_depth=extra_param[0], min_samples_split=extra_param[1],
-                                          max_features=extra_param[2])
+            self.model = math_model_class(
+                max_depth=extra_param[0],
+                min_samples_split=extra_param[1],
+                max_features=extra_param[2],
+            )
         else:
             self.model = math_model_class()
         self.math_model_class = math_model_class
@@ -26,7 +27,9 @@ class BaseModel(Model):
     def get_resid(self) -> np.array:
         return self.model.coef_
 
-    def predict(self, x: np.array) -> float:  # предсказанное значение для числа или списка
+    def predict(
+        self, x: np.array
+    ) -> float:  # предсказанное значение для числа или списка
         return self.model.predict(x)
 
     def get_intercept(self):  # коэффициент пересечения
@@ -78,7 +81,7 @@ class BaseModel(Model):
 
     def get_cov_matrix(self, def_df_X):  # обратная ковариационная матрица
         df2_X = def_df_X.copy()
-        df2_X.insert(0, '1', np.ones((df2_X.shape[0], 1)))
+        df2_X.insert(0, "1", np.ones((df2_X.shape[0], 1)))
         df2_X_T = df2_X.values.transpose()
         return np.linalg.pinv(np.dot(df2_X_T, df2_X))
 
@@ -89,20 +92,19 @@ class BaseModel(Model):
         return np.linalg.inv(np.dot(df2_X_T, df2_X))
 
     def uravnenie(self, def_b, def_names, def_name):  # уравнение регрессии
-        def_st = 'Y = ' + str(round(def_b[0], 3))
+        def_st = "Y = " + str(round(def_b[0], 3))
         for i in range(1, len(def_b)):
             if def_b[i] > 0:
-                def_st += ' + ' + str(round(def_b[i], 3)) + 'X(' + str(i) + ')'
+                def_st += " + " + str(round(def_b[i], 3)) + "X(" + str(i) + ")"
             else:
-                def_st += ' - ' + \
-                          str(round(abs(def_b[i]), 3)) + 'X(' + str(i) + ')'
-        def_st += ', где:'  # \nX(0)-константа'
+                def_st += " - " + str(round(abs(def_b[i]), 3)) + "X(" + str(i) + ")"
+        def_st += ", где:"  # \nX(0)-константа'
         uravlist = [def_st]
-        uravlist.append('\n')
-        uravlist.append('Y - ' + def_name + ';')
+        uravlist.append("\n")
+        uravlist.append("Y - " + def_name + ";")
         for i in range(1, len(def_b)):
-            uravlist.append('\n')
-            uravlist.append(f'X({i}) - {def_names[i - 1]};')
+            uravlist.append("\n")
+            uravlist.append(f"X({i}) - {def_names[i - 1]};")
         return uravlist
 
     def st_coef(self, def_df_X, def_TSS, b):  # стандартизованнные коэффициенты
@@ -122,10 +124,12 @@ class BaseModel(Model):
         SE_est = np.sqrt(var_est)
         return SE_est
 
-    def t_stat(self, def_df_X, def_df_Y, def_predict_Y, def_d_free, def_b):  # t-критерии коэффициентов
+    def t_stat(
+        self, def_df_X, def_df_Y, def_predict_Y, def_d_free, def_b
+    ):  # t-критерии коэффициентов
         s = np.sum((def_predict_Y - def_df_Y) ** 2) / (def_d_free[1] + 1)
         df2_X = def_df_X.copy()
-        df2_X.insert(0, '1', np.ones((df2_X.shape[0], 1)))
+        df2_X.insert(0, "1", np.ones((df2_X.shape[0], 1)))
         sd = np.sqrt(s * (np.diag(np.linalg.pinv(np.dot(df2_X.T, df2_X)))))
         def_t_stat = []
         for i in range(len(def_b)):
@@ -143,17 +147,21 @@ class BaseModel(Model):
 
     def get_R2_adj(self, def_df_X, def_df_Y, def_predict_Y):  # R^2 adjusted
         return 1 - (1 - sm.r2_score(def_df_Y, def_predict_Y)) * (
-                (len(def_df_X) - 1) / (len(def_df_X) - def_df_X.shape[1] - 1))
+            (len(def_df_X) - 1) / (len(def_df_X) - def_df_X.shape[1] - 1)
+        )
 
     def get_Fst(self, def_df_X, def_df_Y, def_predict_Y):  # F-статистика
         r2 = sm.r2_score(def_df_Y, def_predict_Y)
-        return r2 / (1 - r2) * (len(def_df_X) - def_df_X.shape[1] - 1) / def_df_X.shape[1]
+        return (
+            r2 / (1 - r2) * (len(def_df_X) - def_df_X.shape[1] - 1) / def_df_X.shape[1]
+        )
 
     def p_values(self, def_df_X, def_t_stat):
-        newX = pd.DataFrame(
-            {"Constant": np.ones(def_df_X.shape[0])}).join(def_df_X)
-        p_values = [2 * (1 - stats.t.cdf(np.abs(i), (len(newX) -
-                                                     len(newX.columns) - 1))) for i in def_t_stat]
+        newX = pd.DataFrame({"Constant": np.ones(def_df_X.shape[0])}).join(def_df_X)
+        p_values = [
+            2 * (1 - stats.t.cdf(np.abs(i), (len(newX) - len(newX.columns) - 1)))
+            for i in def_t_stat
+        ]
         return p_values
 
     def get_classes(self):

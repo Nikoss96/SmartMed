@@ -5,7 +5,6 @@ from .BaseModel import BaseModel
 
 
 class PolynomialRegressionModel(BaseModel):
-
     def __init__(self, x, y, degree=2, col_idx=1):
         poly = PolynomialFeatures(degree, include_bias=False)
         x_poly = poly.fit_transform(x)
