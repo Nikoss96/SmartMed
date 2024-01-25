@@ -1,8 +1,13 @@
+import os
+import sys
+
 from telebot import TeleBot
 from handler import start_message_handler, callback_query_handler, text_handler
 from tokens import main_bot_token
 
 bot = TeleBot(main_bot_token)
+
+os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 @bot.message_handler(commands=["start"])

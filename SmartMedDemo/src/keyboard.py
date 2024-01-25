@@ -37,13 +37,12 @@ keyboard_dict.add(
 )
 keyboard_dict.add(InlineKeyboardButton(text="Назад", callback_data="back"))
 
-
 keyboard00 = InlineKeyboardMarkup()
 keyboard00.add(
     InlineKeyboardButton(text="Пример файла", callback_data="example_bioequal")
 )
 keyboard00.add(
-    InlineKeyboardButton(text="Загружу свой", callback_data="download_bioequal")
+    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_bioequal")
 )
 keyboard00.add(InlineKeyboardButton(text="Назад", callback_data="back"))
 
@@ -52,7 +51,7 @@ keyboard01.add(
     InlineKeyboardButton(text="Пример файла", callback_data="example_describe")
 )
 keyboard01.add(
-    InlineKeyboardButton(text="Загружу свой", callback_data="download_describe")
+    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_describe")
 )
 
 keyboard02 = InlineKeyboardMarkup()
@@ -60,5 +59,5 @@ keyboard02.add(
     InlineKeyboardButton(text="Пример файла", callback_data="example_predict")
 )
 keyboard02.add(
-    InlineKeyboardButton(text="Загружу свой", callback_data="download_predict")
+    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_predict")
 )

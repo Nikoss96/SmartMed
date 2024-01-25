@@ -211,7 +211,7 @@ def default_test(message):
         )
         keyboard00.add(
             telebot.types.InlineKeyboardButton(
-                text="Загружу свой", callback_data="download_bioequal"
+                text="Загрузить свой файл", callback_data="download_bioequal"
             )
         )
         keyboard00.add(
