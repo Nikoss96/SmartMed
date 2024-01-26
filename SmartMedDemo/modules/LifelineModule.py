@@ -1,7 +1,6 @@
-from .ModuleInterface import Module
 from .dash import LifelineDashboard
-
 from .dataprep import PandasPreprocessor
+from .ModuleInterface import Module
 
 
 class LifelineModule(Module, LifelineDashboard):

@@ -1,7 +1,6 @@
-from .ModuleInterface import Module
 from .dash import StatisticsDashboard
-
 from .dataprep import PandasPreprocessor
+from .ModuleInterface import Module
 
 
 class StatisticsModule(Module, StatisticsDashboard):

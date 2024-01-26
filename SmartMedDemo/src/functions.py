@@ -1,10 +1,10 @@
 import requests
+from keyboard import (keyboard00, keyboard01, keyboard_main_menu,
+                      keyboard_modules)
 from requests import RequestException
+from statistical_terms import statistical_terms
 from telebot.apihelper import ApiTelegramException
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
-from keyboard import keyboard00, keyboard01, keyboard_modules, \
-    keyboard_main_menu
-from statistical_terms import statistical_terms
 from tokens import main_bot_token
 
 # Constants
@@ -56,8 +56,10 @@ def get_anyfile(bot, call):
                 with open(file_name, "wb") as file:
                     file.write(response.content)
 
-                bot.reply_to(message=message,
-                             text=f"Файл {message.document.file_name} успешно загружен")
+                bot.reply_to(
+                    message=message,
+                    text=f"Файл {message.document.file_name} успешно загружен",
+                )
                 send_document_from_file(bot, call.from_user.id, file_name)
 
             else:
@@ -88,8 +90,10 @@ def get_file_for_descriptive_analysis(bot, call):
                 with open(file_name, "wb") as file:
                     file.write(response.content)
 
-                bot.reply_to(message=message,
-                             text=f"Файл {message.document.file_name} успешно загружен")
+                bot.reply_to(
+                    message=message,
+                    text=f"Файл {message.document.file_name} успешно загружен",
+                )
                 send_document_from_file(bot, call.from_user.id, file_name)
 
             else:
@@ -109,18 +113,24 @@ def generate_dictionary_keyboard(page):
     words_per_page = 2
 
     for term_key in list(statistical_terms.keys())[
-                    page * words_per_page: (page + 1) * words_per_page]:
+        page * words_per_page : (page + 1) * words_per_page
+    ]:
         term_description = statistical_terms[term_key][0]
-        button = InlineKeyboardButton(term_description,
-                                      callback_data=f"statistical_{term_key}")
+        button = InlineKeyboardButton(
+            term_description, callback_data=f"statistical_{term_key}"
+        )
         keyboard_terms.add(button)
 
-    prev_button = InlineKeyboardButton("Назад",
-                                       callback_data=f'prev_{page}') if page > 0 else None
-    next_button = InlineKeyboardButton("Далее",
-                                       callback_data=f'next_{page + 1}') if (
-                                                                                    page + 1) * words_per_page < len(
-        statistical_terms) else None
+    prev_button = (
+        InlineKeyboardButton("Назад", callback_data=f"prev_{page}")
+        if page > 0
+        else None
+    )
+    next_button = (
+        InlineKeyboardButton("Далее", callback_data=f"next_{page + 1}")
+        if (page + 1) * words_per_page < len(statistical_terms)
+        else None
+    )
     home_button = InlineKeyboardButton("В главное меню", callback_data="back")
 
     if prev_button and next_button:
@@ -150,16 +160,18 @@ def handle_pagination(bot, call):
         bot (telebot.TeleBot): Экземпляр бота.
         call (telebot.types.CallbackQuery): Callback-запрос от пользователя.
     """
-    action, page = call.data.split('_') if '_' in call.data else (call.data, 0)
+    action, page = call.data.split("_") if "_" in call.data else (call.data, 0)
     page = int(page)
 
     if action == "prev":
         page -= 1
 
-    bot.edit_message_text(chat_id=call.message.chat.id,
-                          message_id=call.message.message_id,
-                          text="Выберите интересующий вас термин:",
-                          reply_markup=generate_dictionary_keyboard(page))
+    bot.edit_message_text(
+        chat_id=call.message.chat.id,
+        message_id=call.message.message_id,
+        text="Выберите интересующий вас термин:",
+        reply_markup=generate_dictionary_keyboard(page),
+    )
 
 
 def handle_statistical_term(bot, call):
@@ -171,8 +183,9 @@ def handle_statistical_term(bot, call):
         call (telebot.types.CallbackQuery): Callback-запрос от пользователя.
     """
     term = call.data.replace("statistical_term_", "")
-    bot.send_message(chat_id=call.from_user.id,
-                     text="".join(statistical_terms[f"term_{term}"]))
+    bot.send_message(
+        chat_id=call.from_user.id, text="".join(statistical_terms[f"term_{term}"])
+    )
     open_and_send_file(bot, call.from_user.id, call.data)
 
 
@@ -184,10 +197,13 @@ def handle_example_bioequal(bot, call):
         bot (telebot.TeleBot): Экземпляр бота.
         call (telebot.types.CallbackQuery): Callback-запрос от пользователя.
     """
-    bot.answer_callback_query(callback_query_id=call.id,
-                              text="Прислали вам пример файла. Оформляйте в точности так.")
-    send_document_from_file(bot, call.from_user.id,
-                            f"{MEDIA_PATH}/{DATA_PATH}/параллельный тестовый.xlsx")
+    bot.answer_callback_query(
+        callback_query_id=call.id,
+        text="Прислали вам пример файла. Оформляйте в точности так.",
+    )
+    send_document_from_file(
+        bot, call.from_user.id, f"{MEDIA_PATH}/{DATA_PATH}/параллельный тестовый.xlsx"
+    )
 
 
 def handle_download_bioequal(bot, call):
@@ -198,8 +214,9 @@ def handle_download_bioequal(bot, call):
         bot (telebot.TeleBot): Экземпляр бота.
         call (telebot.types.CallbackQuery): Callback-запрос от пользователя.
     """
-    bot.answer_callback_query(callback_query_id=call.id,
-                              text="Можете прислать свой файл прямо сюда.")
+    bot.answer_callback_query(
+        callback_query_id=call.id, text="Можете прислать свой файл прямо сюда."
+    )
     get_anyfile(bot, call)
 
 
@@ -211,10 +228,15 @@ def handle_example_describe(bot, call):
         bot (telebot.TeleBot): Экземпляр бота.
         call (telebot.types.CallbackQuery): Callback-запрос от пользователя.
     """
-    bot.answer_callback_query(callback_query_id=call.id,
-                              text="Прислали вам пример файла. Оформляйте в точности так.")
-    send_document_from_file(bot, call.from_user.id,
-                            f"{MEDIA_PATH}/{DATA_PATH}/Описательный_анализ_пример.xls")
+    bot.answer_callback_query(
+        callback_query_id=call.id,
+        text="Прислали вам пример файла. Оформляйте в точности так.",
+    )
+    send_document_from_file(
+        bot,
+        call.from_user.id,
+        f"{MEDIA_PATH}/{DATA_PATH}/Описательный_анализ_пример.xls",
+    )
 
 
 def handle_download_describe(bot, call):
@@ -236,8 +258,9 @@ def handle_back(bot, user_id):
         bot (telebot.TeleBot): Экземпляр бота.
         user_id (int): Идентификатор пользователя.
     """
-    bot.send_message(chat_id=user_id, text="Выберите модуль.",
-                     reply_markup=keyboard_main_menu)
+    bot.send_message(
+        chat_id=user_id, text="Выберите модуль.", reply_markup=keyboard_main_menu
+    )
 
 
 def send_document_from_file(bot, chat_id, file_path):

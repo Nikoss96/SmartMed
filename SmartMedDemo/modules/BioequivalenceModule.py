@@ -1,10 +1,11 @@
-import pandas as pd
 import sys
 
+import pandas as pd
+
 sys.path.append("C:\\Users\\nikch\\SmartMedDemo\\modules\\dashik")
-from ModuleInterface import Module
 import BioequivalenceDashboard
 from models import BioquivalenceMathsModel
+from ModuleInterface import Module
 
 
 class BioequivalenceModule(Module, BioequivalenceDashboard):

@@ -1,8 +1,8 @@
 import os
 import sys
 
+from handler import callback_query_handler, start_message_handler, text_handler
 from telebot import TeleBot
-from handler import start_message_handler, callback_query_handler, text_handler
 from tokens import main_bot_token
 
 bot = TeleBot(main_bot_token)

@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import sklearn.metrics as sm
 from scipy import stats
-import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 
 from .ModelInterface import Model

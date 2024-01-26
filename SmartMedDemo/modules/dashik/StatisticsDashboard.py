@@ -1,19 +1,16 @@
 import dash
-import dash_html_components as html
 import dash_core_components as dcc
+import dash_html_components as html
 import dash_table
-from dash.exceptions import PreventUpdate
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
-from scipy.stats import spearmanr
-from scipy.stats import pearsonr
+from dash.exceptions import PreventUpdate
+from scipy.stats import pearsonr, spearmanr, variation
 
-from scipy.stats import variation
 from .Dashboard import Dashboard
-
 from .text.markdown_stats import *
 
 

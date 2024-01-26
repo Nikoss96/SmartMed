@@ -1,10 +1,8 @@
-from functions import send_text_message, get_reply_markup, \
-    handle_pagination, handle_statistical_term, handle_example_bioequal, \
-    handle_download_bioequal, handle_example_describe, handle_download_describe, \
-    handle_back
-from keyboard import (
-    keyboard_main_menu
-)
+from functions import (get_reply_markup, handle_back, handle_download_bioequal,
+                       handle_download_describe, handle_example_bioequal,
+                       handle_example_describe, handle_pagination,
+                       handle_statistical_term, send_text_message)
+from keyboard import keyboard_main_menu
 
 
 def callback_query_handler(bot, call):
@@ -25,7 +23,7 @@ def callback_query_handler(bot, call):
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination(bot, call)
 
-        elif command.startswith('statistical_term'):
+        elif command.startswith("statistical_term"):
             handle_statistical_term(bot, call)
 
         elif command == "example_bioequal":
@@ -59,15 +57,18 @@ def start_message_handler(bot, message):
 
         greeting_text = "Доброго дня!"
         welcome_text = "Рады приветствовать вас в Smart-Медицине!"
-        functionality_text = ("Вам доступен следующий функционал: \n"
-                              " - Вызов медицинских модулей; \n"
-                              " - Вызов словаря; \n"
-                              " - Общение с виртуальным ассистентом.")
+        functionality_text = (
+            "Вам доступен следующий функционал: \n"
+            " - Вызов медицинских модулей; \n"
+            " - Вызов словаря; \n"
+            " - Общение с виртуальным ассистентом."
+        )
 
         send_text_message(bot, chat_id, greeting_text)
         send_text_message(bot, chat_id, welcome_text)
-        send_text_message(bot, chat_id, functionality_text,
-                          reply_markup=keyboard_main_menu)
+        send_text_message(
+            bot, chat_id, functionality_text, reply_markup=keyboard_main_menu
+        )
 
     except Exception as e:
         print(f"Ошибка: \n{e}")

@@ -1,7 +1,6 @@
-from .ModuleInterface import Module
 from .dash import ClusterDashboard
-
 from .dataprep import PandasPreprocessor
+from .ModuleInterface import Module
 
 
 class ClusterModule(Module, ClusterDashboard):
