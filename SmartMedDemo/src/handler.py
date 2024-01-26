@@ -1,15 +1,11 @@
-import os
-import sys
-
 from statistical_terms import statistical_terms
-from functions import get_anyfile, get_file_for_descriptive_analysis
+from functions import get_anyfile, get_file_for_descriptive_analysis, \
+    generate_inline_keyboard_rows, open_and_send_file
 from keyboard import (
     keyboard_main_menu,
     keyboard00,
     keyboard01,
-    keyboard02,
     keyboard_modules,
-    keyboard_dict,
 )
 
 
@@ -18,7 +14,21 @@ def callback_query_handler(bot, call):
     Обработка нажатия кнопок.
     """
     try:
-        if call.data == "example_bioequal":
+        command: str = call.data
+        print(
+            f"User {call.from_user.username} in {call.from_user.id} chat asked for {command}")
+
+        if command.startswith('statistical_term'):
+            term = command.replace("statistical_term_", "")
+
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text="".join(statistical_terms[f"term_{term}"]),
+            )
+
+            open_and_send_file(bot, call.from_user.id, command)
+
+        if command == "example_bioequal":
             bot.answer_callback_query(
                 callback_query_id=call.id,
                 text="Прислали вам пример файла. Оформляйте в точности так.",
@@ -28,7 +38,7 @@ def callback_query_handler(bot, call):
 
             bot.send_document(chat_id=call.from_user.id, document=file)
 
-        elif call.data == "download_bioequal":
+        elif command == "download_bioequal":
             bot.answer_callback_query(
                 callback_query_id=call.id,
                 text="Можете прислать свой файл прямо сюда."
@@ -36,7 +46,7 @@ def callback_query_handler(bot, call):
 
             get_anyfile(bot, call)
 
-        elif call.data == "example_describe":
+        elif command == "example_describe":
             bot.answer_callback_query(
                 callback_query_id=call.id,
                 text="Прислали вам пример файла. Оформляйте в точности так.",
@@ -46,47 +56,17 @@ def callback_query_handler(bot, call):
 
             bot.send_document(chat_id=call.from_user.id, document=file)
 
-        elif call.data == "download_describe":
+        elif command == "download_describe":
             get_file_for_descriptive_analysis(bot, call)
 
-        elif call.data == "t-crit":
-            bot.send_message(
-                chat_id=call.from_user.id,
-                text=f"T-критерий Стьюдента для независимых переменных – {statistical_terms['T-критерий Стьюдента для независимых переменных']}",
-            )
+        elif command == "back":
 
-        elif call.data == "spearman-corr":
-            bot.send_message(
-                chat_id=call.from_user.id,
-                text=f"Коэффициент корреляции Спирмена – {statistical_terms['Коэффициент корреляции Спирмена']}",
-            )
-
-            file_cur = open("media/images/unnamed.png", "rb")
-
-            bot.send_document(chat_id=call.from_user.id, document=file_cur)
-
-        elif call.data == "curve":
-            bot.send_message(
-                chat_id=call.from_user.id,
-                text=f"Кривая выживаемости – {statistical_terms['Кривая выживаемости']}",
-            )
-
-        elif call.data == "box":
-            bot.send_message(
-                chat_id=call.from_user.id,
-                text=f"Диаграмма Ящик с усами – {statistical_terms['Диаграмма <ящик с усами>']}",
-            )
-
-            file_cur = open("media/images/box.jpg", "rb")
-
-            bot.send_document(chat_id=call.from_user.id, document=file_cur)
-
-        elif call.data == "back":
             bot.send_message(
                 chat_id=call.from_user.id,
                 text="Вы снова можете выбрать модуль.",
                 reply_markup=keyboard_main_menu,
             )
+
     except Exception as e:
         print(f"Ошибка: \n{e}")
 
@@ -126,7 +106,7 @@ def text_handler(bot, message):
             "predict": None,
             "модули": keyboard_modules,
             "назад": keyboard_main_menu,
-            "словарь": keyboard_dict,
+            "словарь": generate_inline_keyboard_rows(),
             "chat-gpt": None,
             "cluster": None,
         }
@@ -159,6 +139,6 @@ def text_handler(bot, message):
                     reply_markup=reply_markup,
                 )
         else:
-            bot.send_message(chat_id=message.chat.id, text="Coming soon")
+            bot.send_message(chat_id=message.chat.id, text="В разработке")
     except Exception as e:
         print(f"Ошибка: \n{e}")
