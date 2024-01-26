@@ -1,6 +1,7 @@
 from statistical_terms import statistical_terms
 from functions import get_anyfile, get_file_for_descriptive_analysis, \
-    generate_inline_keyboard_rows, open_and_send_file
+    open_and_send_file, \
+    generate_dictionary_keyboard
 from keyboard import (
     keyboard_main_menu,
     keyboard00,
@@ -15,8 +16,25 @@ def callback_query_handler(bot, call):
     """
     try:
         command: str = call.data
+
         print(
             f"User {call.from_user.username} in {call.from_user.id} chat asked for {command}")
+
+        if command.startswith("prev_") or command.startswith("next_"):
+
+            action, page = command.split('_') if '_' in command else (
+                command, 0)
+
+            page = int(page)
+            if action == "prev":
+                page -= 1
+
+            bot.edit_message_text(chat_id=call.message.chat.id,
+                                  message_id=call.message.message_id,
+                                  text="Выберите интересующий вас термин:",
+                                  reply_markup=generate_dictionary_keyboard(
+                                      page)
+                                  )
 
         if command.startswith('statistical_term'):
             term = command.replace("statistical_term_", "")
@@ -63,7 +81,7 @@ def callback_query_handler(bot, call):
 
             bot.send_message(
                 chat_id=call.from_user.id,
-                text="Вы снова можете выбрать модуль.",
+                text="Выберите модуль.",
                 reply_markup=keyboard_main_menu,
             )
 
@@ -106,7 +124,7 @@ def text_handler(bot, message):
             "predict": None,
             "модули": keyboard_modules,
             "назад": keyboard_main_menu,
-            "словарь": generate_inline_keyboard_rows(),
+            "словарь": generate_dictionary_keyboard(0),
             "chat-gpt": None,
             "cluster": None,
         }
@@ -120,18 +138,12 @@ def text_handler(bot, message):
                     text="Выберите модуль из предложенных ниже.",
                     reply_markup=reply_markup,
                 )
-            elif command == "назад":
-                bot.send_message(
-                    chat_id=message.chat.id,
-                    text="Вы снова можете выбрать модуль.",
-                    reply_markup=reply_markup,
-                )
-            elif command == "словарь":
-                bot.send_message(
-                    chat_id=message.chat.id,
-                    text="Выберите интересующий вас термин:",
-                    reply_markup=reply_markup,
-                )
+            # elif command == "словарь":
+            #     bot.send_message(
+            #         chat_id=message.chat.id,
+            #         text="Выберите интересующий вас термин:",
+            #         reply_markup=reply_markup,
+            #     )
             else:
                 bot.send_message(
                     chat_id=message.chat.id,

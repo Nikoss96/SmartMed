@@ -80,17 +80,42 @@ def get_file_for_descriptive_analysis(bot, call):
             print(f"Unexpected error: {e}")
 
 
-def generate_inline_keyboard_rows(start_key=1, limit=3):
+def generate_dictionary_keyboard(page):
     keyboard_terms = InlineKeyboardMarkup()
-    for key_word, value in statistical_terms.items():
-        key = int(key_word.replace("term_", ""))
-        if start_key + limit >= key >= start_key:
-            keyboard_terms.add(
-                InlineKeyboardButton(text=value[0],
-                                     callback_data=f'statistical_term_{key}')
-            )
-    keyboard_terms.add(
-        InlineKeyboardButton(text="Назад", callback_data="back"))
+
+    words_per_page = 2
+
+    for term_key in list(statistical_terms.keys())[
+                    page * words_per_page: (page + 1) * words_per_page]:
+        term_description = statistical_terms[term_key][0]
+        button = InlineKeyboardButton(term_description,
+                                      callback_data=f"statistical_{term_key}")
+        keyboard_terms.add(button)
+
+    if page > 0:
+        prev_button = InlineKeyboardButton("Назад",
+                                           callback_data=f'prev_{page}')
+    else:
+        prev_button = None
+
+    if (page + 1) * words_per_page < len(statistical_terms):
+        next_button = InlineKeyboardButton("Далее",
+                                           callback_data=f'next_{page + 1}')
+    else:
+        next_button = None
+
+    home_button = InlineKeyboardButton(text="В главное меню",
+                                       callback_data="back")
+
+    if prev_button and next_button:
+        keyboard_terms.add(prev_button, next_button)
+        keyboard_terms.add(home_button)
+
+    elif prev_button:
+        keyboard_terms.add(prev_button, home_button)
+
+    elif next_button:
+        keyboard_terms.add(home_button, next_button)
 
     return keyboard_terms
 
