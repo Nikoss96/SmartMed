@@ -12,6 +12,7 @@ keyboard00: Ответ бота после нажатия на "bioequal" на �
 keyboard01: Ответ бота после нажатия на "describe" на вкладке "Модули" 
 keyboard02: Ответ бота после нажатия на "predict" на вкладке "Модули" 
 """
+
 keyboard_main_menu = ReplyKeyboardMarkup(one_time_keyboard=True)
 keyboard_main_menu.row("Модули", "Словарь", "Chat-GPT")
 
