@@ -11,6 +11,7 @@ from tokens import main_bot_token
 MEDIA_PATH = "media"
 DATA_PATH = "data"
 IMAGES_PATH = "images"
+TERMS_PATH = "terms"
 
 
 def get_reply_markup(command):
@@ -51,7 +52,7 @@ def get_anyfile(bot, call):
             response = requests.get(file_url)
 
             if response.status_code == 200:
-                file_name = f"{MEDIA_PATH}/{IMAGES_PATH}/{message.document.file_name}"
+                file_name = f"{MEDIA_PATH}/{IMAGES_PATH}/{TERMS_PATH}{message.document.file_name}"
 
                 with open(file_name, "wb") as file:
                     file.write(response.content)
@@ -85,7 +86,7 @@ def get_file_for_descriptive_analysis(bot, call):
             response = requests.get(file_url)
 
             if response.status_code == 200:
-                file_name = f"{MEDIA_PATH}/{DATA_PATH}/{message.document.file_name}"
+                file_name = f"{MEDIA_PATH}/{DATA_PATH}/{TERMS_PATH}/{message.document.file_name}"
 
                 with open(file_name, "wb") as file:
                     file.write(response.content)
@@ -110,11 +111,11 @@ def generate_dictionary_keyboard(page):
     Генерация клавиатуры с терминами для словаря.
     """
     keyboard_terms = InlineKeyboardMarkup()
-    words_per_page = 2
+    words_per_page = 4
 
     for term_key in list(statistical_terms.keys())[
-        page * words_per_page : (page + 1) * words_per_page
-    ]:
+                    page * words_per_page: (page + 1) * words_per_page
+                    ]:
         term_description = statistical_terms[term_key][0]
         button = InlineKeyboardButton(
             term_description, callback_data=f"statistical_{term_key}"
@@ -139,6 +140,8 @@ def generate_dictionary_keyboard(page):
         keyboard_terms.add(prev_button, home_button)
     elif next_button:
         keyboard_terms.add(home_button, next_button)
+    else:
+        keyboard_terms.add(home_button)
 
     return keyboard_terms
 
@@ -147,7 +150,7 @@ def open_and_send_file(bot, chat_id, image):
     """
     Открытие и отправка изображения по его имени.
     """
-    file_path = f"{MEDIA_PATH}/{IMAGES_PATH}/{image}.png"
+    file_path = f"{MEDIA_PATH}/{IMAGES_PATH}/{TERMS_PATH}/{image}.png"
     file_cur = open(file_path, "rb")
     bot.send_photo(chat_id=chat_id, photo=file_cur)
 
@@ -184,7 +187,8 @@ def handle_statistical_term(bot, call):
     """
     term = call.data.replace("statistical_term_", "")
     bot.send_message(
-        chat_id=call.from_user.id, text="".join(statistical_terms[f"term_{term}"])
+        chat_id=call.from_user.id,
+        text="".join(statistical_terms[f"term_{term}"])
     )
     open_and_send_file(bot, call.from_user.id, call.data)
 
@@ -202,7 +206,8 @@ def handle_example_bioequal(bot, call):
         text="Прислали вам пример файла. Оформляйте в точности так.",
     )
     send_document_from_file(
-        bot, call.from_user.id, f"{MEDIA_PATH}/{DATA_PATH}/параллельный тестовый.xlsx"
+        bot, call.from_user.id,
+        f"{MEDIA_PATH}/{DATA_PATH}/параллельный тестовый.xlsx"
     )
 
 
@@ -259,7 +264,8 @@ def handle_back(bot, user_id):
         user_id (int): Идентификатор пользователя.
     """
     bot.send_message(
-        chat_id=user_id, text="Выберите модуль.", reply_markup=keyboard_main_menu
+        chat_id=user_id, text="Выберите модуль.",
+        reply_markup=keyboard_main_menu
     )
 
 

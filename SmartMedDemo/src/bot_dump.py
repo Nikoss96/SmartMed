@@ -1,5 +1,4 @@
 import os
-import sys
 
 from handler import callback_query_handler, start_message_handler, text_handler
 from telebot import TeleBot
@@ -25,4 +24,4 @@ def handle_text(message):
     text_handler(bot, message)
 
 
-bot.polling()
+bot.infinity_polling(timeout=10, long_polling_timeout=5)

@@ -41,6 +41,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/SmartMedDemo/media/images" />
       <recent name="$PROJECT_DIR$/SmartMedDemo" />
       <recent name="$PROJECT_DIR$/SmartMedDemo/src" />
@@ -61,7 +62,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1706184099708</updated>
-      <workItem from="1706184100782" duration="14234000" />
+      <workItem from="1706184100782" duration="19742000" />
     </task>
     <servers />
   </component>
