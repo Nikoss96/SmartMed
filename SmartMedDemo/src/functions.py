@@ -1,6 +1,8 @@
+import os
+
 import requests
-from keyboard import (keyboard00, keyboard01, keyboard_main_menu,
-                      keyboard_modules)
+from keyboard import keyboard00, keyboard01, keyboard_main_menu, \
+    keyboard_modules
 from requests import RequestException
 from statistical_terms import statistical_terms
 from telebot.apihelper import ApiTelegramException
@@ -135,7 +137,7 @@ def generate_dictionary_keyboard(page):
     home_button = InlineKeyboardButton("В главное меню", callback_data="back")
 
     if prev_button and next_button:
-        keyboard_terms.add(prev_button, next_button, home_button)
+        keyboard_terms.add(prev_button, home_button, next_button)
     elif prev_button:
         keyboard_terms.add(prev_button, home_button)
     elif next_button:
@@ -151,8 +153,10 @@ def open_and_send_file(bot, chat_id, image):
     Открытие и отправка изображения по его имени.
     """
     file_path = f"{MEDIA_PATH}/{IMAGES_PATH}/{TERMS_PATH}/{image}.png"
-    file_cur = open(file_path, "rb")
-    bot.send_photo(chat_id=chat_id, photo=file_cur)
+
+    if os.path.isfile(file_path):
+        file_cur = open(file_path, "rb")
+        bot.send_photo(chat_id=chat_id, photo=file_cur)
 
 
 def handle_pagination(bot, call):
@@ -188,7 +192,7 @@ def handle_statistical_term(bot, call):
     term = call.data.replace("statistical_term_", "")
     bot.send_message(
         chat_id=call.from_user.id,
-        text="".join(statistical_terms[f"term_{term}"])
+        text=" – это ".join(statistical_terms[f"term_{term}"]),
     )
     open_and_send_file(bot, call.from_user.id, call.data)
 

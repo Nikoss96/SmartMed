@@ -1,7 +1,14 @@
-from functions import (get_reply_markup, handle_back, handle_download_bioequal,
-                       handle_download_describe, handle_example_bioequal,
-                       handle_example_describe, handle_pagination,
-                       handle_statistical_term, send_text_message)
+from functions import (
+    get_reply_markup,
+    handle_back,
+    handle_download_bioequal,
+    handle_download_describe,
+    handle_example_bioequal,
+    handle_example_describe,
+    handle_pagination,
+    handle_statistical_term,
+    send_text_message,
+)
 from keyboard import keyboard_main_menu
 
 
@@ -101,7 +108,7 @@ def text_handler(bot, message):
             send_text_message(
                 bot,
                 chat_id=message.chat.id,
-                text="Готовы загрузить сразу или требуется пояснение?",
+                text="Выберите интересующий вас термин:",
                 reply_markup=reply_markup,
             )
     except Exception as e:

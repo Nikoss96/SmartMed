@@ -6,16 +6,26 @@ import dash_html_components as html
 import dash_table
 import numpy as np
 import pandas as pd
-from scipy.stats import (binomtest, chi2_contingency, f, kstest, mannwhitneyu,
-                         sem, t, wilcoxon)
+from scipy.stats import (
+    binomtest,
+    chi2_contingency,
+    f,
+    kstest,
+    mannwhitneyu,
+    sem,
+    t,
+    wilcoxon,
+)
 from scipy.stats.distributions import chi2
 from sklearn import preprocessing
 from sklearn.metrics import confusion_matrix
 
 from ..dash.text.comparative_text import *
-from ..dataprep.PandasPreprocessor import (get_categorical_col,
-                                           get_class_names,
-                                           get_confusion_matrix)
+from ..dataprep.PandasPreprocessor import (
+    get_categorical_col,
+    get_class_names,
+    get_confusion_matrix,
+)
 from .Dashboard import Dashboard
 
 
