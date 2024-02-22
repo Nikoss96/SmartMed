@@ -2,7 +2,7 @@ import os
 
 import requests
 from keyboard import keyboard00, keyboard01, keyboard_main_menu, \
-    keyboard_modules
+    keyboard_modules, keyboard_in_development
 from requests import RequestException
 from statistical_terms import statistical_terms
 from telebot.apihelper import ApiTelegramException
@@ -23,12 +23,12 @@ def get_reply_markup(command):
     switch = {
         "bioequal": keyboard00,
         "describe": keyboard01,
-        "predict": None,
+        "predict": keyboard_in_development,
         "модули": keyboard_modules,
         "назад": keyboard_main_menu,
         "словарь": generate_dictionary_keyboard(0),
-        "chat-gpt": None,
-        "cluster": None,
+        "chat-gpt": keyboard_in_development,
+        "cluster": keyboard_in_development,
     }
     return switch.get(command, None)
 
@@ -134,7 +134,7 @@ def generate_dictionary_keyboard(page):
         if (page + 1) * words_per_page < len(statistical_terms)
         else None
     )
-    home_button = InlineKeyboardButton("В главное меню", callback_data="back")
+    home_button = InlineKeyboardButton("Главное меню", callback_data="back")
 
     if prev_button and next_button:
         keyboard_terms.add(prev_button, home_button, next_button)
@@ -268,7 +268,7 @@ def handle_back(bot, user_id):
         user_id (int): Идентификатор пользователя.
     """
     bot.send_message(
-        chat_id=user_id, text="Выберите модуль.",
+        chat_id=user_id, text="Выберите интересующий вас раздел:",
         reply_markup=keyboard_main_menu
     )
 

@@ -9,7 +9,7 @@ from functions import (
     handle_statistical_term,
     send_text_message,
 )
-from keyboard import keyboard_main_menu
+from keyboard import keyboard_main_menu, keyboard_in_development
 
 
 def callback_query_handler(bot, call):
@@ -68,7 +68,7 @@ def start_message_handler(bot, message):
             "Вам доступен следующий функционал: \n"
             " - Вызов медицинских модулей; \n"
             " - Вызов словаря; \n"
-            " - Общение с виртуальным ассистентом."
+            # " - Общение с виртуальным ассистентом."
         )
 
         send_text_message(bot, chat_id, greeting_text)
@@ -91,17 +91,28 @@ def text_handler(bot, message):
         chat_id = message.chat.id
         username = message.from_user.username
 
-        if reply_markup is None:
-            send_text_message(bot, chat_id=message.chat.id, text="В разработке")
+        if reply_markup is keyboard_in_development:
+            send_text_message(bot, chat_id=message.chat.id,
+                              text="Данный модуль пока находится в разработке",
+                              reply_markup=reply_markup)
             return
 
         print(f"User {username} in {chat_id} chat wrote {command}")
 
-        if command == "модули":
+        if command in ["describe", "bioequal"]:
             send_text_message(
                 bot,
                 chat_id=message.chat.id,
-                text="Выберите модуль из предложенных ниже.",
+                text="Выберите опцию при работе с модулем:",
+                reply_markup=reply_markup,
+            )
+
+
+        elif command == "модули":
+            send_text_message(
+                bot,
+                chat_id=message.chat.id,
+                text="Выберите интересующий вас модуль:",
                 reply_markup=reply_markup,
             )
         else:

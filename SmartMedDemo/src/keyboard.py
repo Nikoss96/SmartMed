@@ -27,7 +27,7 @@ keyboard00.add(
                          callback_data="download_bioequal")
 )
 keyboard00.add(
-    InlineKeyboardButton(text="В главное меню", callback_data="back"))
+    InlineKeyboardButton(text="Главное меню", callback_data="back"))
 
 keyboard01 = InlineKeyboardMarkup()
 keyboard01.add(
@@ -38,7 +38,7 @@ keyboard01.add(
                          callback_data="download_describe")
 )
 keyboard01.add(
-    InlineKeyboardButton(text="В главное меню", callback_data="back"))
+    InlineKeyboardButton(text="Главное меню", callback_data="back"))
 
 keyboard02 = InlineKeyboardMarkup()
 keyboard02.add(
@@ -47,4 +47,9 @@ keyboard02.add(
 keyboard02.add(
     InlineKeyboardButton(text="Загрузить свой файл",
                          callback_data="download_predict")
+)
+
+keyboard_in_development = InlineKeyboardMarkup()
+keyboard_in_development.add(
+    InlineKeyboardButton(text="Главное меню", callback_data="back")
 )
