@@ -4,11 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ebf72a9a-2b8a-44bc-a11b-98d3ebcd3f86" name="Changes" comment="" />
+    <list default="true" id="ebf72a9a-2b8a-44bc-a11b-98d3ebcd3f86" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/SmartMed.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SmartMed.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedDemo/media/images/terms/statistical_term_14.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedDemo/media/images/terms/statistical_term_14.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedDemo/media/images/terms/statistical_term_21.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedDemo/media/images/terms/statistical_term_21.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedDemo/media/images/terms/statistical_term_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedDemo/media/images/terms/statistical_term_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedDemo/src/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedDemo/src/functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedDemo/src/handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedDemo/src/handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedDemo/src/keyboard.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedDemo/src/keyboard.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedDemo/src/statistical_terms.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedDemo/src/statistical_terms.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="FormatOnSaveOptions">
     <option name="myRunOnSave" value="true" />
@@ -16,41 +33,42 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 4
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="2bRi4Pz3Ai83IObbc2RednMnDXe" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "develop",
-    "last_opened_file_path": "/Users/askolenko/HSE/SmartMed",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "actions.on.save",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/askolenko/HSE/SmartMed&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/SmartMedDemo/media/images/terms" />
+      <recent name="$PROJECT_DIR$/SmartMedDemo/media/data" />
       <recent name="$PROJECT_DIR$/SmartMedDemo/media/images" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/SmartMedDemo" />
-      <recent name="$PROJECT_DIR$/SmartMedDemo/src" />
     </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
+        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
       </set>
     </attachedChunks>
   </component>
@@ -63,6 +81,13 @@
       <option name="presentableId" value="Default" />
       <updated>1706184099708</updated>
       <workItem from="1706184100782" duration="19742000" />
+      <workItem from="1706357999358" duration="8465000" />
+      <workItem from="1706605388032" duration="659000" />
+      <workItem from="1706621434052" duration="4795000" />
+      <workItem from="1706717230047" duration="2777000" />
+      <workItem from="1706783441610" duration="3670000" />
+      <workItem from="1707458618882" duration="2548000" />
+      <workItem from="1708013090638" duration="2000" />
     </task>
     <servers />
   </component>
