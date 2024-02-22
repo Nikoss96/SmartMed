@@ -9,7 +9,7 @@ from functions import (
     handle_statistical_term,
     send_text_message,
 )
-from keyboard import keyboard_main_menu, keyboard_in_development
+from keyboard import keyboard_in_development, keyboard_main_menu
 
 
 def callback_query_handler(bot, call):
@@ -92,9 +92,12 @@ def text_handler(bot, message):
         username = message.from_user.username
 
         if reply_markup is keyboard_in_development:
-            send_text_message(bot, chat_id=message.chat.id,
-                              text="Данный модуль пока находится в разработке",
-                              reply_markup=reply_markup)
+            send_text_message(
+                bot,
+                chat_id=message.chat.id,
+                text="Данный модуль пока находится в разработке",
+                reply_markup=reply_markup,
+            )
             return
 
         print(f"User {username} in {chat_id} chat wrote {command}")
@@ -106,7 +109,6 @@ def text_handler(bot, message):
                 text="Выберите опцию при работе с модулем:",
                 reply_markup=reply_markup,
             )
-
 
         elif command == "модули":
             send_text_message(

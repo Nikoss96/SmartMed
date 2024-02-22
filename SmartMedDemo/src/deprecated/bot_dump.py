@@ -1,7 +1,9 @@
 import requests
 import telebot
+
 from src.deprecated.download_module import bot_token
 from src.tokens import main_bot_token
+
 
 # from telegram import Update
 # from telegram.ext import CallbackContext, CommandHandler, Updater
@@ -59,8 +61,7 @@ keyboard_modules.row("bioequal", "cluster", "describe", "predict")
 keyboard_dict = telebot.types.InlineKeyboardMarkup()
 keyboard_dict.add(
     telebot.types.InlineKeyboardButton(
-        text="T-критерий Стьюдента для независимых переменных",
-        callback_data="t-crit"
+        text="T-критерий Стьюдента для независимых переменных", callback_data="t-crit"
     )
 )
 keyboard_dict.add(
@@ -93,8 +94,7 @@ def callback_query(call):
         file = open("../../media/data/параллельный тестовый.xlsx", "rb")
         bot.send_document(call.from_user.id, file)
     elif call.data == "download_bioequal":
-        bot.answer_callback_query(call.id,
-                                  "Можете прислать свой файл прямо сюда.")
+        bot.answer_callback_query(call.id, "Можете прислать свой файл прямо сюда.")
 
         @bot.message_handler(content_types=["document"])
         def handle_document(message):
@@ -165,8 +165,7 @@ def callback_query(call):
         bot.send_document(call.from_user.id, file_cur)
     elif call.data == "curve":
         bot.send_message(
-            call.from_user.id,
-            f"Кривая выживаемости - \n {dict['Кривая выживаемости']}"
+            call.from_user.id, f"Кривая выживаемости - \n {dict['Кривая выживаемости']}"
         )
     elif call.data == "box":
         bot.send_message(
@@ -194,8 +193,7 @@ def start_message(message):
     global user_id
     user_id = message.from_user.username
     bot.send_message(message.chat.id, "Доброго дня!")
-    bot.send_message(message.chat.id,
-                     "Рады приветствовать вас в SmartMedicine!")
+    bot.send_message(message.chat.id, "Рады приветствовать вас в SmartMedicine!")
     bot.send_message(
         message.chat.id,
         "Вам доступен следующий функционал: \n - Вызов медицинских модулей; \n - Вызов словаря; \n - Общение с виртуальным ассистентом.",
@@ -218,8 +216,7 @@ def default_test(message):
             )
         )
         keyboard00.add(
-            telebot.types.InlineKeyboardButton(text="Назад",
-                                               callback_data="back")
+            telebot.types.InlineKeyboardButton(text="Назад", callback_data="back")
         )
         bot.send_message(
             message.chat.id,
@@ -281,11 +278,9 @@ def default_test(message):
     elif message.text.lower() == "chat-gpt":
         bot.send_message(message.chat.id, "Coming soon")
     elif message.text.lower() == "cluster":
-        bot.send_message(message.chat.id, "Coming soon",
-                         reply_markup=keyboard_modules)
+        bot.send_message(message.chat.id, "Coming soon", reply_markup=keyboard_modules)
     elif message.text.lower() == "cluster":
-        bot.send_message(message.chat.id, "Coming soon",
-                         reply_markup=keyboard_modules)
+        bot.send_message(message.chat.id, "Coming soon", reply_markup=keyboard_modules)
 
         """
     @bot.message_handler(content_types=['document'])
