@@ -1,0 +1,15 @@
+certifi==2023.11.17
+charset-normalizer==3.3.2
+idna==3.6
+numpy==1.26.3
+pyTelegramBotAPI==4.15.2
+requests==2.31.0
+telebot==0.0.5
+telegram==0.0.1
+urllib3==1.26.6
+python-dotenv==1.0.1
+black==23.12.1
+isort==5.13.2
+flake8==7.0.0
+pre-commit==3.6.0
+
