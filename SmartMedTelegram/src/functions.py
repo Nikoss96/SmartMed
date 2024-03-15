@@ -422,7 +422,7 @@ def handle_describe_build_graphs(bot, call):
         chat_id=call.from_user.id,
         text="По каждому параметру приложенных "
              "Вами данных была построена гистограмма. "
-             "Результаты на приложенном дашборде."
+             "Результаты представлены на дашборде."
     )
     send_describe_plots_file(bot, call.from_user.id)
 
@@ -437,6 +437,6 @@ def handle_describe_correlation_analysis(bot, call):
         chat_id=call.from_user.id,
         text="На основе Ваших данных были построены матрицы корреляций"
              " с помощью коэффициентов корреляции Пирсона и Спирмена. "
-             "Результаты ниже на приложенном дашборде."
+             "Результаты представлены на дашборде."
     )
     send_correlation_file(bot, call.from_user.id)
