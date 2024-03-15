@@ -28,7 +28,6 @@ def callback_query_handler(bot, call):
         username = call.from_user.username
 
         print(f"User {username} in {user_id} chat asked for {command}")
-        # print(")))")
 
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination(bot, call)
@@ -111,7 +110,7 @@ def text_handler(bot, message):
 
         print(f"User {username} in {chat_id} chat wrote {command}")
 
-        if command in ["describe", "bioequal"]:
+        if command in ["describe"]:
             send_text_message(
                 bot,
                 chat_id=message.chat.id,

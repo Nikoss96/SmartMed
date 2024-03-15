@@ -15,7 +15,7 @@ from keyboard import (
     keyboard_choose_describe,
 )
 from statistical_terms import statistical_terms
-from describe_mid import display_correlation_matrix
+from describe_mid import display_correlation_matrix, make_df_plot, make_plots
 from paths import (
     MEDIA_PATH,
     DATA_PATH,
@@ -37,7 +37,7 @@ def get_reply_markup(command):
     Вспомогательная функция для получения клавиатур.
     """
     switch = {
-        "bioequal": keyboard00,
+        "bioequal": keyboard_in_development,
         "describe": keyboard01,
         "predict": keyboard_in_development,
         "модули": keyboard_modules,
@@ -177,7 +177,8 @@ def preprocess_input_file(bot, message, file_path):
         if df is not None:
             df = preprocess_dataframe(df)
 
-            display_correlation_matrix(df, message.chat.id)
+            display_correlation_matrix(dataframe=df, chat_id=message.chat.id)
+            make_plots(df=df, chat_id=message.chat.id)
 
             bot.reply_to(
                 message,
@@ -257,6 +258,17 @@ def send_correlation_file(bot, chat_id):
     Открытие и отправка картинки рассчитанного корреляционного анализа.
     """
     file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{SENDING_FILES_PATH}/describe_corr_{chat_id}.png"
+
+    if os.path.isfile(file_path):
+        file_cur = open(file_path, "rb")
+        bot.send_photo(chat_id=chat_id, photo=file_cur)
+
+
+def send_describe_plots_file(bot, chat_id):
+    """
+    Открытие и отправка гистограмм из датафрейма описательного анализа.
+    """
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{SENDING_FILES_PATH}/describe_plots_{chat_id}.png"
 
     if os.path.isfile(file_path):
         file_cur = open(file_path, "rb")
@@ -408,8 +420,11 @@ def handle_describe_build_graphs(bot, call):
     """
     bot.send_message(
         chat_id=call.from_user.id,
-        text="Приветики",
+        text="По каждому параметру приложенных "
+             "Вами данных была построена гистограмма. "
+             "Результаты на приложенном дашборде."
     )
+    send_describe_plots_file(bot, call.from_user.id)
 
 
 def handle_describe_correlation_analysis(bot, call):
@@ -420,7 +435,8 @@ def handle_describe_correlation_analysis(bot, call):
 
     bot.send_message(
         chat_id=call.from_user.id,
-        text="По каждой паре столбцов в Вашем файле были рассчитаны "
-             "коэффициенты корреляции Пирсона и Спирмена",
+        text="На основе Ваших данных были построены матрицы корреляций"
+             " с помощью коэффициентов корреляции Пирсона и Спирмена. "
+             "Результаты ниже на приложенном дашборде."
     )
     send_correlation_file(bot, call.from_user.id)

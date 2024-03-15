@@ -1,6 +1,8 @@
 import matplotlib
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 import seaborn as sns
 
 from paths import (
@@ -13,7 +15,7 @@ from paths import (
 )
 
 FIG_WIDTH = 16
-FIG_HEIGHT = 12
+FIG_HEIGHT = 14
 
 matplotlib.use("agg")
 
@@ -106,15 +108,45 @@ def display_correlation_matrix(
         pltS.set_title("Коэффициент корреляции Спирмена. " + title)
         pltS.set_xticklabels(pltS.get_xticklabels(), rotation=30)
 
+    for ax in axes:
+        ax.title.set_position([.5, -0.2])
+
     plt.savefig(
         f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{SENDING_FILES_PATH}/describe_corr_{chat_id}.png",
         bbox_inches="tight", pad_inches=0.0)
 
 
-def make_df_plot(frame: pd.DataFrame):
+def make_df_plot(frame: pd.DataFrame, chat_id):
     frame.plot()
-    plt.savefig("result_plot.png", bbox_inches="tight", pad_inches=0.0)
-    plt.show()
+    plt.savefig(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{SENDING_FILES_PATH}/describe_plots_{chat_id}.png")
+
+
+def make_plots(df: pd.DataFrame, chat_id):
+    num_cols = len(df.columns)
+    num_rows = (num_cols + 3) // 4  # Ensure at least 3 rows for a better layout
+
+    # Create subplots
+    fig, axs = plt.subplots(nrows=num_rows, ncols=4, figsize=(20, num_rows * 5))
+    axs = axs.flatten()
+
+    # Plot each column
+    for i, col in enumerate(df.columns):
+        sns.histplot(df[col], kde=True, ax=axs[i])
+        axs[i].set_title(f'Распределение столбца "{col}"')
+        axs[i].set_xlabel('Значение')
+        axs[i].set_ylabel('Частота')
+
+        # Hide any unused subplots
+        for j in range(i + 1, len(axs)):
+            axs[j].axis('off')
+
+    # Adjust layout
+    plt.tight_layout()
+
+    # Save and show the plot
+    plt.savefig(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{SENDING_FILES_PATH}/describe_plots_{chat_id}.png")
 
 
 def sheet_to_dataframe_spec(
