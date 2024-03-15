@@ -12,7 +12,8 @@ from keyboard import (
     keyboard01,
     keyboard_in_development,
     keyboard_main_menu,
-    keyboard_modules, keyboard_choose_describe,
+    keyboard_modules,
+    keyboard_choose_describe,
 )
 from statistical_terms import statistical_terms
 from describe_mid import display_correlation_matrix
@@ -93,7 +94,6 @@ def get_file_for_descriptive_analysis(bot, call):
     @bot.message_handler(content_types=["document"])
     def handle_document(message):
         try:
-
             file_info = bot.get_file(message.document.file_id)
 
             file_url = f"https://api.telegram.org/file/bot{test_bot_token}/{file_info.file_path}"
@@ -101,8 +101,7 @@ def get_file_for_descriptive_analysis(bot, call):
             response = requests.get(file_url)
 
             if response.status_code == 200:
-                file_name = download_file(response.content,
-                                          message.document.file_name)
+                file_name = download_file(response.content, message.document.file_name)
                 preprocess_input_file(bot, message, file_name)
 
             else:
@@ -174,10 +173,10 @@ def preprocess_input_file(bot, message, file_path):
             df = preprocess_dataframe(df)
 
             bot.reply_to(
-                message, f"Файл {message.document.file_name} успешно прочитан.",
+                message,
+                f"Файл {message.document.file_name} успешно прочитан.",
                 reply_markup=keyboard_choose_describe,
             )
-
 
     except Exception as e:
         print(f"Error preprocessing file: {e}")
@@ -191,8 +190,7 @@ def preprocess_input_file(bot, message, file_path):
 def preprocess_dataframe(df):
     df.fillna("", inplace=True)
     max_row_length = max(df.apply(lambda x: x.astype(str).map(len)).max())
-    return df.apply(
-        lambda x: x.astype(str).map(lambda x: x.ljust(max_row_length)))
+    return df.apply(lambda x: x.astype(str).map(lambda x: x.ljust(max_row_length)))
 
 
 def generate_dictionary_keyboard(page):
@@ -203,8 +201,8 @@ def generate_dictionary_keyboard(page):
     words_per_page = 4
 
     for term_key in list(statistical_terms.keys())[
-                    page * words_per_page: (page + 1) * words_per_page
-                    ]:
+        page * words_per_page : (page + 1) * words_per_page
+    ]:
         term_description = statistical_terms[term_key][0]
         button = InlineKeyboardButton(
             term_description, callback_data=f"statistical_{term_key}"
@@ -297,8 +295,7 @@ def handle_example_bioequal(bot, call):
         text="Прислали вам пример файла. Оформляйте в точности так.",
     )
     send_document_from_file(
-        bot, call.from_user.id,
-        f"{MEDIA_PATH}/{DATA_PATH}/параллельный тестовый.xlsx"
+        bot, call.from_user.id, f"{MEDIA_PATH}/{DATA_PATH}/параллельный тестовый.xlsx"
     )
 
 
@@ -346,12 +343,12 @@ def handle_download_describe(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Пришлите ваш файл.\n\n"
-             "Файл должен иметь следующие характеристики:\n"
-             "\n1.  Формат файла: .csv, .xlsx или .xls"
-             "\n2.  Размер файла: до 20 Мегабайт"
-             "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
-             "\n4.  Содержимое файла: Название каждого столбца "
-             "должно быть читаемым.",
+        "Файл должен иметь следующие характеристики:\n"
+        "\n1.  Формат файла: .csv, .xlsx или .xls"
+        "\n2.  Размер файла: до 20 Мегабайт"
+        "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
+        "\n4.  Содержимое файла: Название каждого столбца "
+        "должно быть читаемым.",
     )
     get_file_for_descriptive_analysis(bot, call)
 

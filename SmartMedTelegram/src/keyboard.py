@@ -23,8 +23,7 @@ keyboard00.add(
     InlineKeyboardButton(text="Пример файла", callback_data="example_bioequal")
 )
 keyboard00.add(
-    InlineKeyboardButton(text="Загрузить свой файл",
-                         callback_data="download_bioequal")
+    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_bioequal")
 )
 keyboard00.add(InlineKeyboardButton(text="Главное меню", callback_data="back"))
 
@@ -33,8 +32,7 @@ keyboard01.add(
     InlineKeyboardButton(text="Пример файла", callback_data="example_describe")
 )
 keyboard01.add(
-    InlineKeyboardButton(text="Загрузить свой файл",
-                         callback_data="download_describe")
+    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_describe")
 )
 keyboard01.add(InlineKeyboardButton(text="Главное меню", callback_data="back"))
 
@@ -43,8 +41,7 @@ keyboard02.add(
     InlineKeyboardButton(text="Пример файла", callback_data="example_predict")
 )
 keyboard02.add(
-    InlineKeyboardButton(text="Загрузить свой файл",
-                         callback_data="download_predict")
+    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_predict")
 )
 
 keyboard_in_development = InlineKeyboardMarkup()
@@ -55,14 +52,12 @@ keyboard_in_development.add(
 keyboard_choose_describe = InlineKeyboardMarkup()
 keyboard_choose_describe.add(
     InlineKeyboardButton(
-        text="Построение графиков",
-        callback_data="describe_build_graphs"
+        text="Построение графиков", callback_data="describe_build_graphs"
     )
 )
 keyboard_choose_describe.add(
     InlineKeyboardButton(
-        text="Корреляционный анализ",
-        callback_data="describe_correlation_analysis"
+        text="Корреляционный анализ", callback_data="describe_correlation_analysis"
     )
 )
 keyboard_choose_describe.add(

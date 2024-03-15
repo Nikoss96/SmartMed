@@ -98,8 +98,7 @@ def get_file_for_descriptive_analysis(bot, call):
             response = requests.get(file_url)
 
             if response.status_code == 200:
-                file_name = download_file(response.content,
-                                          message.document.file_name)
+                file_name = download_file(response.content, message.document.file_name)
                 preprocess_input_file(bot, message, file_name)
 
             else:
@@ -188,8 +187,7 @@ def preprocess_input_file(bot, message, file_path):
 def preprocess_dataframe(df):
     df.fillna("", inplace=True)
     max_row_length = max(df.apply(lambda x: x.astype(str).map(len)).max())
-    return df.apply(
-        lambda x: x.astype(str).map(lambda x: x.ljust(max_row_length)))
+    return df.apply(lambda x: x.astype(str).map(lambda x: x.ljust(max_row_length)))
 
 
 def generate_dictionary_keyboard(page):
@@ -200,8 +198,8 @@ def generate_dictionary_keyboard(page):
     words_per_page = 4
 
     for term_key in list(statistical_terms.keys())[
-                    page * words_per_page: (page + 1) * words_per_page
-                    ]:
+        page * words_per_page : (page + 1) * words_per_page
+    ]:
         term_description = statistical_terms[term_key][0]
         button = InlineKeyboardButton(
             term_description, callback_data=f"statistical_{term_key}"
@@ -294,8 +292,7 @@ def handle_example_bioequal(bot, call):
         text="Прислали вам пример файла. Оформляйте в точности так.",
     )
     send_document_from_file(
-        bot, call.from_user.id,
-        f"{MEDIA_PATH}/{DATA_PATH}/параллельный тестовый.xlsx"
+        bot, call.from_user.id, f"{MEDIA_PATH}/{DATA_PATH}/параллельный тестовый.xlsx"
     )
 
 
@@ -343,12 +340,12 @@ def handle_download_describe(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Пришлите ваш файл.\n\n"
-             "Файл должен иметь следующие характеристики:\n"
-             "\n1.  Формат файла: .csv, .xlsx или .xls"
-             "\n2.  Размер файла: до 20 Мегабайт"
-             "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
-             "\n4.  Содержимое файла: Название каждого столбца "
-             "должно быть читаемым.",
+        "Файл должен иметь следующие характеристики:\n"
+        "\n1.  Формат файла: .csv, .xlsx или .xls"
+        "\n2.  Размер файла: до 20 Мегабайт"
+        "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
+        "\n4.  Содержимое файла: Название каждого столбца "
+        "должно быть читаемым.",
     )
     get_file_for_descriptive_analysis(bot, call)
 

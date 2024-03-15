@@ -7,7 +7,8 @@ from functions import (
     handle_example_describe,
     handle_pagination,
     handle_statistical_term,
-    send_text_message, handle_describe_build_graphs,
+    send_text_message,
+    handle_describe_build_graphs,
     handle_describe_correlation_analysis,
 )
 from keyboard import keyboard_in_development, keyboard_main_menu
