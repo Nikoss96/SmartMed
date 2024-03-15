@@ -7,17 +7,15 @@ from requests import RequestException
 from telebot.apihelper import ApiTelegramException
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from exceptions import error_processing_file
 from keyboard import (
     keyboard00,
     keyboard01,
     keyboard_in_development,
     keyboard_main_menu,
-    keyboard_modules,
+    keyboard_modules, keyboard_choose_describe,
 )
 from statistical_terms import statistical_terms
 from describe_mid import display_correlation_matrix
-
 
 "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
@@ -95,13 +93,13 @@ def get_file_for_descriptive_analysis(bot, call):
     @bot.message_handler(content_types=["document"])
     def handle_document(message):
         try:
-            
+
             file_info = bot.get_file(message.document.file_id)
-            
+
             file_url = f"https://api.telegram.org/file/bot{test_bot_token}/{file_info.file_path}"
-            
+
             response = requests.get(file_url)
-            
+
             if response.status_code == 200:
                 file_name = download_file(response.content,
                                           message.document.file_name)
@@ -154,7 +152,7 @@ def preprocess_input_file(bot, message, file_path):
             return
 
         file_size = os.path.getsize(file_path)
-        max_file_size = 20 * 1024 * 1024 # 20 Мегабайт
+        max_file_size = 20 * 1024 * 1024  # 20 Мегабайт
 
         if file_size > max_file_size:
             bot.reply_to(
@@ -174,18 +172,12 @@ def preprocess_input_file(bot, message, file_path):
 
         if df is not None:
             df = preprocess_dataframe(df)
+
             bot.reply_to(
-                message, f"Файл {message.document.file_name} успешно прочитан."
+                message, f"Файл {message.document.file_name} успешно прочитан.",
+                reply_markup=keyboard_choose_describe,
             )
-            #Здесь нужно сделать вызов клаиатуры для ветвления программы, как я писал в тз
-            #keyboard_choose_describe
-            #После того, как пользователь выбрал 1 из двух функций, нужно вызвать их из describe_mid
-            #Появится новый файл, который нужно положить в папку sending_files с названием вида "describe_corr_{user_id}"
-            #Дальше отправить этот файл получателю, можно с сопроводительным сообщением
-            display_correlation_matrix(df)
-            file_path = "result.png"
-            #open_and_send_file(bot, message.chat_id, "")
-            
+
 
     except Exception as e:
         print(f"Error preprocessing file: {e}")
@@ -390,3 +382,26 @@ def send_document_from_file(bot, chat_id, file_path):
     """
     file = open(file_path, "rb")
     bot.send_document(chat_id=chat_id, document=file)
+
+
+def handle_describe_build_graphs(bot, call):
+    """
+    Обработка при нажатии на "Построение графиков"
+    после прочтения файла описательного анализа.
+    """
+    bot.send_message(
+        chat_id=call.from_user.id,
+        text="Приветики",
+    )
+
+
+def handle_describe_correlation_analysis(bot, call):
+    """
+    Обработка при нажатии на "Корреляционный анализ"
+    после прочтения файла описательного анализа.
+    """
+    # display_correlation_matrix(df)
+    bot.send_message(
+        chat_id=call.from_user.id,
+        text="Приветики, я корреляция",
+    )

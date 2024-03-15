@@ -7,7 +7,8 @@ from functions import (
     handle_example_describe,
     handle_pagination,
     handle_statistical_term,
-    send_text_message,
+    send_text_message, handle_describe_build_graphs,
+    handle_describe_correlation_analysis,
 )
 from keyboard import keyboard_in_development, keyboard_main_menu
 
@@ -26,7 +27,7 @@ def callback_query_handler(bot, call):
         username = call.from_user.username
 
         print(f"User {username} in {user_id} chat asked for {command}")
-        #print(")))")
+        # print(")))")
 
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination(bot, call)
@@ -48,6 +49,12 @@ def callback_query_handler(bot, call):
 
         elif command == "back":
             handle_back(bot, user_id)
+
+        elif command == "describe_build_graphs":
+            handle_describe_build_graphs(bot, call)
+
+        elif command == "describe_correlation_analysis":
+            handle_describe_correlation_analysis(bot, call)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")
