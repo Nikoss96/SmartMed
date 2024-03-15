@@ -4,23 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ebf72a9a-2b8a-44bc-a11b-98d3ebcd3f86" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/.black" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/.flake8" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/.isort.cfg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/.pre-commit-config.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/sending_files/describe_corr_521106451.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/Описательный_анализ_пример (1).xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/Описательный_анализ_пример (1).xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/requirements-froze.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/deprecated/bot_dump.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/deprecated/download_module.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/describe_mid.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/describe_mid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/параллельный тестовый.xlsx" beforeDir="false" />
-    </list>
+    <list default="true" id="ebf72a9a-2b8a-44bc-a11b-98d3ebcd3f86" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -96,7 +80,7 @@
       <workItem from="1707458618882" duration="2548000" />
       <workItem from="1708013090638" duration="2000" />
       <workItem from="1710496459441" duration="3043000" />
-      <workItem from="1710500329295" duration="12446000" />
+      <workItem from="1710500329295" duration="12851000" />
     </task>
     <servers />
   </component>

@@ -74,9 +74,8 @@ def start_message_handler(bot, message):
         welcome_text = "Рады приветствовать вас в Smart-Медицине!"
         functionality_text = (
             "Вам доступен следующий функционал: \n"
-            " - Вызов медицинских модулей; \n"
-            " - Вызов словаря; \n"
-            # " - Общение с виртуальным ассистентом."
+            "- Модули анализа данных\n"
+            "- Словарь терминов"
         )
 
         send_text_message(bot, chat_id, greeting_text)
