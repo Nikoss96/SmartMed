@@ -1,17 +1,26 @@
 import matplotlib
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-FIG_WIDTH = 12
-FIG_HEIGHT = 10
+from paths import (
+    MEDIA_PATH,
+    DATA_PATH,
+    IMAGES_PATH,
+    TERMS_PATH,
+    USER_DATA_PATH,
+    SENDING_FILES_PATH,
+)
+
+FIG_WIDTH = 16
+FIG_HEIGHT = 12
 
 matplotlib.use("agg")
 
 
 def display_scatter(
-    dataframe: pd.DataFrame, axis_x: str, axis_y: str, title_x=None, title_y=None
+        dataframe: pd.DataFrame, axis_x: str, axis_y: str, title_x=None,
+        title_y=None
 ):
     if not title_x:
         title_x = axis_x
@@ -24,14 +33,15 @@ def display_scatter(
 
 
 def display_correlation_matrix(
-    dataframe: pd.DataFrame,
-    sharey=False,
-    annot=True,
-    Pearson=True,
-    Spearman=True,
-    title="",
-    cmap=sns.color_palette("viridis", as_cmap=True),
-    fmt=".2f",
+        dataframe: pd.DataFrame,
+        chat_id,
+        sharey=False,
+        annot=True,
+        Pearson=True,
+        Spearman=True,
+        title="",
+        cmap=sns.color_palette("viridis", as_cmap=True),
+        fmt=".2f",
 ):
     if not Pearson and not Spearman:
         return
@@ -39,7 +49,8 @@ def display_correlation_matrix(
     ncols = Spearman + Pearson
 
     f, axes = plt.subplots(
-        nrows=1, ncols=ncols, sharey=sharey, figsize=(FIG_WIDTH * ncols, FIG_HEIGHT)
+        nrows=1, ncols=ncols, sharey=sharey,
+        figsize=(FIG_WIDTH * ncols, FIG_HEIGHT)
     )
 
     pltP = None
@@ -67,7 +78,7 @@ def display_correlation_matrix(
                 fmt=fmt,
             )
         pltP.xaxis.tick_top()
-        pltP.set_title("Пирсон. " + title)
+        pltP.set_title("Коэффициент корреляции Пирсона. " + title)
         pltP.set_xticklabels(pltP.get_xticklabels(), rotation=30)
     if Spearman:
         if Pearson:
@@ -92,11 +103,12 @@ def display_correlation_matrix(
                 fmt=fmt,
             )
         pltS.xaxis.tick_top()
-        pltS.set_title("Спирмен. " + title)
+        pltS.set_title("Коэффициент корреляции Спирмена. " + title)
         pltS.set_xticklabels(pltS.get_xticklabels(), rotation=30)
 
-    plt.savefig("result.png", bbox_inches="tight", pad_inches=0.0)
-    plt.show()
+    plt.savefig(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{SENDING_FILES_PATH}/describe_corr_{chat_id}.png",
+        bbox_inches="tight", pad_inches=0.0)
 
 
 def make_df_plot(frame: pd.DataFrame):
@@ -106,7 +118,8 @@ def make_df_plot(frame: pd.DataFrame):
 
 
 def sheet_to_dataframe_spec(
-    sheet, start_letter: str, start_row: str, finish_letter: str, finish_row: str
+        sheet, start_letter: str, start_row: str, finish_letter: str,
+        finish_row: str
 ):
     x = []
     x = sheet.get(start_letter + start_row + ":" + finish_letter + finish_row)
@@ -124,7 +137,8 @@ def sheet_to_dataframe_spec(
                     for c in range(len(z)):
                         if (z[c] == "+") or (z[c] == "-"):
                             # frame.append([z[start:c-1],z[c]])
-                            frame.loc[len(frame.index)] = [z[start : c - 1], z[c]]
+                            frame.loc[len(frame.index)] = [z[start: c - 1],
+                                                           z[c]]
                             break
                 except:
                     pass

@@ -1,5 +1,4 @@
 import os
-from enum import Enum
 
 import pandas as pd
 import requests
@@ -17,15 +16,20 @@ from keyboard import (
 )
 from statistical_terms import statistical_terms
 from describe_mid import display_correlation_matrix
+from paths import (
+    MEDIA_PATH,
+    DATA_PATH,
+    IMAGES_PATH,
+    TERMS_PATH,
+    USER_DATA_PATH,
+    SENDING_FILES_PATH,
+)
 
 "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
+
+
 # Constants
-MEDIA_PATH = "media"
-DATA_PATH = "data"
-IMAGES_PATH = "images"
-TERMS_PATH = "terms"
-USER_DATA_PATH = "user_data"
 
 
 def get_reply_markup(command):
@@ -101,7 +105,8 @@ def get_file_for_descriptive_analysis(bot, call):
             response = requests.get(file_url)
 
             if response.status_code == 200:
-                file_name = download_file(response.content, message.document.file_name)
+                file_name = download_file(response.content,
+                                          message.document.file_name)
                 preprocess_input_file(bot, message, file_name)
 
             else:
@@ -172,6 +177,8 @@ def preprocess_input_file(bot, message, file_path):
         if df is not None:
             df = preprocess_dataframe(df)
 
+            display_correlation_matrix(df, message.chat.id)
+
             bot.reply_to(
                 message,
                 f"Файл {message.document.file_name} успешно прочитан.",
@@ -190,7 +197,8 @@ def preprocess_input_file(bot, message, file_path):
 def preprocess_dataframe(df):
     df.fillna("", inplace=True)
     max_row_length = max(df.apply(lambda x: x.astype(str).map(len)).max())
-    return df.apply(lambda x: x.astype(str).map(lambda x: x.ljust(max_row_length)))
+    return df.apply(
+        lambda x: x.astype(str).map(lambda x: x.ljust(max_row_length)))
 
 
 def generate_dictionary_keyboard(page):
@@ -201,8 +209,8 @@ def generate_dictionary_keyboard(page):
     words_per_page = 4
 
     for term_key in list(statistical_terms.keys())[
-        page * words_per_page : (page + 1) * words_per_page
-    ]:
+                    page * words_per_page: (page + 1) * words_per_page
+                    ]:
         term_description = statistical_terms[term_key][0]
         button = InlineKeyboardButton(
             term_description, callback_data=f"statistical_{term_key}"
@@ -238,6 +246,17 @@ def open_and_send_file(bot, chat_id, image):
     Открытие и отправка изображения по его имени.
     """
     file_path = f"{MEDIA_PATH}/{IMAGES_PATH}/{TERMS_PATH}/{image}.png"
+
+    if os.path.isfile(file_path):
+        file_cur = open(file_path, "rb")
+        bot.send_photo(chat_id=chat_id, photo=file_cur)
+
+
+def send_correlation_file(bot, chat_id):
+    """
+    Открытие и отправка картинки рассчитанного корреляционного анализа.
+    """
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{SENDING_FILES_PATH}/describe_corr_{chat_id}.png"
 
     if os.path.isfile(file_path):
         file_cur = open(file_path, "rb")
@@ -295,7 +314,8 @@ def handle_example_bioequal(bot, call):
         text="Прислали вам пример файла. Оформляйте в точности так.",
     )
     send_document_from_file(
-        bot, call.from_user.id, f"{MEDIA_PATH}/{DATA_PATH}/параллельный тестовый.xlsx"
+        bot, call.from_user.id,
+        f"{MEDIA_PATH}/{DATA_PATH}/параллельный тестовый.xlsx"
     )
 
 
@@ -343,12 +363,12 @@ def handle_download_describe(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Пришлите ваш файл.\n\n"
-        "Файл должен иметь следующие характеристики:\n"
-        "\n1.  Формат файла: .csv, .xlsx или .xls"
-        "\n2.  Размер файла: до 20 Мегабайт"
-        "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
-        "\n4.  Содержимое файла: Название каждого столбца "
-        "должно быть читаемым.",
+             "Файл должен иметь следующие характеристики:\n"
+             "\n1.  Формат файла: .csv, .xlsx или .xls"
+             "\n2.  Размер файла: до 20 Мегабайт"
+             "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
+             "\n4.  Содержимое файла: Название каждого столбца "
+             "должно быть читаемым.",
     )
     get_file_for_descriptive_analysis(bot, call)
 
@@ -397,8 +417,10 @@ def handle_describe_correlation_analysis(bot, call):
     Обработка при нажатии на "Корреляционный анализ"
     после прочтения файла описательного анализа.
     """
-    # display_correlation_matrix(df)
+
     bot.send_message(
         chat_id=call.from_user.id,
-        text="Приветики, я корреляция",
+        text="По каждой паре столбцов в Вашем файле были рассчитаны "
+             "коэффициенты корреляции Пирсона и Спирмена",
     )
+    send_correlation_file(bot, call.from_user.id)

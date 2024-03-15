@@ -1,0 +1,6 @@
+MEDIA_PATH = "media"
+DATA_PATH = "data"
+IMAGES_PATH = "images"
+TERMS_PATH = "terms"
+USER_DATA_PATH = "user_data"
+SENDING_FILES_PATH = "sending_files"
