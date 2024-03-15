@@ -18,7 +18,7 @@ def display_scatter(dataframe: pd.DataFrame, axis_x: str, axis_y: str, title_x =
     plt.show()
     
 
-def display_correlation_matrix(dataframe: pd.DataFrame, sharey = False, annot=True, Pearson = True, Spearman = True, title = "", cmap = sns.color_palette("blend:#491174,#CB11AB,#491174", as_cmap=True), fmt = ".2f"):
+def display_correlation_matrix(dataframe: pd.DataFrame, sharey = False, annot=True, Pearson = True, Spearman = True, title = "", cmap = sns.color_palette("viridis", as_cmap=True), fmt = ".2f"):
     if (not Pearson and not Spearman):
         return
     dataframe.drop(columns=dataframe.columns [0], axis= 1 , inplace= True)
@@ -48,6 +48,10 @@ def display_correlation_matrix(dataframe: pd.DataFrame, sharey = False, annot=Tr
     plt.savefig('result.png', bbox_inches='tight', pad_inches=0.0)
     plt.show()
 
+def make_df_plot(frame: pd.DataFrame):
+    frame.plot()
+    plt.savefig('result_plot.png', bbox_inches='tight', pad_inches=0.0)
+    plt.show()
 def sheet_to_dataframe_spec(sheet,start_letter: str,start_row: str, finish_letter: str, finish_row: str):
     x = []
     x = sheet.get(start_letter+start_row+":"+finish_letter+finish_row)

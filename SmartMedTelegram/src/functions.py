@@ -177,15 +177,15 @@ def preprocess_input_file(bot, message, file_path):
             bot.reply_to(
                 message, f"Файл {message.document.file_name} успешно прочитан."
             )
+            #Здесь нужно сделать вызов клаиатуры для ветвления программы, как я писал в тз
+            #keyboard_choose_describe
+            #После того, как пользователь выбрал 1 из двух функций, нужно вызвать их из describe_mid
+            #Появится новый файл, который нужно положить в папку sending_files с названием вида "describe_corr_{user_id}"
+            #Дальше отправить этот файл получателю, можно с сопроводительным сообщением
             display_correlation_matrix(df)
             file_path = "result.png"
-            bot.reply_to(
-                message=message,
-                photo=file_path,
-            )
-        #open_and_send_file(bot, chat_id, "")
-        #print(df)
-        #media/data/sending_files/
+            #open_and_send_file(bot, message.chat_id, "")
+            
 
     except Exception as e:
         print(f"Error preprocessing file: {e}")
