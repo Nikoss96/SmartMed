@@ -30,8 +30,6 @@ from data.paths import (
 "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 
-print(os.getcwd())
-
 
 def get_reply_markup(command):
     """
@@ -361,7 +359,7 @@ def handle_example_describe(bot, call):
     send_document_from_file(
         bot,
         call.from_user.id,
-        "media/data/Описательный_анализ_пример.xlsx",
+        "media/data/describe_analysis/Описательный_анализ_пример.xlsx",
         # f"{MEDIA_PATH}/{DATA_PATH}/Описательный_анализ_пример.xlsx",
     )
 

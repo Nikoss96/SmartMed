@@ -10,8 +10,6 @@ test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 
 bot = TeleBot(test_bot_token)
 
-print(os.getcwd())
-
 
 @bot.message_handler(commands=["start"])
 def handle_start_message(message):
