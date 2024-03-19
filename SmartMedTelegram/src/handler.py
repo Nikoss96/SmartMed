@@ -109,7 +109,7 @@ def text_handler(bot, message):
 
         print(f"User {username} in {chat_id} chat wrote {command}")
 
-        if command in ["describe"]:
+        if command in ["Описательный анализ"]:
             send_text_message(
                 bot,
                 chat_id=message.chat.id,

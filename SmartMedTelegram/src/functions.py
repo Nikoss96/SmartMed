@@ -24,7 +24,7 @@ from data.paths import (
     IMAGES_PATH,
     TERMS_PATH,
     USER_DATA_PATH,
-    SENDING_FILES_PATH,
+    SENDING_FILES_PATH, DESCRIBE_ANALYSIS,
 )
 
 "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
@@ -37,7 +37,7 @@ def get_reply_markup(command):
     """
     switch = {
         "bioequal": keyboard_in_development,
-        "describe": keyboard01,
+        "описательный анализ": keyboard01,
         "predict": keyboard_in_development,
         "модули": keyboard_modules,
         "назад": keyboard_main_menu,
@@ -359,8 +359,7 @@ def handle_example_describe(bot, call):
     send_document_from_file(
         bot,
         call.from_user.id,
-        "media/data/describe_analysis/Описательный_анализ_пример.xlsx",
-        # f"{MEDIA_PATH}/{DATA_PATH}/Описательный_анализ_пример.xlsx",
+        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/Описательный_анализ_пример.xlsx",
     )
 
 

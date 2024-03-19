@@ -5,11 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebf72a9a-2b8a-44bc-a11b-98d3ebcd3f86" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/SmartMed.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SmartMed.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/sending_files/describe_corr_521106451.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/sending_files/describe_corr_521106451.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/sending_files/describe_plots_521106451.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/sending_files/describe_plots_521106451.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/Пример_для_семинара_описательный_анализ.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/Пример_для_семинара_описательный_анализ.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/Пример_для_семинара_описательный_анализ.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/Пример_для_семинара_описательный_анализ.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/data/keyboard.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/data/keyboard.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/data/paths.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/data/paths.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/1123414.xls" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/1123414.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/2.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/edited_image.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/image_2024-02-21_14-57-46.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/АПР ЛР 1 Коленько.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/АПР_ЛР_2_Коленько (1).pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/АПР_ЛР_2_Коленько.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/Описательный_анализ_пример (1).xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/Описательный_анализ_пример.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/Пример_для_семинара_описательный_анализ.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/Пример_для_семинара_описательный_анализ_2.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/параллельный тестовый (1).xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/параллельный тестовый.xlsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +38,17 @@
       <list>
         <option value="Python Script" />
       </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
     </option>
   </component>
   <component name="FormatOnSaveOptions">
@@ -43,7 +71,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "develop",
-    "last_opened_file_path": "/Users/askolenko/HSE/SmartMed",
+    "last_opened_file_path": "/Users/askolenko/PycharmProjects/SmartMed",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -55,11 +83,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/SmartMedTelegram/src/media/data/dictionary" />
+      <recent name="$PROJECT_DIR$/SmartMedTelegram/src/media/data" />
+      <recent name="$PROJECT_DIR$/SmartMedTelegram/src/media/data/describe_analysis" />
       <recent name="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data" />
       <recent name="$PROJECT_DIR$/SmartMedDemo/media/images/terms" />
-      <recent name="$PROJECT_DIR$/SmartMedDemo/media/data" />
-      <recent name="$PROJECT_DIR$/SmartMedDemo/media/images" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -87,6 +115,8 @@
       <workItem from="1708013090638" duration="2000" />
       <workItem from="1710496459441" duration="3043000" />
       <workItem from="1710500329295" duration="22867000" />
+      <workItem from="1710858153742" duration="191000" />
+      <workItem from="1710858647433" duration="1664000" />
     </task>
     <servers />
   </component>
