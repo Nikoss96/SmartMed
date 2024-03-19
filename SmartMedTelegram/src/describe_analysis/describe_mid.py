@@ -1,3 +1,6 @@
+import os
+import sys
+
 import matplotlib
 import numpy as np
 import pandas as pd
@@ -5,7 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import seaborn as sns
 
-from paths import (
+from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
     IMAGES_PATH,

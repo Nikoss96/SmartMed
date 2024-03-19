@@ -1,4 +1,5 @@
 import os
+import sys
 
 import pandas as pd
 import requests
@@ -6,7 +7,7 @@ from requests import RequestException
 from telebot.apihelper import ApiTelegramException
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from keyboard import (
+from data.keyboard import (
     keyboard00,
     keyboard01,
     keyboard_in_development,
@@ -14,9 +15,10 @@ from keyboard import (
     keyboard_modules,
     keyboard_choose_describe,
 )
-from statistical_terms import statistical_terms
-from describe_mid import display_correlation_matrix, make_df_plot, make_plots
-from paths import (
+from data.statistical_terms import statistical_terms
+from describe_analysis.describe_mid import display_correlation_matrix, \
+    make_df_plot, make_plots
+from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
     IMAGES_PATH,
@@ -28,8 +30,7 @@ from paths import (
 "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 
-
-# Constants
+print(os.getcwd())
 
 
 def get_reply_markup(command):
@@ -360,7 +361,8 @@ def handle_example_describe(bot, call):
     send_document_from_file(
         bot,
         call.from_user.id,
-        f"{MEDIA_PATH}/{DATA_PATH}/Описательный_анализ_пример.xlsx",
+        "media/data/Описательный_анализ_пример.xlsx",
+        # f"{MEDIA_PATH}/{DATA_PATH}/Описательный_анализ_пример.xlsx",
     )
 
 

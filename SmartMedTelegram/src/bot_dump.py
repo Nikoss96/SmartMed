@@ -1,4 +1,5 @@
 import os
+import sys
 
 from telebot import TeleBot
 
@@ -9,7 +10,7 @@ test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 
 bot = TeleBot(test_bot_token)
 
-os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+print(os.getcwd())
 
 
 @bot.message_handler(commands=["start"])

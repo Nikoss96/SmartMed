@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ebf72a9a-2b8a-44bc-a11b-98d3ebcd3f86" name="Changes" comment="" />
+    <list default="true" id="ebf72a9a-2b8a-44bc-a11b-98d3ebcd3f86" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/sending_files/describe_corr_521106451.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/sending_files/describe_corr_521106451.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/sending_files/describe_plots_521106451.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/sending_files/describe_plots_521106451.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/Пример_для_семинара_описательный_анализ.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/Пример_для_семинара_описательный_анализ.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/Пример_для_семинара_описательный_анализ.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data/Пример_для_семинара_описательный_анализ.xlsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,7 +86,7 @@
       <workItem from="1707458618882" duration="2548000" />
       <workItem from="1708013090638" duration="2000" />
       <workItem from="1710496459441" duration="3043000" />
-      <workItem from="1710500329295" duration="12974000" />
+      <workItem from="1710500329295" duration="22867000" />
     </task>
     <servers />
   </component>
