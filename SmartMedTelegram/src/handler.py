@@ -4,14 +4,11 @@ from describe_analysis.functions_descriptive import (
     handle_describe_correlation_analysis,
     handle_download_describe,
 )
+from dictionary.functions_dictionary import handle_pagination, handle_statistical_term
 from keyboard import keyboard_main_menu, keyboard_in_development
 from functions import (
     get_reply_markup,
     handle_back,
-    handle_download_bioequal,
-    handle_example_bioequal,
-    handle_pagination,
-    handle_statistical_term,
     send_text_message,
 )
 
@@ -36,12 +33,6 @@ def callback_query_handler(bot, call):
 
         elif command.startswith("statistical_term"):
             handle_statistical_term(bot, call)
-
-        elif command == "example_bioequal":
-            handle_example_bioequal(bot, call)
-
-        elif command == "download_bioequal":
-            handle_download_bioequal(bot, call)
 
         elif command == "example_describe":
             handle_example_describe(bot, call)

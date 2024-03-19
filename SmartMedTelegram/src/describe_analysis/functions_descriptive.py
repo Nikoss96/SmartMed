@@ -9,7 +9,7 @@ from describe_analysis.keyboard_descriptive import (
 )
 
 
-from functions import download_file, send_document_from_file
+from functions import save_file, send_document_from_file
 from describe_analysis.describe_mid import display_correlation_matrix, make_plots
 from data.paths import (
     MEDIA_PATH,
@@ -37,7 +37,7 @@ def get_file_for_descriptive_analysis(bot, call):
             response = requests.get(file_url)
 
             if response.status_code == 200:
-                file_name = download_file(response.content, message.document.file_name)
+                file_name = save_file(response.content, message.document.file_name)
                 preprocess_input_file(bot, message, file_name)
 
             else:
