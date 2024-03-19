@@ -1,17 +1,18 @@
-from keyboard import keyboard_main_menu, \
-    keyboard_in_development
+from describe_analysis.functions_descriptive import (
+    handle_example_describe,
+    handle_describe_build_graphs,
+    handle_describe_correlation_analysis,
+    handle_download_describe,
+)
+from keyboard import keyboard_main_menu, keyboard_in_development
 from functions import (
     get_reply_markup,
     handle_back,
     handle_download_bioequal,
-    handle_download_describe,
     handle_example_bioequal,
-    handle_example_describe,
     handle_pagination,
     handle_statistical_term,
     send_text_message,
-    handle_describe_build_graphs,
-    handle_describe_correlation_analysis,
 )
 
 

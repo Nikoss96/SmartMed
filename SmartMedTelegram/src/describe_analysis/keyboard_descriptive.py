@@ -13,11 +13,11 @@ keyboard_describe_analysis.add(
     InlineKeyboardButton(text="Пример файла", callback_data="example_describe")
 )
 keyboard_describe_analysis.add(
-    InlineKeyboardButton(text="Загрузить свой файл",
-                         callback_data="download_describe")
+    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_describe")
 )
 keyboard_describe_analysis.add(
-    InlineKeyboardButton(text="Главное меню", callback_data="back"))
+    InlineKeyboardButton(text="Главное меню", callback_data="back")
+)
 
 keyboard_choice = InlineKeyboardMarkup()
 keyboard_choice.add(
@@ -27,10 +27,7 @@ keyboard_choice.add(
 )
 keyboard_choice.add(
     InlineKeyboardButton(
-        text="Корреляционный анализ",
-        callback_data="describe_correlation_analysis"
+        text="Корреляционный анализ", callback_data="describe_correlation_analysis"
     )
 )
-keyboard_choice.add(
-    InlineKeyboardButton(text="Главное меню", callback_data="back")
-)
+keyboard_choice.add(InlineKeyboardButton(text="Главное меню", callback_data="back"))
