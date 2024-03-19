@@ -97,10 +97,12 @@ def preprocess_input_file(bot, message, file_path):
             df = pd.read_excel(file_path)
 
         if df is not None:
-            df = preprocess_dataframe(df)
+            # df = check_dataframe(df)
 
-            display_correlation_matrix(dataframe=df, chat_id=message.chat.id)
-            make_plots(df=df, chat_id=message.chat.id)
+            # IF BAD FILE -> DELETE
+
+            # display_correlation_matrix(dataframe=df, chat_id=message.chat.id)
+            # make_plots(df=df, chat_id=message.chat.id)
 
             bot.reply_to(
                 message,
@@ -117,7 +119,7 @@ def preprocess_input_file(bot, message, file_path):
         )
 
 
-def preprocess_dataframe(df):
+def check_dataframe(df):
     df.fillna("", inplace=True)
     max_row_length = max(df.apply(lambda x: x.astype(str).map(len)).max())
     return df.apply(lambda x: x.astype(str).map(lambda x: x.ljust(max_row_length)))

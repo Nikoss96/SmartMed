@@ -5,28 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebf72a9a-2b8a-44bc-a11b-98d3ebcd3f86" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/SmartMed.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SmartMed.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/data/keyboard.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/data/keyboard.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/data/paths.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/data/paths.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/bot_dump.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/bot_dump.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/functions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/1123414.xls" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/1123414.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/2.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/edited_image.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/image_2024-02-21_14-57-46.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/АПР ЛР 1 Коленько.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/АПР_ЛР_2_Коленько (1).pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/АПР_ЛР_2_Коленько.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/Описательный_анализ_пример (1).xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/Описательный_анализ_пример.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/Пример_для_семинара_описательный_анализ.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/Пример_для_семинара_описательный_анализ_2.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/параллельный тестовый (1).xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/параллельный тестовый.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/sending_files/describe_corr_521106451.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/sending_files/describe_corr_521106451.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/sending_files/describe_plots_521106451.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/sending_files/describe_plots_521106451.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,29 +50,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.describe_mid.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "develop",
-    "last_opened_file_path": "/Users/askolenko/PycharmProjects/SmartMed",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "actions.on.save",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.bot_dump.executor&quot;: &quot;Run&quot;,
+    &quot;Python.describe_mid.executor&quot;: &quot;Run&quot;,
+    &quot;Python.functions.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/askolenko/PycharmProjects/SmartMed&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/SmartMedTelegram/src" />
       <recent name="$PROJECT_DIR$/SmartMedTelegram/src/media/data/dictionary" />
       <recent name="$PROJECT_DIR$/SmartMedTelegram/src/media/data" />
       <recent name="$PROJECT_DIR$/SmartMedTelegram/src/media/data/describe_analysis" />
       <recent name="$PROJECT_DIR$/SmartMedTelegram/media/data/user_data" />
-      <recent name="$PROJECT_DIR$/SmartMedDemo/media/images/terms" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -116,7 +103,11 @@
       <workItem from="1710496459441" duration="3043000" />
       <workItem from="1710500329295" duration="22867000" />
       <workItem from="1710858153742" duration="191000" />
-      <workItem from="1710858647433" duration="1664000" />
+      <workItem from="1710858647433" duration="3280000" />
+      <workItem from="1710861967885" duration="387000" />
+      <workItem from="1710862362062" duration="209000" />
+      <workItem from="1710862578285" duration="3470000" />
+      <workItem from="1710868237704" duration="237000" />
     </task>
     <servers />
   </component>
@@ -125,5 +116,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/SmartMed$describe_mid.coverage" NAME="describe_mid Coverage Results" MODIFIED="1710508456027" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmartMedTelegram/src" />
+    <SUITE FILE_PATH="coverage/SmartMed$functions.coverage" NAME="functions Coverage Results" MODIFIED="1710867729826" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmartMedTelegram/src/describe_analysis" />
+    <SUITE FILE_PATH="coverage/SmartMed$bot_dump.coverage" NAME="bot_dump Coverage Results" MODIFIED="1710864088555" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmartMedTelegram/src" />
   </component>
 </project>
