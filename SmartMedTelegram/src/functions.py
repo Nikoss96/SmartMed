@@ -1,5 +1,4 @@
 import os
-import sys
 
 import pandas as pd
 import requests
@@ -7,17 +6,13 @@ from requests import RequestException
 from telebot.apihelper import ApiTelegramException
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from data.keyboard import (
-    keyboard00,
-    keyboard01,
-    keyboard_in_development,
-    keyboard_main_menu,
-    keyboard_modules,
-    keyboard_choose_describe,
-)
+from describe_analysis.keyboard import \
+    keyboard_describe_analysis, keyboard_choice
+from keyboard import keyboard_in_development, \
+    keyboard_modules, keyboard_main_menu
 from data.statistical_terms import statistical_terms
 from describe_analysis.describe_mid import display_correlation_matrix, \
-    make_df_plot, make_plots
+    make_plots
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
@@ -37,7 +32,7 @@ def get_reply_markup(command):
     """
     switch = {
         "bioequal": keyboard_in_development,
-        "описательный анализ": keyboard01,
+        "описательный анализ": keyboard_describe_analysis,
         "predict": keyboard_in_development,
         "модули": keyboard_modules,
         "назад": keyboard_main_menu,
@@ -110,8 +105,6 @@ def get_file_for_descriptive_analysis(bot, call):
 
             else:
                 bot.reply_to(message, "Произошла ошибка при загрузке файла")
-                # Prompt user to upload another file
-                bot.reply_to(message, "Пожалуйста, отправьте файл для анализа.")
 
         except ApiTelegramException as e:
             if e.description == "Bad Request: file is too big":
@@ -182,7 +175,7 @@ def preprocess_input_file(bot, message, file_path):
             bot.reply_to(
                 message,
                 f"Файл {message.document.file_name} успешно прочитан.",
-                reply_markup=keyboard_choose_describe,
+                reply_markup=keyboard_choice,
             )
 
     except Exception as e:

@@ -1,6 +1,3 @@
-import os
-import sys
-
 from telebot import TeleBot
 
 from handler import callback_query_handler, start_message_handler, text_handler

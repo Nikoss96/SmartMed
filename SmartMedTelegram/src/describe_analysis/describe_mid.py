@@ -1,11 +1,6 @@
-import os
-import sys
-
 import matplotlib
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
 import seaborn as sns
 
 from data.paths import (

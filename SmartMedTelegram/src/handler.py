@@ -1,3 +1,5 @@
+from keyboard import keyboard_main_menu, \
+    keyboard_in_development
 from functions import (
     get_reply_markup,
     handle_back,
@@ -11,7 +13,6 @@ from functions import (
     handle_describe_build_graphs,
     handle_describe_correlation_analysis,
 )
-from data.keyboard import keyboard_in_development, keyboard_main_menu
 
 
 def callback_query_handler(bot, call):
