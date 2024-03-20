@@ -3,8 +3,10 @@ from describe_analysis.functions_descriptive import (
     handle_describe_build_graphs,
     handle_describe_correlation_analysis,
     handle_download_describe, handle_downloaded_describe_file,
+    handle_describe_table,
 )
-from dictionary.functions_dictionary import handle_pagination, handle_statistical_term
+from dictionary.functions_dictionary import handle_pagination_dictionary, \
+    handle_statistical_term
 from keyboard import keyboard_main_menu, keyboard_in_development
 from functions import (
     get_reply_markup,
@@ -29,7 +31,7 @@ def callback_query_handler(bot, call):
         print(f"User {username} in {user_id} chat asked for {command}")
 
         if command.startswith("prev_") or command.startswith("next_"):
-            handle_pagination(bot, call)
+            handle_pagination_dictionary(bot, call)
 
         elif command.startswith("statistical_term"):
             handle_statistical_term(bot, call)
@@ -49,7 +51,11 @@ def callback_query_handler(bot, call):
         elif command == "describe_correlation_analysis":
             handle_describe_correlation_analysis(bot, call)
 
-        elif command in ["replace_null_with_mean", "delete_null_rows_dropna", "replace_null_with_median"]:
+        elif command == "describe_table":
+            handle_describe_table(bot, call)
+
+        elif command in ["replace_null_with_mean", "delete_null_rows_dropna",
+                         "replace_null_with_median"]:
             handle_downloaded_describe_file(bot, call, command)
 
     except Exception as e:
@@ -66,19 +72,13 @@ def start_message_handler(bot, message):
 
         print(f"User {user} in {chat_id} chat started the bot!")
 
-        greeting_text = "Доброго дня!"
-        welcome_text = "Рады приветствовать вас в Smart-Медицине!"
-        functionality_text = (
-            "Вам доступен следующий функционал: \n"
-            "- Модули анализа данных\n"
-            "- Словарь терминов"
-        )
+        greeting_text = ("Доброго дня!\n\nРады приветствовать вас "
+                         "в Smart-Медицине!\n\nВам доступен следующий "
+                         "функционал: \n- Модули анализа данных\n"
+                         "- Словарь терминов")
 
-        send_text_message(bot, chat_id, greeting_text)
-        send_text_message(bot, chat_id, welcome_text)
-        send_text_message(
-            bot, chat_id, functionality_text, reply_markup=keyboard_main_menu
-        )
+        send_text_message(bot, chat_id, greeting_text,
+                          reply_markup=keyboard_main_menu)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")

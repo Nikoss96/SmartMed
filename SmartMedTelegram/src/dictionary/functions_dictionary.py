@@ -46,7 +46,7 @@ def generate_dictionary_keyboard(page):
     return keyboard_terms
 
 
-def handle_pagination(bot, call):
+def handle_pagination_dictionary(bot, call):
     """
     Обработка нажатия кнопок "Prev" и "Next" для пагинации терминов.
 

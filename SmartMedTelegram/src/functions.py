@@ -4,11 +4,12 @@ from describe_analysis.keyboard_descriptive import (
     keyboard_describe_analysis,
 )
 from dictionary.functions_dictionary import generate_dictionary_keyboard
-from keyboard import keyboard_in_development, keyboard_modules, keyboard_main_menu
+from keyboard import keyboard_in_development, keyboard_modules, \
+    keyboard_main_menu
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
-    USER_DATA_PATH,
+    USER_DATA_PATH, DESCRIBE_ANALYSIS, DESCRIBE_TABLES,
 )
 
 "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
@@ -40,7 +41,7 @@ def send_text_message(bot, chat_id, text, reply_markup=None):
 
 
 def save_file(file_content, file_name, chat_id):
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{chat_id}_{file_name}"
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{chat_id}_{file_name}"
     with open(file_path, "wb") as file:
         file.write(file_content)
     return file_path

@@ -7,10 +7,6 @@ import numpy as np
 from sklearn import preprocessing
 
 
-class ExtentionFileException(Exception):
-    pass
-
-
 class PandasPreprocessor:
     def __init__(self, settings: Dict):
         self.settings = settings
@@ -18,6 +14,7 @@ class PandasPreprocessor:
         self.numerics_list = ['int16', 'int32', 'int', 'float', 'bool',
                               'int64', 'float16', 'float32', 'float64']
         self.preprocess()
+
     def __read_file(self):
         ext = pathlib.Path(self.settings['path']).suffix
 
@@ -29,40 +26,41 @@ class PandasPreprocessor:
         elif ext == '.tsv':
             self.df = pd.read_table(self.settings['path'], sep=';')
 
-        else:
-            raise ExtentionFileException
-
         self.df.columns = self.df.columns.astype('str')
-
 
     def preprocess(self):
         self.fillna()
         self.encoding()
-        # self.scale()
 
     def fillna(self):
         value = self.settings['fillna']
+
         if value == 'mean':
+
             for col in self.df.columns:
-                print(self.df[col].dtype)
                 if self.df[col].dtype in self.numerics_list:
-                    print('Предобработка')
                     self.df[col] = self.df[col].fillna(self.df[col].mean())
+
                 else:
                     self.df[col] = self.df[col].fillna(
                         self.df[col].mode().values[0])
+
         elif value == 'median':
+
             for col in self.df.columns:
                 if self.df[col].dtype in self.numerics_list:
                     self.df[col] = self.df[col].fillna(self.df[col].median())
+
                 else:
                     self.df[col] = self.df[col].fillna(
                         self.df[col].mode().values[0])
-        elif value == 'droprows':
+
+        elif value == 'dropna':
             self.df = self.df.dropna()
 
     def encoding(self):
         method = self.settings['encoding']
+
         if method == 'label_encoding':
             transformer = preprocessing.LabelEncoder()
 
@@ -71,25 +69,5 @@ class PandasPreprocessor:
             self.df[column] = transformer.transform(
                 self.df[column].astype(str).values)
 
-    # def scale(self):
-    #     method = self.settings['preprocessing']['scaling']
-    #     if method:
-    #         scaler = preprocessing.StandardScaler()
-    #         scaler.fit(self.df)
-    #         self.df = scaler.transform(self.df)
-    #     else:
-    #         pass
-
     def get_numeric_df(self, df):
         return df.select_dtypes(include=self.numerics_list)
-
-    def get_categorical_df(self, df):
-        return df.select_dtypes(exclude=self.numerics_list)
-
-
-
-
-
-
-
-
