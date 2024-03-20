@@ -6,8 +6,15 @@ from matplotlib import pyplot as plt
 
 from scipy.stats import variation
 
-from data.paths import USER_DATA_PATH, DATA_PATH, MEDIA_PATH, DESCRIBE_ANALYSIS, \
-    DESCRIBE_TABLES, CORRELATION_MATRICES, PLOTS
+from data.paths import (
+    USER_DATA_PATH,
+    DATA_PATH,
+    MEDIA_PATH,
+    DESCRIBE_ANALYSIS,
+    DESCRIBE_TABLES,
+    CORRELATION_MATRICES,
+    PLOTS,
+)
 
 use("agg")
 
@@ -22,70 +29,73 @@ class DescribeModule:
         self.make_plots()
 
     def _generate_table(self):
-
-        metrics = ['count', 'mean', 'std', 'max', 'min', '25%', '50%',
-                   '75%']
+        metrics = ["count", "mean", "std", "max", "min", "25%", "50%", "75%"]
 
         df = self.preprocessor.get_numeric_df(self.preprocessor.df)
         init_df = df
 
         df = df.describe().reset_index()
-        df = df[df['index'].isin(metrics)]
+        df = df[df["index"].isin(metrics)]
         df = df.rename(columns={"index": "Метрики"})
 
         cols = df.columns
         init_describe_length = len(df)
 
         for col in init_df.columns:
-            df.loc[init_describe_length, col] = np.exp(
-                np.log(init_df[col]).mean())
+            df.loc[init_describe_length, col] = np.exp(np.log(init_df[col]).mean())
             df.loc[init_describe_length + 1, col] = variation(init_df[col])
 
-        df.loc[init_describe_length, 'Метрики'] = 'geom_mean'
-        df.loc[init_describe_length + 1, 'Метрики'] = 'variation'
+        df.loc[init_describe_length, "Метрики"] = "geom_mean"
+        df.loc[init_describe_length + 1, "Метрики"] = "variation"
 
         for j in range(1, len(cols)):
             for i in range(len(df)):
-                df.iloc[i, j] = float('{:.3f}'.format(float(df.iloc[i, j])))
+                df.iloc[i, j] = float("{:.3f}".format(float(df.iloc[i, j])))
 
         self.table_df = df
 
     def save_table_file(self):
-        self.table_df.loc[self.table_df[
-                              'Метрики'] == 'count', 'Метрики'] = 'Количество наблюдений'
         self.table_df.loc[
-            self.table_df['Метрики'] == 'mean', 'Метрики'] = 'Среднее значение'
-        self.table_df.loc[self.table_df[
-                              'Метрики'] == 'std', 'Метрики'] = 'Стандартное отклонение'
+            self.table_df["Метрики"] == "count", "Метрики"
+        ] = "Количество наблюдений"
         self.table_df.loc[
-            self.table_df['Метрики'] == 'max', 'Метрики'] = 'Максимум'
+            self.table_df["Метрики"] == "mean", "Метрики"
+        ] = "Среднее значение"
         self.table_df.loc[
-            self.table_df['Метрики'] == 'min', 'Метрики'] = 'Минимум'
+            self.table_df["Метрики"] == "std", "Метрики"
+        ] = "Стандартное отклонение"
+        self.table_df.loc[self.table_df["Метрики"] == "max", "Метрики"] = "Максимум"
+        self.table_df.loc[self.table_df["Метрики"] == "min", "Метрики"] = "Минимум"
         self.table_df.loc[
-            self.table_df['Метрики'] == '25%', 'Метрики'] = '1-ый квартиль'
+            self.table_df["Метрики"] == "25%", "Метрики"
+        ] = "1-ый квартиль"
         self.table_df.loc[
-            self.table_df['Метрики'] == '50%', 'Метрики'] = '2-ой квартиль'
+            self.table_df["Метрики"] == "50%", "Метрики"
+        ] = "2-ой квартиль"
         self.table_df.loc[
-            self.table_df['Метрики'] == '75%', 'Метрики'] = '3-ий квартиль'
+            self.table_df["Метрики"] == "75%", "Метрики"
+        ] = "3-ий квартиль"
         self.table_df.loc[
-            self.table_df[
-                'Метрики'] == 'geom_mean', 'Метрики'] = 'Среднее геометрическое'
+            self.table_df["Метрики"] == "geom_mean", "Метрики"
+        ] = "Среднее геометрическое"
         self.table_df.loc[
-            self.table_df['Метрики'] == 'variation', 'Метрики'] = 'Разброс'
+            self.table_df["Метрики"] == "variation", "Метрики"
+        ] = "Разброс"
 
         self.table_file = self.table_df.to_excel(
             f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{DESCRIBE_TABLES}/{self.chat_id}_describe_table.xlsx",
-            index=False)
+            index=False,
+        )
 
     def create_correlation_matrices(
-            self,
-            sharey=False,
-            annot=True,
-            Pearson=True,
-            Spearman=True,
-            title="",
-            cmap=sns.color_palette("viridis", as_cmap=True),
-            fmt=".2f",
+        self,
+        sharey=False,
+        annot=True,
+        Pearson=True,
+        Spearman=True,
+        title="",
+        cmap=sns.color_palette("viridis", as_cmap=True),
+        fmt=".2f",
     ):
         FIG_WIDTH = 16
         FIG_HEIGHT = 14
@@ -97,8 +107,7 @@ class DescribeModule:
         ncols = Spearman + Pearson
 
         f, axes = plt.subplots(
-            nrows=1, ncols=ncols, sharey=sharey,
-            figsize=(FIG_WIDTH * ncols, FIG_HEIGHT)
+            nrows=1, ncols=ncols, sharey=sharey, figsize=(FIG_WIDTH * ncols, FIG_HEIGHT)
         )
 
         pltP = None
@@ -164,15 +173,13 @@ class DescribeModule:
         )
 
     def make_plots(self):
-
         df = self.preprocessor.df
         chat_id = self.chat_id
 
         num_cols = len(df.columns)
         num_rows = (num_cols + 3) // 4
 
-        fig, axs = plt.subplots(nrows=num_rows, ncols=4,
-                                figsize=(20, num_rows * 5))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=4, figsize=(20, num_rows * 5))
         axs = axs.flatten()
 
         counter = 0

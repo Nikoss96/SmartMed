@@ -4,12 +4,13 @@ from describe_analysis.keyboard_descriptive import (
     keyboard_describe_analysis,
 )
 from dictionary.functions_dictionary import generate_dictionary_keyboard
-from keyboard import keyboard_in_development, keyboard_modules, \
-    keyboard_main_menu
+from keyboard import keyboard_in_development, keyboard_modules, keyboard_main_menu
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
-    USER_DATA_PATH, DESCRIBE_ANALYSIS, DESCRIBE_TABLES,
+    USER_DATA_PATH,
+    DESCRIBE_ANALYSIS,
+    DESCRIBE_TABLES,
 )
 
 "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"

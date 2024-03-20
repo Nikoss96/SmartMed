@@ -7,7 +7,8 @@ from telebot.apihelper import ApiTelegramException
 
 from describe_analysis.DescribeModule import DescribeModule
 from describe_analysis.keyboard_descriptive import (
-    keyboard_replace_null_values, keyboard_choice,
+    keyboard_replace_null_values,
+    keyboard_choice,
 )
 from describe_analysis.utils.preprocessing import PandasPreprocessor
 
@@ -16,7 +17,10 @@ from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
     USER_DATA_PATH,
-    DESCRIBE_ANALYSIS, DESCRIBE_TABLES, CORRELATION_MATRICES, PLOTS,
+    DESCRIBE_ANALYSIS,
+    DESCRIBE_TABLES,
+    CORRELATION_MATRICES,
+    PLOTS,
 )
 
 test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
@@ -52,12 +56,12 @@ def handle_download_describe(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Пришлите ваш файл.\n\n"
-             "Файл должен иметь следующие характеристики:\n"
-             "\n1.  Формат файла: .csv, .xlsx или .xls"
-             "\n2.  Размер файла: до 20 Мегабайт"
-             "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
-             "\n4.  Содержимое файла: Название каждого столбца "
-             "должно быть читаемым.",
+        "Файл должен иметь следующие характеристики:\n"
+        "\n1.  Формат файла: .csv, .xlsx или .xls"
+        "\n2.  Размер файла: до 20 Мегабайт"
+        "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
+        "\n4.  Содержимое файла: Название каждого столбца "
+        "должно быть читаемым.",
     )
     get_file_for_descriptive_analysis(bot)
 
@@ -77,9 +81,9 @@ def get_file_for_descriptive_analysis(bot):
             response = requests.get(file_url)
 
             if response.status_code == 200:
-                file_name = save_file(response.content,
-                                      message.document.file_name,
-                                      message.chat.id)
+                file_name = save_file(
+                    response.content, message.document.file_name, message.chat.id
+                )
                 check_input_file_descriptive(bot, message, file_name)
 
             else:
@@ -146,7 +150,6 @@ def check_input_file_descriptive(bot, message, file_path):
             df = pd.read_excel(file_path)
 
         if df is not None:
-
             bot.reply_to(
                 message,
                 f"Файл {message.document.file_name} успешно прочитан."
@@ -158,12 +161,11 @@ def check_input_file_descriptive(bot, message, file_path):
             bot.reply_to(
                 message,
                 "Ваш файл не подходит. Прочитайте требования к столбцам, "
-                "измените данные и попробуйте еще раз."
+                "измените данные и попробуйте еще раз.",
             )
             if os.path.exists(file_path):
                 os.remove(file_path)
             return
-
 
     except Exception as e:
         print(f"Error preprocessing file: {e}")
@@ -184,16 +186,17 @@ def handle_downloaded_describe_file(bot, call, command):
     directory = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}"
     files_in_directory = os.listdir(directory)
 
-    file_name = [file for file in files_in_directory if
-                 file.startswith(f"{call.from_user.id}")]
+    file_name = [
+        file for file in files_in_directory if file.startswith(f"{call.from_user.id}")
+    ]
 
     # Формируем настройки для корректной предобработки данных
     path = f"{directory}/{file_name[0]}"
     command = command.split("_")
     settings = {}
-    settings['path'] = path
-    settings['fillna'] = command[3]
-    settings['encoding'] = "label_encoding"
+    settings["path"] = path
+    settings["fillna"] = command[3]
+    settings["encoding"] = "label_encoding"
 
     preprocessor = PandasPreprocessor(settings)
 
@@ -202,8 +205,8 @@ def handle_downloaded_describe_file(bot, call, command):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Выберите функционал описательного анализа,"
-             " который хотите получить по своим данным",
-        reply_markup=keyboard_choice
+        " который хотите получить по своим данным",
+        reply_markup=keyboard_choice,
     )
 
     if os.path.isfile(path):
@@ -242,8 +245,11 @@ def send_describe_table_file(bot, chat_id):
 
     if os.path.isfile(file_path):
         file = open(file_path, "rb")
-        bot.send_document(chat_id=chat_id, document=file,
-                          visible_file_name="Описательная_таблица.xlsx")
+        bot.send_document(
+            chat_id=chat_id,
+            document=file,
+            visible_file_name="Описательная_таблица.xlsx",
+        )
         os.remove(file_path)
 
 
@@ -255,8 +261,8 @@ def handle_describe_build_graphs(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="По каждому параметру приложенных "
-             "Вами данных была построена гистограмма. "
-             "Результаты представлены на дашборде.",
+        "Вами данных была построена гистограмма. "
+        "Результаты представлены на дашборде.",
     )
     send_describe_plots_file(bot, call.from_user.id)
 
@@ -269,8 +275,8 @@ def handle_describe_correlation_analysis(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="На основе Ваших данных были построены матрицы корреляций"
-             " с помощью коэффициентов корреляции Пирсона и Спирмена. "
-             "Результаты представлены на дашборде.",
+        " с помощью коэффициентов корреляции Пирсона и Спирмена. "
+        "Результаты представлены на дашборде.",
     )
     send_correlation_file(bot, call.from_user.id)
 
@@ -283,7 +289,7 @@ def handle_describe_table(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="На основе Ваших данных была составлена описательная таблица"
-             " с вычисленными основными описательными характеристиками. "
-             "Результаты отправлены в качестве Excel файла.",
+        " с вычисленными основными описательными характеристиками. "
+        "Результаты отправлены в качестве Excel файла.",
     )
     send_describe_table_file(bot, call.from_user.id)
