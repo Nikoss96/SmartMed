@@ -39,8 +39,8 @@ def send_text_message(bot, chat_id, text, reply_markup=None):
     bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
 
 
-def save_file(file_content, file_name):
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{file_name}"
+def save_file(file_content, file_name, chat_id):
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{chat_id}_{file_name}"
     with open(file_path, "wb") as file:
         file.write(file_content)
     return file_path

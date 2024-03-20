@@ -4,10 +4,12 @@ import pandas as pd
 import requests
 from requests import RequestException
 from telebot.apihelper import ApiTelegramException
-from describe_analysis.keyboard_descriptive import (
-    keyboard_choice,
-)
 
+from describe_analysis.generate_describe_table import DescribeTable
+from describe_analysis.keyboard_descriptive import (
+    keyboard_replace_null_values,
+)
+from describe_analysis.preprocessing import PandasPreprocessor
 
 from functions import save_file, send_document_from_file
 from describe_analysis.describe_mid import display_correlation_matrix, make_plots
@@ -37,7 +39,7 @@ def get_file_for_descriptive_analysis(bot, call):
             response = requests.get(file_url)
 
             if response.status_code == 200:
-                file_name = save_file(response.content, message.document.file_name)
+                file_name = save_file(response.content, message.document.file_name, message.chat.id)
                 preprocess_input_file(bot, message, file_name)
 
             else:
@@ -75,6 +77,7 @@ def preprocess_input_file(bot, message, file_path):
                 "Файл должен иметь формат .csv, "
                 ".xlsx или .xls",
             )
+            os.remove(file_path)
             return
 
         file_size = os.path.getsize(file_path)
@@ -106,8 +109,9 @@ def preprocess_input_file(bot, message, file_path):
 
             bot.reply_to(
                 message,
-                f"Файл {message.document.file_name} успешно прочитан.",
-                reply_markup=keyboard_choice,
+                f"Файл {message.document.file_name} успешно прочитан."
+                f" Выберите способ замены пустых ячеек в ваших данных:",
+                reply_markup=keyboard_replace_null_values,
             )
 
     except Exception as e:
@@ -119,10 +123,31 @@ def preprocess_input_file(bot, message, file_path):
         )
 
 
-def check_dataframe(df):
-    df.fillna("", inplace=True)
-    max_row_length = max(df.apply(lambda x: x.astype(str).map(len)).max())
-    return df.apply(lambda x: x.astype(str).map(lambda x: x.ljust(max_row_length)))
+def handle_downloaded_describe_file(bot, call, command):
+    directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}"
+    files_in_directory = os.listdir(directory)
+
+    file_name = [file for file in files_in_directory if
+                      file.startswith(f"{call.from_user.id}")]
+
+    command = command.split("_")
+    settings = {}
+    settings['path'] = f"{directory}/{file_name[0]}"
+    settings['fillna'] = command[3]
+    settings['encoding'] = "label_encoding"
+
+    preprocessor = PandasPreprocessor(settings)
+
+    DescribeTable(preprocessor)
+
+    # display_correlation_matrix(dataframe=df, chat_id=message.chat.id)
+    # make_plots(df=df, chat_id=message.chat.id)
+
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/data.xlsx"
+
+    if os.path.isfile(file_path):
+        file = open(file_path, "rb")
+        bot.send_document(chat_id=call.from_user.id, document=file)
 
 
 def send_correlation_file(bot, chat_id):

@@ -2,7 +2,7 @@ from describe_analysis.functions_descriptive import (
     handle_example_describe,
     handle_describe_build_graphs,
     handle_describe_correlation_analysis,
-    handle_download_describe,
+    handle_download_describe, handle_downloaded_describe_file,
 )
 from dictionary.functions_dictionary import handle_pagination, handle_statistical_term
 from keyboard import keyboard_main_menu, keyboard_in_development
@@ -48,6 +48,9 @@ def callback_query_handler(bot, call):
 
         elif command == "describe_correlation_analysis":
             handle_describe_correlation_analysis(bot, call)
+
+        elif command in ["replace_null_with_mean", "delete_null_rows_dropna", "replace_null_with_median"]:
+            handle_downloaded_describe_file(bot, call, command)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")

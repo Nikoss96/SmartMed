@@ -31,3 +31,23 @@ keyboard_choice.add(
     )
 )
 keyboard_choice.add(InlineKeyboardButton(text="Главное меню", callback_data="back"))
+
+keyboard_replace_null_values = InlineKeyboardMarkup()
+
+keyboard_replace_null_values.add(
+    InlineKeyboardButton(
+        text="Средним/модой", callback_data="replace_null_with_mean"
+    )
+)
+
+keyboard_replace_null_values.add(
+    InlineKeyboardButton(
+        text="Удалять строки с пропущенными значениями", callback_data="delete_null_rows_dropna"
+    )
+)
+
+keyboard_replace_null_values.add(
+    InlineKeyboardButton(
+        text="Медианой/модой", callback_data="replace_null_with_median"
+    )
+)
