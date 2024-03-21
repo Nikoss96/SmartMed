@@ -14,8 +14,8 @@ def generate_dictionary_keyboard(page):
     words_per_page = 4
 
     for term_key in list(statistical_terms.keys())[
-        page * words_per_page : (page + 1) * words_per_page
-    ]:
+                    page * words_per_page: (page + 1) * words_per_page
+                    ]:
         term_description = statistical_terms[term_key][0]
         button = InlineKeyboardButton(
             term_description, callback_data=f"statistical_{term_key}"
@@ -63,7 +63,7 @@ def handle_pagination_dictionary(bot, call):
     bot.edit_message_text(
         chat_id=call.message.chat.id,
         message_id=call.message.message_id,
-        text="Выберите интересующий вас термин:",
+        text="Выберите интересующий Вас термин:",
         reply_markup=generate_dictionary_keyboard(page),
     )
 

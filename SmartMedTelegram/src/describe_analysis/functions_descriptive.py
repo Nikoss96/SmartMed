@@ -36,7 +36,7 @@ def handle_example_describe(bot, call):
     """
     bot.answer_callback_query(
         callback_query_id=call.id,
-        text="Прислали вам пример файла. Оформляйте в точности так.",
+        text="Прислали пример файла. Оформляйте в точности так.",
     )
     send_document_from_file(
         bot,
@@ -55,13 +55,13 @@ def handle_download_describe(bot, call):
     """
     bot.send_message(
         chat_id=call.from_user.id,
-        text="Пришлите ваш файл.\n\n"
-        "Файл должен иметь следующие характеристики:\n"
-        "\n1.  Формат файла: .csv, .xlsx или .xls"
-        "\n2.  Размер файла: до 20 Мегабайт"
-        "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
-        "\n4.  Содержимое файла: Название каждого столбца "
-        "должно быть читаемым.",
+        text="Пришлите Ваш файл.\n\n"
+             "Файл должен иметь следующие характеристики:\n"
+             "\n1.  Формат файла: .csv, .xlsx или .xls"
+             "\n2.  Размер файла: до 20 Мегабайт"
+             "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
+             "\n4.  Содержимое файла: Название каждого столбца "
+             "должно быть читаемым.",
     )
     get_file_for_descriptive_analysis(bot)
 
@@ -82,7 +82,8 @@ def get_file_for_descriptive_analysis(bot):
 
             if response.status_code == 200:
                 file_name = save_file(
-                    response.content, message.document.file_name, message.chat.id
+                    response.content, message.document.file_name,
+                    message.chat.id
                 )
                 check_input_file_descriptive(bot, message, file_name)
 
@@ -153,7 +154,7 @@ def check_input_file_descriptive(bot, message, file_path):
             bot.reply_to(
                 message,
                 f"Файл {message.document.file_name} успешно прочитан."
-                f" Выберите способ замены пустых ячеек в ваших данных:",
+                f" Выберите способ замены пустых ячеек в Ваших данных:",
                 reply_markup=keyboard_replace_null_values,
             )
 
@@ -173,7 +174,7 @@ def check_input_file_descriptive(bot, message, file_path):
             os.remove(file_path)
         bot.reply_to(
             message,
-            "Ошибка в чтении вашего файла. "
+            "Ошибка в чтении Вашего файла. "
             "Попробуйте еще раз или пришлите новый файл",
         )
 
@@ -187,7 +188,8 @@ def handle_downloaded_describe_file(bot, call, command):
     files_in_directory = os.listdir(directory)
 
     file_name = [
-        file for file in files_in_directory if file.startswith(f"{call.from_user.id}")
+        file for file in files_in_directory if
+        file.startswith(f"{call.from_user.id}")
     ]
 
     # Формируем настройки для корректной предобработки данных
@@ -204,8 +206,8 @@ def handle_downloaded_describe_file(bot, call, command):
 
     bot.send_message(
         chat_id=call.from_user.id,
-        text="Выберите функционал описательного анализа,"
-        " который хотите получить по своим данным",
+        text="Выберите элемент описательного анализа,"
+             " который хотите рассчитать по своим данным",
         reply_markup=keyboard_choice,
     )
 
@@ -261,8 +263,8 @@ def handle_describe_build_graphs(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="По каждому параметру приложенных "
-        "Вами данных была построена гистограмма. "
-        "Результаты представлены на дашборде.",
+             "Вами данных была построена гистограмма. "
+             "Результаты представлены на дашборде.",
     )
     send_describe_plots_file(bot, call.from_user.id)
 
@@ -275,8 +277,8 @@ def handle_describe_correlation_analysis(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="На основе Ваших данных были построены матрицы корреляций"
-        " с помощью коэффициентов корреляции Пирсона и Спирмена. "
-        "Результаты представлены на дашборде.",
+             " с помощью коэффициентов корреляции Пирсона и Спирмена. "
+             "Результаты представлены на дашборде.",
     )
     send_correlation_file(bot, call.from_user.id)
 
@@ -289,7 +291,7 @@ def handle_describe_table(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="На основе Ваших данных была составлена описательная таблица"
-        " с вычисленными основными описательными характеристиками. "
-        "Результаты отправлены в качестве Excel файла.",
+             " с вычисленными основными описательными характеристиками. "
+             "Результаты отправлены в качестве Excel файла.",
     )
     send_describe_table_file(bot, call.from_user.id)

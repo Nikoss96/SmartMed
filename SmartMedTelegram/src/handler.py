@@ -79,13 +79,14 @@ def start_message_handler(bot, message):
         print(f"User {user} in {chat_id} chat started the bot!")
 
         greeting_text = (
-            "Доброго дня!\n\nРады приветствовать вас "
-            "в Smart-Медицине!\n\nВам доступен следующий "
+            "Доброго дня!\n\nРады приветствовать Вас "
+            "в приложении Smart-Медицина!\n\nВам доступен следующий "
             "функционал: \n- Модули анализа данных\n"
             "- Словарь терминов"
         )
 
-        send_text_message(bot, chat_id, greeting_text, reply_markup=keyboard_main_menu)
+        send_text_message(bot, chat_id, greeting_text,
+                          reply_markup=keyboard_main_menu)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")
@@ -124,14 +125,15 @@ def text_handler(bot, message):
             send_text_message(
                 bot,
                 chat_id=message.chat.id,
-                text="Выберите интересующий вас модуль:",
+                text="Выберите интересующий Вас модуль:",
                 reply_markup=reply_markup,
             )
         else:
             send_text_message(
                 bot,
                 chat_id=message.chat.id,
-                text="Выберите интересующий вас термин:",
+                text="Пожалуйста, выберите "
+                     "существующий раздел с помощью клавиатуры:",
                 reply_markup=reply_markup,
             )
     except Exception as e:

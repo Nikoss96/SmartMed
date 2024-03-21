@@ -4,7 +4,8 @@ from describe_analysis.keyboard_descriptive import (
     keyboard_describe_analysis,
 )
 from dictionary.functions_dictionary import generate_dictionary_keyboard
-from keyboard import keyboard_in_development, keyboard_modules, keyboard_main_menu
+from keyboard import keyboard_in_development, keyboard_modules, \
+    keyboard_main_menu
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
@@ -28,7 +29,6 @@ def get_reply_markup(command):
         "модули": keyboard_modules,
         "назад": keyboard_main_menu,
         "словарь": generate_dictionary_keyboard(0),
-        "chat-gpt": keyboard_in_development,
         "cluster": keyboard_in_development,
     }
     return switch.get(command, None)
@@ -58,7 +58,7 @@ def handle_back(bot, user_id):
     """
     bot.send_message(
         chat_id=user_id,
-        text="Выберите интересующий вас раздел:",
+        text="Выберите интересующий Вас раздел:",
         reply_markup=keyboard_main_menu,
     )
 
