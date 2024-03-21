@@ -215,18 +215,6 @@ def handle_downloaded_describe_file(bot, call, command):
         os.remove(path)
 
 
-def send_correlation_file(bot, chat_id):
-    """
-    Открытие и отправка картинки рассчитанного корреляционного анализа.
-    """
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{CORRELATION_MATRICES}/describe_corr_{chat_id}.png"
-
-    if os.path.isfile(file_path):
-        file_cur = open(file_path, "rb")
-        bot.send_photo(chat_id=chat_id, photo=file_cur)
-        os.remove(file_path)
-
-
 def send_describe_plots_file(bot, chat_id):
     """
     Открытие и отправка гистограмм из датафрейма описательного анализа.
@@ -239,34 +227,25 @@ def send_describe_plots_file(bot, chat_id):
         os.remove(file_path)
 
 
-def send_describe_table_file(bot, chat_id):
-    """
-    Открытие и отправка файла описательной таблицы.
-    """
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{DESCRIBE_TABLES}/{chat_id}_describe_table.xlsx"
-
-    if os.path.isfile(file_path):
-        file = open(file_path, "rb")
-        bot.send_document(
-            chat_id=chat_id,
-            document=file,
-            visible_file_name="Описательная_таблица.xlsx",
-        )
-        os.remove(file_path)
-
-
 def handle_describe_build_graphs(bot, call):
     """
     Обработка при нажатии на "Построение графиков"
     после прочтения файла описательного анализа.
     """
-    bot.send_message(
-        chat_id=call.from_user.id,
-        text="По каждому параметру приложенных "
-             "Вами данных была построена гистограмма. "
-             "Результаты представлены на дашборде.",
-    )
-    send_describe_plots_file(bot, call.from_user.id)
+    chat_id = call.from_user.id
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{PLOTS}/describe_plots_{chat_id}.png"
+
+    if os.path.isfile(file_path):
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="По каждому параметру приложенных "
+                 "Вами данных была построена гистограмма. "
+                 "Результаты представлены на дашборде.",
+        )
+
+        file_cur = open(file_path, "rb")
+        bot.send_photo(chat_id=chat_id, photo=file_cur)
+        os.remove(file_path)
 
 
 def handle_describe_correlation_analysis(bot, call):
@@ -274,13 +253,22 @@ def handle_describe_correlation_analysis(bot, call):
     Обработка при нажатии на "Корреляционный анализ"
     после прочтения файла описательного анализа.
     """
-    bot.send_message(
-        chat_id=call.from_user.id,
-        text="На основе Ваших данных были построены матрицы корреляций"
-             " с помощью коэффициентов корреляции Пирсона и Спирмена. "
-             "Результаты представлены на дашборде.",
-    )
-    send_correlation_file(bot, call.from_user.id)
+
+    chat_id = call.from_user.id
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{CORRELATION_MATRICES}/describe_corr_{chat_id}.png"
+
+    if os.path.isfile(file_path):
+        file_cur = open(file_path, "rb")
+
+        bot.send_message(
+            chat_id=chat_id,
+            text="На основе Ваших данных были построены матрицы корреляций"
+                 " с помощью коэффициентов корреляции Пирсона и Спирмена. "
+                 "Результаты представлены на дашборде.",
+        )
+
+        bot.send_photo(chat_id=chat_id, photo=file_cur)
+        os.remove(file_path)
 
 
 def handle_describe_table(bot, call):
@@ -288,10 +276,23 @@ def handle_describe_table(bot, call):
     Обработка при нажатии на "Описательная таблица"
     после прочтения файла описательного анализа.
     """
-    bot.send_message(
-        chat_id=call.from_user.id,
-        text="На основе Ваших данных была составлена описательная таблица"
-             " с вычисленными основными описательными характеристиками. "
-             "Результаты отправлены в качестве Excel файла.",
-    )
-    send_describe_table_file(bot, call.from_user.id)
+    chat_id = call.from_user.id
+
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{DESCRIBE_TABLES}/{chat_id}_describe_table.xlsx"
+
+    if os.path.isfile(file_path):
+        file = open(file_path, "rb")
+
+        bot.send_message(
+            chat_id=chat_id,
+            text="На основе Ваших данных была составлена описательная таблица"
+                 " с вычисленными основными описательными характеристиками. "
+                 "Результаты отправлены в качестве Excel файла.",
+        )
+
+        bot.send_document(
+            chat_id=chat_id,
+            document=file,
+            visible_file_name="Описательная_таблица.xlsx",
+        )
+        os.remove(file_path)
