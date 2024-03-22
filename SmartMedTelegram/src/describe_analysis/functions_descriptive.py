@@ -5,6 +5,11 @@ import pandas as pd
 import requests
 from requests import RequestException
 from telebot.apihelper import ApiTelegramException
+from telebot.types import (
+    ReplyKeyboardMarkup,
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+)
 
 from describe_analysis.DescribeModule import DescribeModule
 from describe_analysis.keyboard_descriptive import (
@@ -329,3 +334,143 @@ def handle_describe_table(bot, call):
             document=file,
             visible_file_name="Описательная_таблица.xlsx",
         )
+
+
+def handle_describe_box_plot(bot, call):
+    """
+    Обработка при нажатии на "Ящик с усами"
+    после прочтения файла описательного анализа.
+    """
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        call.from_user.id,
+    )
+
+    send_column_selection_message(bot, call.from_user.id, df)
+
+
+def send_column_selection_message(bot, user_id, df):
+    """
+    Отправляет сообщение для выбора столбца для построения ящика с усами.
+
+    Parameters:
+        bot (telegram.Bot): Объект бота.
+        user_id (int): ID пользователя.
+        df (pandas.DataFrame): DataFrame с данными.
+
+    Returns:
+        None
+    """
+    columns = df.columns.tolist()
+    keyboard = generate_column_keyboard(columns, 0)
+
+    bot.send_message(
+        chat_id=user_id,
+        text="Выберите столбец для построения ящика с усами:",
+        reply_markup=keyboard,
+    )
+
+
+def handle_pagination_columns(bot, call) -> None:
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        call.from_user.id,
+    )
+
+    columns = df.columns.tolist()
+
+    data = call.data.split("_") if "_" in call.data else (call.data, 0)
+    _, action, page = data[0], data[1], int(data[2])
+
+    if action == "prev":
+        page -= 1
+
+    edit_column_selection_message(
+        bot, call.message.chat.id, call.message.message_id, columns, page
+    )
+
+
+def edit_column_selection_message(bot, chat_id, message_id, columns, page):
+    """
+    Редактирует сообщение для выбора столбца для построения ящика с усами.
+
+    Parameters:
+        bot (telegram.Bot): Объект бота.
+        chat_id (int): ID чата.
+        message_id (int): ID сообщения.
+        columns (list): Список названий колонок.
+        page (int): Номер страницы.
+
+    Returns:
+        None
+    """
+    keyboard = generate_column_keyboard(columns, page)
+
+    bot.edit_message_text(
+        chat_id=chat_id,
+        message_id=message_id,
+        text="Выберите столбец для построения ящика с усами:",
+        reply_markup=keyboard,
+    )
+
+
+def generate_column_keyboard(columns: list, page: int) -> InlineKeyboardMarkup:
+    """
+    Создает клавиатуру с названиями колонок для пагинации.
+
+    Parameters:
+        columns (list): Список названий колонок.
+        page (int): Номер страницы.
+
+    Returns:
+        InlineKeyboardMarkup: Созданная встроенная клавиатура.
+    """
+    keyboard = InlineKeyboardMarkup()
+    columns_per_page = 4
+    start_index = page * columns_per_page
+    end_index = min((page + 1) * columns_per_page, len(columns))
+    current_columns = columns[start_index:end_index]
+
+    for column in current_columns:
+        button = InlineKeyboardButton(column, callback_data=f"column_{column}")
+        keyboard.add(button)
+
+    add_pagination_buttons(keyboard, columns, page)
+
+    return keyboard
+
+
+def add_pagination_buttons(
+    keyboard: InlineKeyboardMarkup, columns: list, page: int
+) -> None:
+    """
+    Добавляет кнопки пагинации на клавиатуру.
+
+    Parameters:
+        keyboard (InlineKeyboardMarkup): Объект клавиатуры.
+        columns (list): Список названий колонок.
+        page (int): Номер страницы.
+
+    Returns:
+        None
+    """
+    prev_button = (
+        InlineKeyboardButton("Назад", callback_data=f"boxplot_prev_{page}")
+        if page > 0
+        else None
+    )
+    next_button = (
+        InlineKeyboardButton("Далее", callback_data=f"boxplot_next_{page + 1}")
+        if (page + 1) * 4 < len(columns)
+        else None
+    )
+    home_button = InlineKeyboardButton("Главное меню", callback_data="back")
+
+    if prev_button and next_button:
+        keyboard.row(prev_button, home_button, next_button)
+    elif prev_button:
+        keyboard.row(prev_button, home_button)
+    elif next_button:
+        keyboard.row(home_button, next_button)
+    else:
+        keyboard.row(home_button)

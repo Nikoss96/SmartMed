@@ -5,6 +5,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import time
+import plotly.express as px
 
 from scipy.stats import variation
 
@@ -229,3 +230,10 @@ class DescribeModule:
         plt.savefig(
             f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{PLOTS}/describe_plots_{self.chat_id}.png"
         )
+
+    def generate_box_hist(self):
+        df = get_numeric_df(self.df)
+
+        fig = px.box(df, x="Lie Scale")
+
+        fig.write_image("boxplot.png")

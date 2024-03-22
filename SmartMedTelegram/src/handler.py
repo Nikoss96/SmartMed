@@ -5,6 +5,8 @@ from describe_analysis.functions_descriptive import (
     handle_download_describe,
     handle_downloaded_describe_file,
     handle_describe_table,
+    handle_describe_box_plot,
+    handle_pagination_columns,
 )
 from dictionary.functions_dictionary import (
     handle_pagination_dictionary,
@@ -36,6 +38,9 @@ def callback_query_handler(bot, call):
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination_dictionary(bot, call)
 
+        if command.startswith("boxplot_prev_") or command.startswith("boxplot_next_"):
+            handle_pagination_columns(bot, call)
+
         elif command.startswith("statistical_term"):
             handle_statistical_term(bot, call)
 
@@ -56,6 +61,9 @@ def callback_query_handler(bot, call):
 
         elif command == "describe_table":
             handle_describe_table(bot, call)
+
+        elif command == "describe_box_plot":
+            handle_describe_box_plot(bot, call)
 
         elif command in [
             "replace_null_with_mean",
