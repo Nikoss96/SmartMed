@@ -6,7 +6,7 @@ from describe_analysis.functions_descriptive import (
     handle_downloaded_describe_file,
     handle_describe_table,
     handle_describe_box_plot,
-    handle_pagination_columns,
+    handle_pagination_columns, handle_box_plot,
 )
 from dictionary.functions_dictionary import (
     handle_pagination_dictionary,
@@ -38,11 +38,15 @@ def callback_query_handler(bot, call):
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination_dictionary(bot, call)
 
-        if command.startswith("boxplot_prev_") or command.startswith("boxplot_next_"):
+        elif command.startswith("boxplot_prev_") or command.startswith(
+                "boxplot_next_"):
             handle_pagination_columns(bot, call)
 
         elif command.startswith("statistical_term"):
             handle_statistical_term(bot, call)
+
+        elif command.startswith("column_"):
+            handle_box_plot(bot, call)
 
         elif command == "example_describe":
             handle_example_describe(bot, call)
@@ -93,7 +97,8 @@ def start_message_handler(bot, message):
             "- Словарь терминов"
         )
 
-        send_text_message(bot, chat_id, greeting_text, reply_markup=keyboard_main_menu)
+        send_text_message(bot, chat_id, greeting_text,
+                          reply_markup=keyboard_main_menu)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")
@@ -140,7 +145,7 @@ def text_handler(bot, message):
                 bot,
                 chat_id=message.chat.id,
                 text="Пожалуйста, выберите "
-                "существующий раздел с помощью клавиатуры:",
+                     "существующий раздел с помощью клавиатуры:",
                 reply_markup=reply_markup,
             )
     except Exception as e:

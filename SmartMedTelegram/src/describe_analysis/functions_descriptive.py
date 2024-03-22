@@ -11,7 +11,8 @@ from telebot.types import (
     InlineKeyboardButton,
 )
 
-from describe_analysis.DescribeModule import DescribeModule
+from describe_analysis.DescribeModule import DescribeModule, \
+    filter_columns_with_more_than_2_unique_values
 from describe_analysis.keyboard_descriptive import (
     keyboard_replace_null_values,
     keyboard_choice,
@@ -26,7 +27,7 @@ from data.paths import (
     DESCRIBE_ANALYSIS,
     DESCRIBE_TABLES,
     CORRELATION_MATRICES,
-    PLOTS,
+    PLOTS, BOXPLOTS,
 )
 
 test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
@@ -62,12 +63,12 @@ def handle_download_describe(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Пришлите Ваш файл.\n\n"
-        "Файл должен иметь следующие характеристики:\n"
-        "\n1.  Формат файла: .csv, .xlsx или .xls"
-        "\n2.  Размер файла: до 20 Мегабайт"
-        "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
-        "\n4.  Содержимое файла: Название каждого столбца "
-        "должно быть читаемым.",
+             "Файл должен иметь следующие характеристики:\n"
+             "\n1.  Формат файла: .csv, .xlsx или .xls"
+             "\n2.  Размер файла: до 20 Мегабайт"
+             "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
+             "\n4.  Содержимое файла: Название каждого столбца "
+             "должно быть читаемым.",
     )
     clear_user_files_descriptive_analysis(call.from_user.id)
     get_file_for_descriptive_analysis(bot)
@@ -103,7 +104,8 @@ def get_file_for_descriptive_analysis(bot):
 
             if response.status_code == 200:
                 file_name = save_file(
-                    response.content, message.document.file_name, message.chat.id
+                    response.content, message.document.file_name,
+                    message.chat.id
                 )
                 check_input_file_descriptive(bot, message, file_name)
 
@@ -207,7 +209,7 @@ def handle_downloaded_describe_file(bot, call, command):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Выберите элемент описательного анализа,"
-        " который хотите рассчитать по своим данным:",
+             " который хотите рассчитать по своим данным:",
         reply_markup=keyboard_choice,
     )
 
@@ -217,7 +219,8 @@ def create_dataframe_and_save_file(chat_id, command):
     directory = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}"
     files_in_directory = os.listdir(directory)
 
-    file_name = [file for file in files_in_directory if file.startswith(f"{chat_id}")]
+    file_name = [file for file in files_in_directory if
+                 file.startswith(f"{chat_id}")]
 
     # Формируем настройки для корректной предобработки данных
     path = f"{directory}/{file_name[0]}"
@@ -263,8 +266,8 @@ def handle_describe_build_graphs(bot, call):
         bot.send_message(
             chat_id=call.from_user.id,
             text="По каждому параметру приложенных "
-            "Вами данных была построена гистограмма. "
-            "Результаты представлены на дашборде.",
+                 "Вами данных была построена гистограмма. "
+                 "Результаты представлены на дашборде.",
         )
 
         file_cur = open(file_path, "rb")
@@ -294,8 +297,8 @@ def handle_describe_correlation_analysis(bot, call):
         bot.send_message(
             chat_id=chat_id,
             text="На основе Ваших данных были построены матрицы корреляций"
-            " с помощью коэффициентов корреляции Пирсона и Спирмена. "
-            "Результаты представлены на дашборде.",
+                 " с помощью коэффициентов корреляции Пирсона и Спирмена. "
+                 "Результаты представлены на дашборде.",
         )
 
         bot.send_photo(chat_id=chat_id, photo=file_cur)
@@ -325,8 +328,8 @@ def handle_describe_table(bot, call):
         bot.send_message(
             chat_id=chat_id,
             text="На основе Ваших данных была составлена описательная таблица"
-            " с вычисленными основными описательными характеристиками. "
-            "Результаты отправлены в качестве Excel файла.",
+                 " с вычисленными основными описательными характеристиками. "
+                 "Результаты отправлены в качестве Excel файла.",
         )
 
         bot.send_document(
@@ -361,6 +364,9 @@ def send_column_selection_message(bot, user_id, df):
     Returns:
         None
     """
+
+    df = filter_columns_with_more_than_2_unique_values(df)
+
     columns = df.columns.tolist()
     keyboard = generate_column_keyboard(columns, 0)
 
@@ -376,6 +382,8 @@ def handle_pagination_columns(bot, call) -> None:
         f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
         call.from_user.id,
     )
+
+    df = filter_columns_with_more_than_2_unique_values(df)
 
     columns = df.columns.tolist()
 
@@ -431,8 +439,9 @@ def generate_column_keyboard(columns: list, page: int) -> InlineKeyboardMarkup:
     end_index = min((page + 1) * columns_per_page, len(columns))
     current_columns = columns[start_index:end_index]
 
-    for column in current_columns:
-        button = InlineKeyboardButton(column, callback_data=f"column_{column}")
+    for index, column in enumerate(current_columns):
+        button = InlineKeyboardButton(column,
+                                      callback_data=f"column_{start_index + index}")
         keyboard.add(button)
 
     add_pagination_buttons(keyboard, columns, page)
@@ -441,7 +450,7 @@ def generate_column_keyboard(columns: list, page: int) -> InlineKeyboardMarkup:
 
 
 def add_pagination_buttons(
-    keyboard: InlineKeyboardMarkup, columns: list, page: int
+        keyboard: InlineKeyboardMarkup, columns: list, page: int
 ) -> None:
     """
     Добавляет кнопки пагинации на клавиатуру.
@@ -474,3 +483,31 @@ def add_pagination_buttons(
         keyboard.row(home_button, next_button)
     else:
         keyboard.row(home_button)
+
+
+def handle_box_plot(bot, call):
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        call.from_user.id,
+    )
+
+    df = filter_columns_with_more_than_2_unique_values(df)
+
+    columns = df.columns.tolist()
+
+    column = int(call.data.replace("column_", ""))
+
+    module = DescribeModule(df, call.from_user.id)
+    module.generate_box_hist(columns[column])
+
+    chat_id = call.from_user.id
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{BOXPLOTS}/describe_boxplot_{chat_id}.png"
+
+    if os.path.isfile(file_path):
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="По данному столбцу был построен Ящик с Усами:",
+        )
+
+        file_cur = open(file_path, "rb")
+        bot.send_photo(chat_id=chat_id, photo=file_cur)
