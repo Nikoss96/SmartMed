@@ -63,7 +63,22 @@ def handle_download_describe(bot, call):
              "\n4.  Содержимое файла: Название каждого столбца "
              "должно быть читаемым.",
     )
+    clear_user_files_descriptive_analysis(call.from_user.id)
     get_file_for_descriptive_analysis(bot)
+
+
+def clear_user_files_descriptive_analysis(chat_id):
+    """
+    Очистка старых файлов пользователя при загрузке нового.
+    """
+    directory = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}"
+    pattern = f"{chat_id}"
+
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if pattern in file:
+                file_path = os.path.join(root, file)
+                os.remove(file_path)
 
 
 def get_file_for_descriptive_analysis(bot):
@@ -183,13 +198,23 @@ def handle_downloaded_describe_file(bot, call, command):
     """
     Обработка файла, присланного пользователем для дальнейших расчетов.
     """
+    create_dataframe_and_save_file(call.from_user.id, command)
+    bot.send_message(
+        chat_id=call.from_user.id,
+        text="Выберите элемент описательного анализа,"
+             " который хотите рассчитать по своим данным:",
+        reply_markup=keyboard_choice,
+    )
+
+
+def create_dataframe_and_save_file(chat_id, command):
     # Найти загруженный файл пользователя
     directory = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}"
     files_in_directory = os.listdir(directory)
 
     file_name = [
         file for file in files_in_directory if
-        file.startswith(f"{call.from_user.id}")
+        file.startswith(f"{chat_id}")
     ]
 
     # Формируем настройки для корректной предобработки данных
@@ -200,31 +225,19 @@ def handle_downloaded_describe_file(bot, call, command):
     settings["fillna"] = command[3]
     settings["encoding"] = "label_encoding"
 
-    preprocessor = PandasPreprocessor(settings)
-
-    DescribeModule(preprocessor, call.from_user.id)
-
-    bot.send_message(
-        chat_id=call.from_user.id,
-        text="Выберите элемент описательного анализа,"
-             " который хотите рассчитать по своим данным:",
-        reply_markup=keyboard_choice,
-    )
-
-    if os.path.isfile(path):
-        os.remove(path)
+    PandasPreprocessor(settings, chat_id)
 
 
-def send_describe_plots_file(bot, chat_id):
-    """
-    Открытие и отправка гистограмм из датафрейма описательного анализа.
-    """
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{PLOTS}/describe_plots_{chat_id}.png"
+def get_user_file_df(directory, chat_id):
+    files = os.listdir(directory)
+    pattern = f"{chat_id}"
 
-    if os.path.isfile(file_path):
-        file_cur = open(file_path, "rb")
-        bot.send_photo(chat_id=chat_id, photo=file_cur)
-        os.remove(file_path)
+    matching_files = [file for file in files if pattern in file]
+
+    if matching_files:
+        file_path = os.path.join(directory, matching_files[0])
+        df = pd.read_excel(file_path)
+        return df
 
 
 def handle_describe_build_graphs(bot, call):
@@ -232,6 +245,15 @@ def handle_describe_build_graphs(bot, call):
     Обработка при нажатии на "Построение графиков"
     после прочтения файла описательного анализа.
     """
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        call.from_user.id
+    )
+
+    module = DescribeModule(df, call.from_user.id)
+
+    module.make_plots()
+
     chat_id = call.from_user.id
     file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{PLOTS}/describe_plots_{chat_id}.png"
 
@@ -245,7 +267,6 @@ def handle_describe_build_graphs(bot, call):
 
         file_cur = open(file_path, "rb")
         bot.send_photo(chat_id=chat_id, photo=file_cur)
-        os.remove(file_path)
 
 
 def handle_describe_correlation_analysis(bot, call):
@@ -253,6 +274,14 @@ def handle_describe_correlation_analysis(bot, call):
     Обработка при нажатии на "Корреляционный анализ"
     после прочтения файла описательного анализа.
     """
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        call.from_user.id
+    )
+
+    module = DescribeModule(df, call.from_user.id)
+
+    module.create_correlation_matrices()
 
     chat_id = call.from_user.id
     file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{CORRELATION_MATRICES}/describe_corr_{chat_id}.png"
@@ -268,7 +297,6 @@ def handle_describe_correlation_analysis(bot, call):
         )
 
         bot.send_photo(chat_id=chat_id, photo=file_cur)
-        os.remove(file_path)
 
 
 def handle_describe_table(bot, call):
@@ -276,6 +304,16 @@ def handle_describe_table(bot, call):
     Обработка при нажатии на "Описательная таблица"
     после прочтения файла описательного анализа.
     """
+
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        call.from_user.id
+    )
+
+    module = DescribeModule(df, call.from_user.id)
+
+    module.generate_table()
+
     chat_id = call.from_user.id
 
     file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{DESCRIBE_TABLES}/{chat_id}_describe_table.xlsx"
@@ -295,4 +333,3 @@ def handle_describe_table(bot, call):
             document=file,
             visible_file_name="Описательная_таблица.xlsx",
         )
-        os.remove(file_path)

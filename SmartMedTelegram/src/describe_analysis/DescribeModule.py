@@ -4,6 +4,7 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
+import time
 
 from scipy.stats import variation
 
@@ -16,23 +17,22 @@ from data.paths import (
     CORRELATION_MATRICES,
     PLOTS,
 )
+from describe_analysis.utils.preprocessing import get_numeric_df
 
 use("agg")
 
 
 class DescribeModule:
-    def __init__(self, preprocessor, chat_id):
-        self.preprocessor = preprocessor
+    def __init__(self, df, chat_id):
+        self.df = df
         self.chat_id = chat_id
-        self._generate_table()
-        self.save_table_file()
-        self.create_correlation_matrices()
-        self.make_plots()
+        # self.create_correlation_matrices()
+        # self.make_plots()
 
-    def _generate_table(self):
+    def generate_table(self):
         metrics = ["count", "mean", "std", "max", "min", "25%", "50%", "75%"]
 
-        df = self.preprocessor.get_numeric_df(self.preprocessor.df)
+        df = get_numeric_df(self.df)
         init_df = df
 
         df = df.describe().reset_index()
@@ -55,6 +55,7 @@ class DescribeModule:
                 df.iloc[i, j] = float("{:.3f}".format(float(df.iloc[i, j])))
 
         self.table_df = df
+        self.save_table_file()
 
     def save_table_file(self):
         self.table_df.loc[
@@ -127,7 +128,7 @@ class DescribeModule:
 
         FIG_WIDTH = 16
         FIG_HEIGHT = 14
-        dataframe = self.preprocessor.df
+        dataframe = self.df
 
         if not Pearson and not Spearman:
             return
@@ -204,7 +205,7 @@ class DescribeModule:
         )
 
     def make_plots(self):
-        df = self.preprocessor.df
+        df = self.df
         chat_id = self.chat_id
 
         num_cols = len(df.columns)
