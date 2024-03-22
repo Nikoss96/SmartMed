@@ -154,7 +154,7 @@ def check_input_file_descriptive(bot, message, file_path):
             bot.reply_to(
                 message,
                 f"Файл {message.document.file_name} успешно прочитан."
-                f" Выберите способ замены пустых ячеек в Ваших данных:",
+                f" Выберите метод обработки пустых значений в вашем файле:",
                 reply_markup=keyboard_replace_null_values,
             )
 
@@ -207,7 +207,7 @@ def handle_downloaded_describe_file(bot, call, command):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Выберите элемент описательного анализа,"
-             " который хотите рассчитать по своим данным",
+             " который хотите рассчитать по своим данным:",
         reply_markup=keyboard_choice,
     )
 

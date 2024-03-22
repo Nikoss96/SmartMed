@@ -43,19 +43,20 @@ keyboard_choice.add(
 keyboard_replace_null_values = InlineKeyboardMarkup()
 
 keyboard_replace_null_values.add(
-    InlineKeyboardButton(text="Средним значением",
+    InlineKeyboardButton(text="Замена пустых ячеек средним значением",
                          callback_data="replace_null_with_mean")
 )
 
 keyboard_replace_null_values.add(
     InlineKeyboardButton(
-        text="Удалять строки с пропущенными значениями",
+        text="Удаление строк с пропущенными значениями",
         callback_data="delete_null_rows_dropna",
     )
 )
 
 keyboard_replace_null_values.add(
     InlineKeyboardButton(
-        text="Медианой", callback_data="replace_null_with_median"
+        text="Замена пустых ячеек медианой",
+        callback_data="replace_null_with_median"
     )
 )

@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 
 from scipy.stats import variation
 
@@ -100,6 +101,55 @@ class DescribeModule:
             cmap=sns.color_palette("viridis", as_cmap=True),
             fmt=".2f",
     ):
+        import matplotlib.pyplot as plt
+        from matplotlib.colors import LinearSegmentedColormap
+
+        def hex_to_rgba(hex_color, alpha=1.0):
+            """
+            Convert a hexadecimal color code to RGBA format.
+
+            Args:
+                hex_color (str): Hexadecimal color code, e.g., "#RRGGBB".
+                alpha (float): Alpha value (opacity), ranging from 0.0 (fully transparent) to 1.0 (fully opaque).
+
+            Returns:
+                tuple: RGBA tuple (Red, Green, Blue, Alpha) with values ranging from 0 to 1.
+            """
+            hex_color = hex_color.strip("#")
+            r = int(hex_color[0:2], 16) / 255.0
+            g = int(hex_color[2:4], 16) / 255.0
+            b = int(hex_color[4:6], 16) / 255.0
+            return r, g, b, alpha
+
+        def create_custom_cmap(hex_color1, hex_color2, num_colors=256):
+            """
+            Create a custom colormap using two hexadecimal color codes.
+
+            Args:
+                hex_color1 (str): Hexadecimal color code for the lower end of the colormap.
+                hex_color2 (str): Hexadecimal color code for the upper end of the colormap.
+                num_colors (int): Number of colors in the colormap (default is 256).
+
+            Returns:
+                LinearSegmentedColormap: Custom colormap object.
+            """
+            color1 = hex_to_rgba(hex_color1)
+            color2 = hex_to_rgba(hex_color2)
+
+            # Create a list of colors with linear interpolation between color1 and color2
+            colors = [(i / (num_colors - 1), tuple(
+                (color1[j] + (color2[j] - color1[j]) * (i / (num_colors - 1)))
+                for j in range(4))) for i in range(num_colors)]
+
+            # Create the colormap object
+            return LinearSegmentedColormap.from_list("custom_cmap", colors)
+
+        # Example usage
+        hex_color1 = "#4986E3"  # Blue
+        hex_color2 = "#E31B15"  # Red
+        cmap = create_custom_cmap(hex_color1, hex_color2)
+
+        # Plot a colorbar to visualize the colormap
         FIG_WIDTH = 16
         FIG_HEIGHT = 14
         dataframe = self.preprocessor.df
