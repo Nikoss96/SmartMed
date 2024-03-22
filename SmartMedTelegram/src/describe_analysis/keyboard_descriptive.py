@@ -14,8 +14,7 @@ keyboard_describe_analysis.add(
     InlineKeyboardButton(text="Пример файла", callback_data="example_describe")
 )
 keyboard_describe_analysis.add(
-    InlineKeyboardButton(text="Загрузить свой файл",
-                         callback_data="download_describe")
+    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_describe")
 )
 keyboard_describe_analysis.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back")
@@ -29,22 +28,21 @@ keyboard_choice.add(
 )
 keyboard_choice.add(
     InlineKeyboardButton(
-        text="Корреляционный анализ",
-        callback_data="describe_correlation_analysis"
+        text="Корреляционный анализ", callback_data="describe_correlation_analysis"
     )
 )
 keyboard_choice.add(
-    InlineKeyboardButton(text="Описательная таблица",
-                         callback_data="describe_table")
+    InlineKeyboardButton(text="Описательная таблица", callback_data="describe_table")
 )
-keyboard_choice.add(
-    InlineKeyboardButton(text="Главное меню", callback_data="back"))
+keyboard_choice.add(InlineKeyboardButton(text="Главное меню", callback_data="back"))
 
 keyboard_replace_null_values = InlineKeyboardMarkup()
 
 keyboard_replace_null_values.add(
-    InlineKeyboardButton(text="Замена пустых ячеек средним значением",
-                         callback_data="replace_null_with_mean")
+    InlineKeyboardButton(
+        text="Замена пустых ячеек средним значением",
+        callback_data="replace_null_with_mean",
+    )
 )
 
 keyboard_replace_null_values.add(
@@ -56,7 +54,6 @@ keyboard_replace_null_values.add(
 
 keyboard_replace_null_values.add(
     InlineKeyboardButton(
-        text="Замена пустых ячеек медианой",
-        callback_data="replace_null_with_median"
+        text="Замена пустых ячеек медианой", callback_data="replace_null_with_median"
     )
 )

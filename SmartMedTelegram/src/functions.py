@@ -4,8 +4,7 @@ from describe_analysis.keyboard_descriptive import (
     keyboard_describe_analysis,
 )
 from dictionary.functions_dictionary import generate_dictionary_keyboard
-from keyboard import keyboard_in_development, keyboard_modules, \
-    keyboard_main_menu
+from keyboard import keyboard_in_development, keyboard_modules, keyboard_main_menu
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,

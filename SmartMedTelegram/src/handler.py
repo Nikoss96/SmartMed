@@ -85,8 +85,7 @@ def start_message_handler(bot, message):
             "- Словарь терминов"
         )
 
-        send_text_message(bot, chat_id, greeting_text,
-                          reply_markup=keyboard_main_menu)
+        send_text_message(bot, chat_id, greeting_text, reply_markup=keyboard_main_menu)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")
@@ -133,7 +132,7 @@ def text_handler(bot, message):
                 bot,
                 chat_id=message.chat.id,
                 text="Пожалуйста, выберите "
-                     "существующий раздел с помощью клавиатуры:",
+                "существующий раздел с помощью клавиатуры:",
                 reply_markup=reply_markup,
             )
     except Exception as e:

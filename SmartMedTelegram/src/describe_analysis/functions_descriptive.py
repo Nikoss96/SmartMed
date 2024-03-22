@@ -1,4 +1,5 @@
 import os
+import time
 
 import pandas as pd
 import requests
@@ -56,12 +57,12 @@ def handle_download_describe(bot, call):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Пришлите Ваш файл.\n\n"
-             "Файл должен иметь следующие характеристики:\n"
-             "\n1.  Формат файла: .csv, .xlsx или .xls"
-             "\n2.  Размер файла: до 20 Мегабайт"
-             "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
-             "\n4.  Содержимое файла: Название каждого столбца "
-             "должно быть читаемым.",
+        "Файл должен иметь следующие характеристики:\n"
+        "\n1.  Формат файла: .csv, .xlsx или .xls"
+        "\n2.  Размер файла: до 20 Мегабайт"
+        "\n3.  Файл должен иметь не более 25 параметров (столбцов)"
+        "\n4.  Содержимое файла: Название каждого столбца "
+        "должно быть читаемым.",
     )
     clear_user_files_descriptive_analysis(call.from_user.id)
     get_file_for_descriptive_analysis(bot)
@@ -97,8 +98,7 @@ def get_file_for_descriptive_analysis(bot):
 
             if response.status_code == 200:
                 file_name = save_file(
-                    response.content, message.document.file_name,
-                    message.chat.id
+                    response.content, message.document.file_name, message.chat.id
                 )
                 check_input_file_descriptive(bot, message, file_name)
 
@@ -202,7 +202,7 @@ def handle_downloaded_describe_file(bot, call, command):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Выберите элемент описательного анализа,"
-             " который хотите рассчитать по своим данным:",
+        " который хотите рассчитать по своим данным:",
         reply_markup=keyboard_choice,
     )
 
@@ -212,10 +212,7 @@ def create_dataframe_and_save_file(chat_id, command):
     directory = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}"
     files_in_directory = os.listdir(directory)
 
-    file_name = [
-        file for file in files_in_directory if
-        file.startswith(f"{chat_id}")
-    ]
+    file_name = [file for file in files_in_directory if file.startswith(f"{chat_id}")]
 
     # Формируем настройки для корректной предобработки данных
     path = f"{directory}/{file_name[0]}"
@@ -247,7 +244,7 @@ def handle_describe_build_graphs(bot, call):
     """
     df = get_user_file_df(
         f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
-        call.from_user.id
+        call.from_user.id,
     )
 
     module = DescribeModule(df, call.from_user.id)
@@ -261,8 +258,8 @@ def handle_describe_build_graphs(bot, call):
         bot.send_message(
             chat_id=call.from_user.id,
             text="По каждому параметру приложенных "
-                 "Вами данных была построена гистограмма. "
-                 "Результаты представлены на дашборде.",
+            "Вами данных была построена гистограмма. "
+            "Результаты представлены на дашборде.",
         )
 
         file_cur = open(file_path, "rb")
@@ -276,7 +273,7 @@ def handle_describe_correlation_analysis(bot, call):
     """
     df = get_user_file_df(
         f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
-        call.from_user.id
+        call.from_user.id,
     )
 
     module = DescribeModule(df, call.from_user.id)
@@ -292,8 +289,8 @@ def handle_describe_correlation_analysis(bot, call):
         bot.send_message(
             chat_id=chat_id,
             text="На основе Ваших данных были построены матрицы корреляций"
-                 " с помощью коэффициентов корреляции Пирсона и Спирмена. "
-                 "Результаты представлены на дашборде.",
+            " с помощью коэффициентов корреляции Пирсона и Спирмена. "
+            "Результаты представлены на дашборде.",
         )
 
         bot.send_photo(chat_id=chat_id, photo=file_cur)
@@ -304,10 +301,9 @@ def handle_describe_table(bot, call):
     Обработка при нажатии на "Описательная таблица"
     после прочтения файла описательного анализа.
     """
-
     df = get_user_file_df(
         f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
-        call.from_user.id
+        call.from_user.id,
     )
 
     module = DescribeModule(df, call.from_user.id)
@@ -324,8 +320,8 @@ def handle_describe_table(bot, call):
         bot.send_message(
             chat_id=chat_id,
             text="На основе Ваших данных была составлена описательная таблица"
-                 " с вычисленными основными описательными характеристиками. "
-                 "Результаты отправлены в качестве Excel файла.",
+            " с вычисленными основными описательными характеристиками. "
+            "Результаты отправлены в качестве Excel файла.",
         )
 
         bot.send_document(

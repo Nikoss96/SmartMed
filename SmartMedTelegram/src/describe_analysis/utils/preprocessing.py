@@ -53,8 +53,7 @@ class PandasPreprocessor:
                     self.df[col] = self.df[col].fillna(self.df[col].mean())
 
                 else:
-                    self.df[col] = self.df[col].fillna(
-                        self.df[col].mode().values[0])
+                    self.df[col] = self.df[col].fillna(self.df[col].mode().values[0])
 
         elif value == "median":
             for col in self.df.columns:
@@ -62,8 +61,7 @@ class PandasPreprocessor:
                     self.df[col] = self.df[col].fillna(self.df[col].median())
 
                 else:
-                    self.df[col] = self.df[col].fillna(
-                        self.df[col].mode().values[0])
+                    self.df[col] = self.df[col].fillna(self.df[col].mode().values[0])
 
         elif value == "dropna":
             self.df = self.df.dropna()
@@ -76,11 +74,10 @@ class PandasPreprocessor:
 
         for column in self.df.select_dtypes(exclude=self.numerics_list):
             transformer.fit(self.df[column].astype(str).values)
-            self.df[column] = transformer.transform(
-                self.df[column].astype(str).values)
+            self.df[column] = transformer.transform(self.df[column].astype(str).values)
 
     def save_df_to_file(self):
-        self.file = self.df.to_excel(self.settings['path'], index=False)
+        self.file = self.df.to_excel(self.settings["path"], index=False)
 
 
 def get_numeric_df(df):
