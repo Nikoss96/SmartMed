@@ -39,7 +39,8 @@ def callback_query_handler(bot, call):
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination_dictionary(bot, call)
 
-        elif command.startswith("boxplot_prev_") or command.startswith("boxplot_next_"):
+        elif command.startswith("boxplot_prev_") or command.startswith(
+                "boxplot_next_"):
             handle_pagination_columns(bot, call)
 
         elif command.startswith("statistical_term"):
@@ -97,7 +98,8 @@ def start_message_handler(bot, message):
             "- Словарь терминов"
         )
 
-        send_text_message(bot, chat_id, greeting_text, reply_markup=keyboard_main_menu)
+        send_text_message(bot, chat_id, greeting_text,
+                          reply_markup=keyboard_main_menu)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")
@@ -143,8 +145,7 @@ def text_handler(bot, message):
             send_text_message(
                 bot,
                 chat_id=message.chat.id,
-                text="Пожалуйста, выберите "
-                "существующий раздел с помощью клавиатуры:",
+                text="Выберите интересующий Вас раздел:",
                 reply_markup=reply_markup,
             )
     except Exception as e:

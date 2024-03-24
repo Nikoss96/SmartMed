@@ -14,7 +14,8 @@ keyboard_describe_analysis.add(
     InlineKeyboardButton(text="Пример файла", callback_data="example_describe")
 )
 keyboard_describe_analysis.add(
-    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_describe")
+    InlineKeyboardButton(text="Загрузить свой файл",
+                         callback_data="download_describe")
 )
 keyboard_describe_analysis.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back")
@@ -38,27 +39,33 @@ keyboard_replace_null_values.add(
 
 keyboard_replace_null_values.add(
     InlineKeyboardButton(
-        text="Замена пустых ячеек медианой", callback_data="replace_null_with_median"
+        text="Замена пустых ячеек медианой",
+        callback_data="replace_null_with_median"
     )
 )
 
 keyboard_choice = InlineKeyboardMarkup()
 keyboard_choice.add(
     InlineKeyboardButton(
-        text="Построение графиков", callback_data="describe_build_graphs"
+        text="Распределение показателей",
+        callback_data="describe_build_graphs"
     )
 )
 keyboard_choice.add(
     InlineKeyboardButton(
-        text="Корреляционный анализ", callback_data="describe_correlation_analysis"
+        text="Матрица корреляции",
+        callback_data="describe_correlation_analysis"
     )
 )
 keyboard_choice.add(
-    InlineKeyboardButton(text="Описательная таблица", callback_data="describe_table")
+    InlineKeyboardButton(text="Описательная таблица",
+                         callback_data="describe_table")
 )
 keyboard_choice.add(
     InlineKeyboardButton(
-        text="Построение ящика с усами", callback_data="describe_box_plot"
+        text="График Ящик с усами",
+        callback_data="describe_box_plot"
     )
 )
-keyboard_choice.add(InlineKeyboardButton(text="Главное меню", callback_data="back"))
+keyboard_choice.add(
+    InlineKeyboardButton(text="Главное меню", callback_data="back"))
