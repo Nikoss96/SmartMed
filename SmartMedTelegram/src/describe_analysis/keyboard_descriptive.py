@@ -47,7 +47,7 @@ keyboard_replace_null_values.add(
 keyboard_choice = InlineKeyboardMarkup()
 keyboard_choice.add(
     InlineKeyboardButton(
-        text="Распределение показателей",
+        text="Гистограммы данных",
         callback_data="describe_build_graphs"
     )
 )

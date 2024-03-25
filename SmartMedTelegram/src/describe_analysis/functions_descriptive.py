@@ -67,10 +67,12 @@ def handle_download_describe(bot, call):
         chat_id=call.from_user.id,
         text="Загрузите Ваш файл.\n\n"
              "Файл должен иметь следующие характеристики:\n"
-             "\n1.  Формат файла: .csv, .xlsx или .xls"
-             "\n2.  Размер файла: до 20 Мб"
-             "\n3.  Содержимое файла: название каждого столбца "
-             "должно быть читаемым.",
+             "\n1. Формат файла: .csv, .xlsx или .xls"
+             "\n2. Размер файла: до 20 Мб"
+             "\n3. Рекомендуемое количество столбцов для более"
+             " наглядной визуализации — до 25."
+             "\n4. Названия столбцов в файле не должны состоять только из цифр"
+             " и содержать специальных символов.",
     )
     clear_user_files_descriptive_analysis(call.from_user.id)
     get_file_for_descriptive_analysis(bot)
@@ -328,8 +330,8 @@ def handle_describe_table(bot, call):
         bot.send_message(
             chat_id=chat_id,
             text="На основе Ваших данных подготовлена описательная "
-                 "таблица с основными статистиками "
-                 "Результаты отправленном Excel файле.",
+                 "таблица с основными статистиками. "
+                 "Результаты представлены в прилагаемом Excel файле.",
         )
 
         bot.send_document(
@@ -372,7 +374,7 @@ def send_column_selection_message(bot, user_id, df):
 
     bot.send_message(
         chat_id=user_id,
-        text="Выберите столбец для построения ящика с усами:",
+        text="Выберите столбец для построения Ящика с усами:",
         reply_markup=keyboard,
     )
 
