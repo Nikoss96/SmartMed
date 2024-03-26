@@ -71,8 +71,8 @@ def handle_download_describe(bot, call):
              "\n2. Размер файла: до 20 Мб"
              "\n3. Рекомендуемое количество столбцов для более"
              " наглядной визуализации — до 25."
-             "\n4. Названия столбцов в файле не должны состоять только из цифр"
-             " и содержать специальных символов.",
+             "\n4. Названия столбцов в файле не должны состоять только из"
+             " цифр и содержать специальные символы",
     )
     clear_user_files_descriptive_analysis(call.from_user.id)
     get_file_for_descriptive_analysis(bot)
@@ -374,7 +374,7 @@ def send_column_selection_message(bot, user_id, df):
 
     bot.send_message(
         chat_id=user_id,
-        text="Выберите столбец для построения Ящика с усами:",
+        text="Выберите столбец для построения графика Ящик с усами:",
         reply_markup=keyboard,
     )
 
@@ -419,7 +419,7 @@ def edit_column_selection_message(bot, chat_id, message_id, columns, page):
     bot.edit_message_text(
         chat_id=chat_id,
         message_id=message_id,
-        text="Выберите столбец для построения ящика с усами:",
+        text="Выберите столбец для построения Ящика с усами:",
         reply_markup=keyboard,
     )
 
@@ -509,7 +509,7 @@ def handle_box_plot(bot, call):
     if os.path.isfile(file_path):
         bot.send_message(
             chat_id=call.from_user.id,
-            text="По данному столбцу был построен Ящик с Усами:",
+            text="По данному столбцу был построен график Ящик с усами:",
         )
 
         file_cur = open(file_path, "rb")
