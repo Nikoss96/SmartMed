@@ -162,3 +162,4 @@ zipp==3.17.0
 scikit-learn==1.4.1.post1
 plotly==5.20.0
 kaleido==0.2.1
+pyclustering==0.10.1.2
