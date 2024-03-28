@@ -1,3 +1,5 @@
+from cluster_analysis.functions_cluster import \
+    handle_example_cluster_analysis, handle_download_cluster
 from describe_analysis.functions_descriptive import (
     handle_example_describe,
     handle_describe_build_graphs,
@@ -70,10 +72,16 @@ def callback_query_handler(bot, call):
         elif command == "describe_box_plot":
             handle_describe_box_plot(bot, call)
 
+        elif command == "example_cluster":
+            handle_example_cluster_analysis(bot, call)
+
+        elif command == "download_cluster":
+            handle_download_cluster(bot, call)
+
         elif command in [
-            "replace_null_with_mean",
-            "delete_null_rows_dropna",
-            "replace_null_with_median",
+            "replace_null_with_mean_describe",
+            "delete_null_rows_dropna_describe",
+            "replace_null_with_median_describe",
         ]:
             handle_downloaded_describe_file(bot, call, command)
 
@@ -124,9 +132,15 @@ def text_handler(bot, message):
             )
             return
 
-        print(f"User {username} in {chat_id} chat wrote {command}")
-
         if command in ["Описательный анализ"]:
+            send_text_message(
+                bot,
+                chat_id=message.chat.id,
+                text="Выберите опцию при работе с модулем:",
+                reply_markup=reply_markup,
+            )
+
+        elif command == "Кластерный анализ":
             send_text_message(
                 bot,
                 chat_id=message.chat.id,
@@ -148,5 +162,7 @@ def text_handler(bot, message):
                 text="Выберите интересующий Вас раздел:",
                 reply_markup=reply_markup,
             )
+
+        print(f"User {username} in {chat_id} chat wrote {command}")
     except Exception as e:
         print(f"Ошибка: \n{e}")

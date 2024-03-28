@@ -5,7 +5,7 @@ from telebot.types import (
 
 """
 keyboard_describe_analysis: Выбор работы с описательным анализом.
-keyboard_replace_null_values: Выбор опции замены пустых ячеек.
+keyboard_replace_null_values_describe: Выбор опции замены пустых ячеек.
 keyboard_choice: Выбор опции описательного анализа после загрузки файла.
 """
 
@@ -21,26 +21,26 @@ keyboard_describe_analysis.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back")
 )
 
-keyboard_replace_null_values = InlineKeyboardMarkup()
+keyboard_replace_null_values_describe = InlineKeyboardMarkup()
 
-keyboard_replace_null_values.add(
+keyboard_replace_null_values_describe.add(
     InlineKeyboardButton(
         text="Замена пустых ячеек средним значением",
-        callback_data="replace_null_with_mean",
+        callback_data="replace_null_with_mean_describe",
     )
 )
 
-keyboard_replace_null_values.add(
+keyboard_replace_null_values_describe.add(
     InlineKeyboardButton(
         text="Удаление строк с пропущенными значениями",
-        callback_data="delete_null_rows_dropna",
+        callback_data="delete_null_rows_dropna_describe",
     )
 )
 
-keyboard_replace_null_values.add(
+keyboard_replace_null_values_describe.add(
     InlineKeyboardButton(
         text="Замена пустых ячеек медианой",
-        callback_data="replace_null_with_median"
+        callback_data="replace_null_with_median_describe"
     )
 )
 

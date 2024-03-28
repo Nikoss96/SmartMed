@@ -1,12 +1,10 @@
 import os
-import time
 
 import pandas as pd
 import requests
 from requests import RequestException
 from telebot.apihelper import ApiTelegramException
 from telebot.types import (
-    ReplyKeyboardMarkup,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
 )
@@ -16,12 +14,12 @@ from describe_analysis.DescribeModule import (
     filter_columns_with_more_than_2_unique_values,
 )
 from describe_analysis.keyboard_descriptive import (
-    keyboard_replace_null_values,
     keyboard_choice,
 )
 from describe_analysis.utils.preprocessing import PandasPreprocessor
 
-from functions import save_file, send_document_from_file
+from functions import save_file, send_document_from_file, check_input_file, \
+    clear_user_files
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
@@ -46,7 +44,7 @@ def handle_example_describe(bot, call):
     """
     bot.answer_callback_query(
         callback_query_id=call.id,
-        text="Прислали пример файла. Оформляйте в точности так.",
+        text="Прислали пример файла. Вы можете использовать этот файл для проведения анализа",
     )
     send_document_from_file(
         bot,
@@ -74,22 +72,8 @@ def handle_download_describe(bot, call):
              "\n4. Названия столбцов в файле не должны состоять только из"
              " цифр и содержать специальные символы",
     )
-    clear_user_files_descriptive_analysis(call.from_user.id)
+    clear_user_files(call.from_user.id, DESCRIBE_ANALYSIS)
     get_file_for_descriptive_analysis(bot)
-
-
-def clear_user_files_descriptive_analysis(chat_id):
-    """
-    Очистка старых файлов пользователя при загрузке нового.
-    """
-    directory = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}"
-    pattern = f"{chat_id}"
-
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if pattern in file:
-                file_path = os.path.join(root, file)
-                os.remove(file_path)
 
 
 def get_file_for_descriptive_analysis(bot):
@@ -109,9 +93,10 @@ def get_file_for_descriptive_analysis(bot):
             if response.status_code == 200:
                 file_name = save_file(
                     response.content, message.document.file_name,
-                    message.chat.id
+                    message.chat.id,
+                    DESCRIBE_ANALYSIS
                 )
-                check_input_file_descriptive(bot, message, file_name)
+                check_input_file(bot, message, file_name)
 
             else:
                 bot.reply_to(message, "Произошла ошибка при загрузке файла")
@@ -134,75 +119,6 @@ def get_file_for_descriptive_analysis(bot):
         except Exception as e:
             print(f"Unexpected error: {e}")
             bot.reply_to(message, "Произошла ошибка при загрузке файла")
-
-
-def check_input_file_descriptive(bot, message, file_path):
-    """
-    Начальная проверка файла, загруженного
-    пользователем на расширение, размер и данные.
-    """
-    try:
-        file_extension = os.path.splitext(file_path)[1].lower()
-        supported_formats = [".csv", ".xlsx", ".xls"]
-
-        if file_extension not in supported_formats:
-            bot.reply_to(
-                message,
-                "Ваш файл не подходит. "
-                "Файл должен иметь формат .csv, "
-                ".xlsx или .xls",
-            )
-            if os.path.exists(file_path):
-                os.remove(file_path)
-            return
-
-        file_size = os.path.getsize(file_path)
-        max_file_size = 20 * 1024 * 1024  # 20 Мегабайт
-
-        if file_size > max_file_size:
-            bot.reply_to(
-                message,
-                f"Ваш файл превышает допустимый лимит "
-                f"{max_file_size // (1024 * 1024)}.",
-            )
-            if os.path.exists(file_path):
-                os.remove(file_path)
-            return
-
-        df = None
-
-        if file_extension == ".csv":
-            df = pd.read_csv(file_path)
-        elif file_extension in [".xlsx", ".xls"]:
-            df = pd.read_excel(file_path)
-
-        if df is not None:
-            bot.reply_to(
-                message,
-                f"Файл {message.document.file_name} успешно прочитан."
-                f" Выберите метод обработки пустых значений в Вашем файле:",
-                reply_markup=keyboard_replace_null_values,
-            )
-
-        else:
-            bot.reply_to(
-                message,
-                "Ваш файл не подходит. Прочитайте требования к столбцам, "
-                "измените данные и попробуйте еще раз.",
-            )
-            if os.path.exists(file_path):
-                os.remove(file_path)
-            return
-
-    except Exception as e:
-        print(f"Error preprocessing file: {e}")
-        if os.path.exists(file_path):
-            os.remove(file_path)
-        bot.reply_to(
-            message,
-            "Ошибка в чтении Вашего файла. "
-            "Попробуйте еще раз или загрузите новый файл",
-        )
 
 
 def handle_downloaded_describe_file(bot, call, command):
