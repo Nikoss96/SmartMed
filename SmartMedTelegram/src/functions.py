@@ -47,8 +47,8 @@ def send_text_message(bot, chat_id, text, reply_markup=None):
     bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
 
 
-def save_file(file_content, file_name, chat_id, directory):
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{directory}/{USER_DATA_PATH}/{chat_id}_{file_name}"
+def save_file(file_content, file_name, chat_id):
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{chat_id}_{file_name}"
     with open(file_path, "wb") as file:
         file.write(file_content)
     return file_path
@@ -83,11 +83,11 @@ def send_document_from_file(bot, chat_id, file_path):
         bot.send_document(chat_id=chat_id, document=file)
 
 
-def clear_user_files(chat_id, directory):
+def clear_user_files(chat_id):
     """
     Очистка старых файлов пользователя при загрузке нового.
     """
-    directory = f"{MEDIA_PATH}/{DATA_PATH}/{directory}/{USER_DATA_PATH}"
+    directory = f"{MEDIA_PATH}/{DATA_PATH}"
     pattern = f"{chat_id}"
 
     for root, dirs, files in os.walk(directory):
@@ -97,7 +97,7 @@ def clear_user_files(chat_id, directory):
                 os.remove(file_path)
 
 
-def check_input_file(bot, message, file_path):
+def check_input_file(bot, message, file_path, command):
     """
     Начальная проверка файла, загруженного
     пользователем на расширение, размер и данные.
@@ -138,20 +138,7 @@ def check_input_file(bot, message, file_path):
             df = pd.read_excel(file_path)
 
         if df is not None:
-            if "/describe_analysis/" in file_path:
-                bot.reply_to(
-                    message,
-                    f"Файл {message.document.file_name} успешно прочитан."
-                    f" Выберите метод обработки пустых значений в Вашем файле:",
-                    reply_markup=keyboard_replace_null_values_describe,
-                )
-            elif "/cluster_analysis/" in file_path:
-                bot.reply_to(
-                    message,
-                    f"Файл {message.document.file_name} успешно прочитан."
-                    f" Выберите метод обработки пустых значений в Вашем файле:",
-                    reply_markup=keyboard_replace_null_values_cluster,
-                )
+            return True
 
         else:
             bot.reply_to(
@@ -174,9 +161,9 @@ def check_input_file(bot, message, file_path):
         )
 
 
-def create_dataframe_and_save_file(chat_id, command, analysis_directory):
+def create_dataframe_and_save_file(chat_id, command):
     # Найти загруженный файл пользователя
-    directory = f"{MEDIA_PATH}/{DATA_PATH}/{analysis_directory}/{USER_DATA_PATH}"
+    directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}"
     files_in_directory = os.listdir(directory)
 
     file_name = [file for file in files_in_directory if

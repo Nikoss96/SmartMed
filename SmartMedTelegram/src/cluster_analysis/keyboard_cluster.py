@@ -51,4 +51,22 @@ keyboard_choice_cluster.add(
     )
 )
 keyboard_choice_cluster.add(
-    InlineKeyboardButton(text="Главное меню", callback_data="back"))
+    InlineKeyboardButton(text="Главное меню", callback_data="back")
+)
+
+keyboard_choice_number_of_clusters = InlineKeyboardMarkup()
+keyboard_choice_number_of_clusters.add(
+    InlineKeyboardButton(
+        text="Оставить рекомендованное количество кластеров",
+        callback_data="recommended"
+    )
+)
+keyboard_choice_number_of_clusters.add(
+    InlineKeyboardButton(
+        text="Выбрать количество кластеров самостоятельно",
+        callback_data="recommended"
+    )
+)
+keyboard_choice_number_of_clusters.add(
+    InlineKeyboardButton(text="Главное меню", callback_data="back")
+)

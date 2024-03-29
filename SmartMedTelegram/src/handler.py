@@ -1,16 +1,15 @@
 from cluster_analysis.functions_cluster import \
     handle_example_cluster_analysis, handle_download_cluster, \
-    handle_downloaded_cluster_file
+    handle_downloaded_cluster_file, handle_cluster_k_means
 from describe_analysis.functions_descriptive import (
     handle_example_describe,
     handle_describe_build_graphs,
     handle_describe_correlation_analysis,
-    handle_download_describe,
     handle_downloaded_describe_file,
     handle_describe_table,
     handle_describe_box_plot,
     handle_pagination_columns,
-    handle_box_plot,
+    handle_box_plot, handle_download,
 )
 from dictionary.functions_dictionary import (
     handle_pagination_dictionary,
@@ -55,8 +54,8 @@ def callback_query_handler(bot, call):
         elif command == "example_describe":
             handle_example_describe(bot, call)
 
-        elif command == "download_describe":
-            handle_download_describe(bot, call)
+        elif command in ["download_describe", "download_cluster"]:
+            handle_download(bot, call, command)
 
         elif command == "back":
             handle_back(bot, user_id)
@@ -76,9 +75,6 @@ def callback_query_handler(bot, call):
         elif command == "example_cluster":
             handle_example_cluster_analysis(bot, call)
 
-        elif command == "download_cluster":
-            handle_download_cluster(bot, call)
-
         elif command in [
             "replace_null_with_mean_describe",
             "delete_null_rows_dropna_describe",
@@ -92,6 +88,9 @@ def callback_query_handler(bot, call):
             "replace_null_with_median_cluster",
         ]:
             handle_downloaded_cluster_file(bot, call, command)
+
+        elif command == "cluster_k_means":
+            handle_cluster_k_means(bot, call)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")

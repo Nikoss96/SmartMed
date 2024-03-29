@@ -14,7 +14,7 @@ from describe_analysis.DescribeModule import (
     filter_columns_with_more_than_2_unique_values,
 )
 from describe_analysis.keyboard_descriptive import (
-    keyboard_choice_describe,
+    keyboard_choice_describe, keyboard_replace_null_values_describe,
 )
 
 from functions import save_file, send_document_from_file, check_input_file, \
@@ -27,7 +27,7 @@ from data.paths import (
     DESCRIBE_TABLES,
     CORRELATION_MATRICES,
     PLOTS,
-    BOXPLOTS,
+    BOXPLOTS, CLUSTER_ANALYSIS, EXAMPLES,
 )
 
 test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
@@ -48,11 +48,11 @@ def handle_example_describe(bot, call):
     send_document_from_file(
         bot,
         call.from_user.id,
-        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/Описательный_анализ_пример.xlsx",
+        f"{MEDIA_PATH}/{DATA_PATH}/{EXAMPLES}/Описательный_анализ_пример.xlsx",
     )
 
 
-def handle_download_describe(bot, call):
+def handle_download(bot, call, command):
     """
     Обработка запроса на загрузку файла для descriptive analysis.
 
@@ -71,11 +71,20 @@ def handle_download_describe(bot, call):
              "\n4. Названия столбцов в файле не должны состоять только из"
              " цифр и содержать специальные символы",
     )
-    clear_user_files(call.from_user.id, DESCRIBE_ANALYSIS)
-    get_file_for_descriptive_analysis(bot)
+    if "describe" in command:
+        clear_user_files(call.from_user.id)
+
+    elif "cluster" in command:
+        clear_user_files(call.from_user.id)
+
+    result = get_user_file(bot, command)
+    file_name = find_user_file(call.from_user.id)
+    print(result)
+    print(file_name)
+    return
 
 
-def get_file_for_descriptive_analysis(bot):
+def get_user_file(bot, command):
     """
     Обработка загрузки файла для описательного анализа.
     """
@@ -93,9 +102,11 @@ def get_file_for_descriptive_analysis(bot):
                 file_name = save_file(
                     response.content, message.document.file_name,
                     message.chat.id,
-                    DESCRIBE_ANALYSIS
                 )
-                check_input_file(bot, message, file_name)
+                result = check_input_file(bot, message, file_name, command)
+                if result:
+                    choose_replace_null_values(bot, message)
+                    return result
 
             else:
                 bot.reply_to(message, "Произошла ошибка при загрузке файла")
@@ -120,12 +131,44 @@ def get_file_for_descriptive_analysis(bot):
             bot.reply_to(message, "Произошла ошибка при загрузке файла")
 
 
+def choose_replace_null_values(bot, message):
+    # if "describe" in command:
+    #     bot.reply_to(
+    #         message,
+    #         f"Файл {message.document.file_name} успешно прочитан."
+    #         f" Выберите метод обработки пустых значений в Вашем файле:",
+    #         reply_markup=keyboard_replace_null_values_describe,
+    #     )
+    # elif "cluster" in command:
+    #     bot.reply_to(
+    #         message,
+    #         f"Файл {message.document.file_name} успешно прочитан."
+    #         f" Выберите метод обработки пустых значений в Вашем файле:",
+    #         reply_markup=keyboard_replace_null_values_cluster,
+    #     )
+
+    bot.reply_to(
+        message,
+        f"Файл {message.document.file_name} успешно прочитан."
+        f" Выберите метод обработки пустых значений в Вашем файле:",
+    )
+
+
+def find_user_file(chat_id):
+    directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/"
+    pattern = f"{chat_id}"
+
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if pattern in file:
+                return os.path.join(root, file)
+
+
 def handle_downloaded_describe_file(bot, call, command):
     """
     Обработка файла, присланного пользователем для дальнейших расчетов.
     """
-    create_dataframe_and_save_file(call.from_user.id, command,
-                                   DESCRIBE_ANALYSIS)
+    create_dataframe_and_save_file(call.from_user.id, command)
     bot.send_message(
         chat_id=call.from_user.id,
         text="Выберите интересующий Вас раздел:",
@@ -151,7 +194,7 @@ def handle_describe_build_graphs(bot, call):
     после прочтения файла описательного анализа.
     """
     df = get_user_file_df(
-        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
         call.from_user.id,
     )
 
@@ -160,7 +203,7 @@ def handle_describe_build_graphs(bot, call):
     module.make_plots()
 
     chat_id = call.from_user.id
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{PLOTS}/describe_plots_{chat_id}.png"
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{PLOTS}/describe_plots_{chat_id}.png"
 
     if os.path.isfile(file_path):
         bot.send_message(
@@ -179,7 +222,7 @@ def handle_describe_correlation_analysis(bot, call):
     после прочтения файла описательного анализа.
     """
     df = get_user_file_df(
-        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
         call.from_user.id,
     )
 
@@ -188,7 +231,7 @@ def handle_describe_correlation_analysis(bot, call):
     module.create_correlation_matrices()
 
     chat_id = call.from_user.id
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{CORRELATION_MATRICES}/describe_corr_{chat_id}.png"
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{CORRELATION_MATRICES}/describe_corr_{chat_id}.png"
 
     if os.path.isfile(file_path):
         file_cur = open(file_path, "rb")
@@ -209,7 +252,7 @@ def handle_describe_table(bot, call):
     после прочтения файла описательного анализа.
     """
     df = get_user_file_df(
-        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
         call.from_user.id,
     )
 
@@ -219,7 +262,7 @@ def handle_describe_table(bot, call):
 
     chat_id = call.from_user.id
 
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{DESCRIBE_TABLES}/{chat_id}_describe_table.xlsx"
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{DESCRIBE_TABLES}/{chat_id}_describe_table.xlsx"
 
     if os.path.isfile(file_path):
         file = open(file_path, "rb")
@@ -244,7 +287,7 @@ def handle_describe_box_plot(bot, call):
     после прочтения файла описательного анализа.
     """
     df = get_user_file_df(
-        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
         call.from_user.id,
     )
 
@@ -278,7 +321,7 @@ def send_column_selection_message(bot, user_id, df):
 
 def handle_pagination_columns(bot, call) -> None:
     df = get_user_file_df(
-        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
         call.from_user.id,
     )
 
@@ -387,7 +430,7 @@ def add_pagination_buttons(
 
 def handle_box_plot(bot, call):
     df = get_user_file_df(
-        f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}",
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
         call.from_user.id,
     )
 
@@ -401,7 +444,7 @@ def handle_box_plot(bot, call):
     module.generate_box_hist(columns[column])
 
     chat_id = call.from_user.id
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{BOXPLOTS}/describe_boxplot_{chat_id}.png"
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{BOXPLOTS}/describe_boxplot_{chat_id}.png"
 
     if os.path.isfile(file_path):
         bot.send_message(

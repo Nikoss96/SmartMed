@@ -85,7 +85,7 @@ class DescribeModule:
         ] = "Разброс"
 
         self.table_file = self.table_df.to_excel(
-            f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{DESCRIBE_TABLES}/{self.chat_id}_describe_table.xlsx",
+            f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{DESCRIBE_TABLES}/{self.chat_id}_describe_table.xlsx",
             index=False,
         )
 
@@ -204,7 +204,7 @@ class DescribeModule:
             ax.title.set_position([0.5, -0.2])
 
         plt.savefig(
-            f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{CORRELATION_MATRICES}/describe_corr_{self.chat_id}.png",
+            f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{CORRELATION_MATRICES}/describe_corr_{self.chat_id}.png",
             bbox_inches="tight",
             pad_inches=0.0,
         )
@@ -232,8 +232,11 @@ class DescribeModule:
         plt.tight_layout()
 
         plt.savefig(
-            f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{PLOTS}/describe_plots_{self.chat_id}.png"
+            f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{PLOTS}/describe_plots_{self.chat_id}.png"
         )
+
+        plt.clf()
+        plt.close()
 
     def generate_box_hist(self, column):
         df = get_numeric_df(self.df)
@@ -245,7 +248,7 @@ class DescribeModule:
             )
 
         fig = px.box(df, x=column)
-        file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}/{BOXPLOTS}/describe_boxplot_{self.chat_id}.png"
+        file_path = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{BOXPLOTS}/describe_boxplot_{self.chat_id}.png"
         fig.write_image(file_path)
 
 
