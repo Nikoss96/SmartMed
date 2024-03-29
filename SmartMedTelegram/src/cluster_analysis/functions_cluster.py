@@ -5,9 +5,10 @@ import requests
 from requests import RequestException
 from telebot.apihelper import ApiTelegramException
 
+from cluster_analysis.keyboard_cluster import keyboard_choice_cluster
 from data.paths import MEDIA_PATH, DATA_PATH, CLUSTER_ANALYSIS, USER_DATA_PATH
 from functions import send_document_from_file, test_bot_token, save_file, \
-    check_input_file, clear_user_files
+    check_input_file, clear_user_files, create_dataframe_and_save_file
 
 
 def handle_example_cluster_analysis(bot, call):
@@ -95,3 +96,15 @@ def get_file_for_cluster_analysis(bot):
         except Exception as e:
             print(f"Unexpected error: {e}")
             bot.reply_to(message, "Произошла ошибка при загрузке файла")
+
+
+def handle_downloaded_cluster_file(bot, call, command):
+    """
+    Обработка файла, присланного пользователем для дальнейших расчетов.
+    """
+    create_dataframe_and_save_file(call.from_user.id, command, CLUSTER_ANALYSIS)
+    bot.send_message(
+        chat_id=call.from_user.id,
+        text="Выберите интересующий Вас метод кластеризации:",
+        reply_markup=keyboard_choice_cluster,
+    )

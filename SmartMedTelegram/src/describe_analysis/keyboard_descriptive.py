@@ -44,28 +44,28 @@ keyboard_replace_null_values_describe.add(
     )
 )
 
-keyboard_choice = InlineKeyboardMarkup()
-keyboard_choice.add(
+keyboard_choice_describe = InlineKeyboardMarkup()
+keyboard_choice_describe.add(
     InlineKeyboardButton(
         text="Гистограммы данных",
         callback_data="describe_build_graphs"
     )
 )
-keyboard_choice.add(
+keyboard_choice_describe.add(
     InlineKeyboardButton(
         text="Матрица корреляции",
         callback_data="describe_correlation_analysis"
     )
 )
-keyboard_choice.add(
+keyboard_choice_describe.add(
     InlineKeyboardButton(text="Описательная таблица",
                          callback_data="describe_table")
 )
-keyboard_choice.add(
+keyboard_choice_describe.add(
     InlineKeyboardButton(
         text="График Ящик с усами",
         callback_data="describe_box_plot"
     )
 )
-keyboard_choice.add(
+keyboard_choice_describe.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back"))

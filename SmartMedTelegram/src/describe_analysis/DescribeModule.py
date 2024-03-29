@@ -16,7 +16,7 @@ from data.paths import (
     PLOTS,
     BOXPLOTS,
 )
-from describe_analysis.utils.preprocessing import get_numeric_df
+from preprocessing.preprocessing import get_numeric_df
 
 use("agg")
 
@@ -118,7 +118,7 @@ class DescribeModule:
                     i / (num_colors - 1),
                     tuple(
                         (color1[j] + (color2[j] - color1[j]) * (
-                                    i / (num_colors - 1)))
+                                i / (num_colors - 1)))
                         for j in range(4)
                     ),
                 )

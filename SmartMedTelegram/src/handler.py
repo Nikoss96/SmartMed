@@ -1,5 +1,6 @@
 from cluster_analysis.functions_cluster import \
-    handle_example_cluster_analysis, handle_download_cluster
+    handle_example_cluster_analysis, handle_download_cluster, \
+    handle_downloaded_cluster_file
 from describe_analysis.functions_descriptive import (
     handle_example_describe,
     handle_describe_build_graphs,
@@ -84,6 +85,13 @@ def callback_query_handler(bot, call):
             "replace_null_with_median_describe",
         ]:
             handle_downloaded_describe_file(bot, call, command)
+
+        elif command in [
+            "replace_null_with_mean_cluster",
+            "delete_null_rows_dropna_cluster",
+            "replace_null_with_median_cluster",
+        ]:
+            handle_downloaded_cluster_file(bot, call, command)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")

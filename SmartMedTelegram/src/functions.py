@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-from cluster_analysis.keyboard_cluster import keybaord_cluster_analysis, \
+from cluster_analysis.keyboard_cluster import keyboard_cluster_analysis, \
     keyboard_replace_null_values_cluster
 from describe_analysis.keyboard_descriptive import (
     keyboard_describe_analysis, keyboard_replace_null_values_describe,
@@ -17,6 +17,7 @@ from data.paths import (
     DESCRIBE_ANALYSIS,
     DESCRIBE_TABLES,
 )
+from preprocessing.preprocessing import PandasPreprocessor
 
 "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
@@ -29,7 +30,7 @@ def get_reply_markup(command):
     switch = {
         "bioequal": keyboard_in_development,
         "описательный анализ": keyboard_describe_analysis,
-        "кластерный анализ": keybaord_cluster_analysis,
+        "кластерный анализ": keyboard_cluster_analysis,
         "predict": keyboard_in_development,
         "модули": keyboard_modules,
         "назад": keyboard_main_menu,
@@ -117,7 +118,6 @@ def check_input_file(bot, message, file_path):
             return
 
         file_size = os.path.getsize(file_path)
-        print(file_path)
         max_file_size = 20 * 1024 * 1024  # 20 Мегабайт
 
         if file_size > max_file_size:
@@ -172,3 +172,22 @@ def check_input_file(bot, message, file_path):
             "Ошибка в чтении Вашего файла. "
             "Попробуйте еще раз или загрузите новый файл",
         )
+
+
+def create_dataframe_and_save_file(chat_id, command, analysis_directory):
+    # Найти загруженный файл пользователя
+    directory = f"{MEDIA_PATH}/{DATA_PATH}/{analysis_directory}/{USER_DATA_PATH}"
+    files_in_directory = os.listdir(directory)
+
+    file_name = [file for file in files_in_directory if
+                 file.startswith(f"{chat_id}")]
+
+    # Формируем настройки для корректной предобработки данных
+    path = f"{directory}/{file_name[0]}"
+    command = command.split("_")
+    settings = {}
+    settings["path"] = path
+    settings["fillna"] = command[3]
+    settings["encoding"] = "label_encoding"
+
+    PandasPreprocessor(settings, chat_id)

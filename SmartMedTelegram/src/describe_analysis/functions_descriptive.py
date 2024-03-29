@@ -14,12 +14,11 @@ from describe_analysis.DescribeModule import (
     filter_columns_with_more_than_2_unique_values,
 )
 from describe_analysis.keyboard_descriptive import (
-    keyboard_choice,
+    keyboard_choice_describe,
 )
-from describe_analysis.utils.preprocessing import PandasPreprocessor
 
 from functions import save_file, send_document_from_file, check_input_file, \
-    clear_user_files
+    clear_user_files, create_dataframe_and_save_file
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
@@ -125,31 +124,13 @@ def handle_downloaded_describe_file(bot, call, command):
     """
     Обработка файла, присланного пользователем для дальнейших расчетов.
     """
-    create_dataframe_and_save_file(call.from_user.id, command)
+    create_dataframe_and_save_file(call.from_user.id, command,
+                                   DESCRIBE_ANALYSIS)
     bot.send_message(
         chat_id=call.from_user.id,
         text="Выберите интересующий Вас раздел:",
-        reply_markup=keyboard_choice,
+        reply_markup=keyboard_choice_describe,
     )
-
-
-def create_dataframe_and_save_file(chat_id, command):
-    # Найти загруженный файл пользователя
-    directory = f"{MEDIA_PATH}/{DATA_PATH}/{DESCRIBE_ANALYSIS}/{USER_DATA_PATH}"
-    files_in_directory = os.listdir(directory)
-
-    file_name = [file for file in files_in_directory if
-                 file.startswith(f"{chat_id}")]
-
-    # Формируем настройки для корректной предобработки данных
-    path = f"{directory}/{file_name[0]}"
-    command = command.split("_")
-    settings = {}
-    settings["path"] = path
-    settings["fillna"] = command[3]
-    settings["encoding"] = "label_encoding"
-
-    PandasPreprocessor(settings, chat_id)
 
 
 def get_user_file_df(directory, chat_id):
