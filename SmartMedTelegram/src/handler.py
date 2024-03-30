@@ -1,7 +1,11 @@
-from cluster_analysis.functions_cluster import \
-    handle_example_cluster_analysis, handle_downloaded_cluster_file, \
-    handle_cluster_k_means, handle_choose_number_of_clusters, \
-    handle_pagination_columns_cluster, handle_cluster_numbers
+from cluster_analysis.functions_cluster import (
+    handle_example_cluster_analysis,
+    handle_downloaded_cluster_file,
+    handle_cluster_k_means,
+    handle_choose_number_of_clusters,
+    handle_pagination_columns_cluster,
+    handle_cluster_numbers,
+)
 from describe_analysis.functions_descriptive import (
     handle_example_describe,
     handle_describe_build_graphs,
@@ -10,7 +14,7 @@ from describe_analysis.functions_descriptive import (
     handle_describe_table,
     handle_describe_box_plot,
     handle_pagination_columns,
-    handle_box_plot
+    handle_box_plot,
 )
 from dictionary.functions_dictionary import (
     handle_pagination_dictionary,
@@ -20,7 +24,8 @@ from keyboard import keyboard_main_menu, keyboard_in_development
 from functions import (
     get_reply_markup,
     handle_back,
-    send_text_message, handle_download,
+    send_text_message,
+    handle_download,
 )
 
 
@@ -42,12 +47,10 @@ def callback_query_handler(bot, call):
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination_dictionary(bot, call)
 
-        elif command.startswith("boxplot_prev_") or command.startswith(
-                "boxplot_next_"):
+        elif command.startswith("boxplot_prev_") or command.startswith("boxplot_next_"):
             handle_pagination_columns(bot, call)
 
-        elif command.startswith("cluster_prev_") or command.startswith(
-                "cluster_next_"):
+        elif command.startswith("cluster_prev_") or command.startswith("cluster_next_"):
             handle_pagination_columns_cluster(bot, call)
 
         elif command.startswith("statistical_term"):
@@ -127,8 +130,7 @@ def start_message_handler(bot, message):
             "- Словарь терминов"
         )
 
-        send_text_message(bot, chat_id, greeting_text,
-                          reply_markup=keyboard_main_menu)
+        send_text_message(bot, chat_id, greeting_text, reply_markup=keyboard_main_menu)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")

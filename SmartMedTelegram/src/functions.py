@@ -5,14 +5,16 @@ import requests
 from requests import RequestException
 from telebot.apihelper import ApiTelegramException
 
-from cluster_analysis.keyboard_cluster import keyboard_cluster_analysis, \
-    keyboard_replace_null_values_cluster
+from cluster_analysis.keyboard_cluster import (
+    keyboard_cluster_analysis,
+    keyboard_replace_null_values_cluster,
+)
 from describe_analysis.keyboard_descriptive import (
-    keyboard_describe_analysis, keyboard_replace_null_values_describe,
+    keyboard_describe_analysis,
+    keyboard_replace_null_values_describe,
 )
 from dictionary.functions_dictionary import generate_dictionary_keyboard
-from keyboard import keyboard_in_development, keyboard_modules, \
-    keyboard_main_menu
+from keyboard import keyboard_in_development, keyboard_modules, keyboard_main_menu
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
@@ -83,7 +85,8 @@ def get_user_file(bot):
 
             if response.status_code == 200:
                 file_name = save_file(
-                    response.content, message.document.file_name,
+                    response.content,
+                    message.document.file_name,
                     message.chat.id,
                 )
                 check_input_file(bot, message, file_name, command)
@@ -175,13 +178,13 @@ def handle_download(bot, call, command):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Загрузите Ваш файл.\n\n"
-             "Файл должен иметь следующие характеристики:\n"
-             "\n1. Формат файла: .csv, .xlsx или .xls"
-             "\n2. Размер файла: до 20 Мб"
-             "\n3. Рекомендуемое количество столбцов для более"
-             " наглядной визуализации — до 25."
-             "\n4. Названия столбцов в файле не должны состоять только из"
-             " цифр и содержать специальные символы",
+        "Файл должен иметь следующие характеристики:\n"
+        "\n1. Формат файла: .csv, .xlsx или .xls"
+        "\n2. Размер файла: до 20 Мб"
+        "\n3. Рекомендуемое количество столбцов для более"
+        " наглядной визуализации — до 25."
+        "\n4. Названия столбцов в файле не должны состоять только из"
+        " цифр и содержать специальные символы",
     )
     if call.from_user.id in user_commands:
         user_commands.pop(call.from_user.id)
@@ -275,8 +278,7 @@ def create_dataframe_and_save_file(chat_id, command):
     directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}"
     files_in_directory = os.listdir(directory)
 
-    file_name = [file for file in files_in_directory if
-                 file.startswith(f"{chat_id}")]
+    file_name = [file for file in files_in_directory if file.startswith(f"{chat_id}")]
 
     # Формируем настройки для корректной предобработки данных
     path = f"{directory}/{file_name[0]}"

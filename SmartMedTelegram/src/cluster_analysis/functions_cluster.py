@@ -3,12 +3,22 @@ import os
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from cluster_analysis.ClusterModule import ClusterModule
-from cluster_analysis.keyboard_cluster import keyboard_choice_cluster, \
-    keyboard_choice_number_of_clusters
-from data.paths import MEDIA_PATH, DATA_PATH, CLUSTER_ANALYSIS, USER_DATA_PATH, \
-    ELBOW_METHOD, EXAMPLES, K_MEANS
-from describe_analysis.DescribeModule import \
-    filter_columns_with_more_than_2_unique_values
+from cluster_analysis.keyboard_cluster import (
+    keyboard_choice_cluster,
+    keyboard_choice_number_of_clusters,
+)
+from data.paths import (
+    MEDIA_PATH,
+    DATA_PATH,
+    CLUSTER_ANALYSIS,
+    USER_DATA_PATH,
+    ELBOW_METHOD,
+    EXAMPLES,
+    K_MEANS,
+)
+from describe_analysis.DescribeModule import (
+    filter_columns_with_more_than_2_unique_values,
+)
 from describe_analysis.functions_descriptive import get_user_file_df
 from functions import send_document_from_file, create_dataframe_and_save_file
 
@@ -75,10 +85,10 @@ def handle_cluster_k_means(bot, call):
         bot.send_message(
             chat_id=chat_id,
             text=f"На основе Ваших данных был построен Метод Локтя для определения "
-                 f"оптимального количества кластеров по данным.\n\n"
-                 f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
-                 "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
-            reply_markup=keyboard_choice_number_of_clusters
+            f"оптимального количества кластеров по данным.\n\n"
+            f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
+            "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
+            reply_markup=keyboard_choice_number_of_clusters,
         )
 
 
@@ -173,7 +183,7 @@ def generate_column_keyboard(columns: list, page: int) -> InlineKeyboardMarkup:
 
 
 def add_pagination_buttons(
-        keyboard: InlineKeyboardMarkup, columns: list, page: int
+    keyboard: InlineKeyboardMarkup, columns: list, page: int
 ) -> None:
     """
     Добавляет кнопки пагинации на клавиатуру.
@@ -226,15 +236,19 @@ def handle_cluster_numbers(bot, call, command):
 
     chat_id = call.from_user.id
 
-    png_file_path = f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{K_MEANS}/k_means_{chat_id}.png"
-    excel_file_path = f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{K_MEANS}/k_means_{chat_id}.xlsx"
+    png_file_path = (
+        f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{K_MEANS}/k_means_{chat_id}.png"
+    )
+    excel_file_path = (
+        f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{K_MEANS}/k_means_{chat_id}.xlsx"
+    )
 
     if os.path.isfile(png_file_path) and os.path.isfile(excel_file_path):
         bot.send_message(
             chat_id=call.from_user.id,
             text="По заданному количеству кластеров с помощью метода k-средних"
-                 " была построен точечный график распределения элементов,"
-                 " а также создана таблица распределения элементов.",
+            " была построен точечный график распределения элементов,"
+            " а также создана таблица распределения элементов.",
         )
 
         file_cur = open(png_file_path, "rb")

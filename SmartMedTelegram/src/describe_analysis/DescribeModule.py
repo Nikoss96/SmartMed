@@ -40,8 +40,7 @@ class DescribeModule:
         init_describe_length = len(df)
 
         for col in init_df.columns:
-            df.loc[init_describe_length, col] = np.exp(
-                np.log(init_df[col]).mean())
+            df.loc[init_describe_length, col] = np.exp(np.log(init_df[col]).mean())
             df.loc[init_describe_length + 1, col] = variation(init_df[col])
 
         df.loc[init_describe_length, "Метрики"] = "geom_mean"
@@ -64,10 +63,8 @@ class DescribeModule:
         self.table_df.loc[
             self.table_df["Метрики"] == "std", "Метрики"
         ] = "Стандартное отклонение"
-        self.table_df.loc[
-            self.table_df["Метрики"] == "max", "Метрики"] = "Максимум"
-        self.table_df.loc[
-            self.table_df["Метрики"] == "min", "Метрики"] = "Минимум"
+        self.table_df.loc[self.table_df["Метрики"] == "max", "Метрики"] = "Максимум"
+        self.table_df.loc[self.table_df["Метрики"] == "min", "Метрики"] = "Минимум"
         self.table_df.loc[
             self.table_df["Метрики"] == "25%", "Метрики"
         ] = "1-ый квартиль"
@@ -90,14 +87,14 @@ class DescribeModule:
         )
 
     def create_correlation_matrices(
-            self,
-            sharey=False,
-            annot=True,
-            Pearson=True,
-            Spearman=True,
-            title="",
-            cmap=sns.color_palette("viridis", as_cmap=True),
-            fmt=".2f",
+        self,
+        sharey=False,
+        annot=True,
+        Pearson=True,
+        Spearman=True,
+        title="",
+        cmap=sns.color_palette("viridis", as_cmap=True),
+        fmt=".2f",
     ):
         import matplotlib.pyplot as plt
         from matplotlib.colors import LinearSegmentedColormap
@@ -117,8 +114,7 @@ class DescribeModule:
                 (
                     i / (num_colors - 1),
                     tuple(
-                        (color1[j] + (color2[j] - color1[j]) * (
-                                i / (num_colors - 1)))
+                        (color1[j] + (color2[j] - color1[j]) * (i / (num_colors - 1)))
                         for j in range(4)
                     ),
                 )
@@ -141,8 +137,7 @@ class DescribeModule:
         ncols = Spearman + Pearson
 
         f, axes = plt.subplots(
-            nrows=1, ncols=ncols, sharey=sharey,
-            figsize=(FIG_WIDTH * ncols, FIG_HEIGHT)
+            nrows=1, ncols=ncols, sharey=sharey, figsize=(FIG_WIDTH * ncols, FIG_HEIGHT)
         )
 
         pltP = None
@@ -170,8 +165,7 @@ class DescribeModule:
                     fmt=fmt,
                 )
             pltP.xaxis.tick_top()
-            pltP.set_title("Коэффициент корреляции Пирсона. " + title,
-                           fontsize=30)
+            pltP.set_title("Коэффициент корреляции Пирсона. " + title, fontsize=30)
             pltP.set_xticklabels(pltP.get_xticklabels(), rotation=30)
         if Spearman:
             if Pearson:
@@ -196,8 +190,7 @@ class DescribeModule:
                     fmt=fmt,
                 )
             pltS.xaxis.tick_top()
-            pltS.set_title("Коэффициент корреляции Спирмена. " + title,
-                           fontsize=30)
+            pltS.set_title("Коэффициент корреляции Спирмена. " + title, fontsize=30)
             pltS.set_xticklabels(pltS.get_xticklabels(), rotation=30)
 
         for ax in axes:
@@ -216,8 +209,7 @@ class DescribeModule:
         num_cols = len(self.df.columns)
         num_rows = (num_cols + 3) // 4
 
-        fig, axs = plt.subplots(nrows=num_rows, ncols=4,
-                                figsize=(20, num_rows * 5))
+        fig, axs = plt.subplots(nrows=num_rows, ncols=4, figsize=(20, num_rows * 5))
         axs = axs.flatten()
 
         counter = 0
