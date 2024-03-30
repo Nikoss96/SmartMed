@@ -55,7 +55,7 @@ def handle_download_cluster(bot, call, command):
              " цифр и содержать специальные символы",
     )
     clear_user_files(call.from_user.id)
-    get_user_file(bot, command)
+    get_user_file(bot)
 
 
 # def get_file_for_cluster_analysis(bot):

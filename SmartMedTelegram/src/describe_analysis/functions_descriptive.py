@@ -1,4 +1,5 @@
 import os
+import time
 
 import pandas as pd
 import requests
@@ -18,7 +19,8 @@ from describe_analysis.keyboard_descriptive import (
 )
 
 from functions import save_file, send_document_from_file, check_input_file, \
-    clear_user_files, create_dataframe_and_save_file
+    clear_user_files, create_dataframe_and_save_file, get_user_file, \
+    user_commands
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
@@ -50,118 +52,6 @@ def handle_example_describe(bot, call):
         call.from_user.id,
         f"{MEDIA_PATH}/{DATA_PATH}/{EXAMPLES}/Описательный_анализ_пример.xlsx",
     )
-
-
-def handle_download(bot, call, command):
-    """
-    Обработка запроса на загрузку файла для descriptive analysis.
-
-    Parameters:
-        bot (telebot.TeleBot): Экземпляр бота.
-        call (telebot.types.CallbackQuery): Callback-запрос от пользователя.
-    """
-    bot.send_message(
-        chat_id=call.from_user.id,
-        text="Загрузите Ваш файл.\n\n"
-             "Файл должен иметь следующие характеристики:\n"
-             "\n1. Формат файла: .csv, .xlsx или .xls"
-             "\n2. Размер файла: до 20 Мб"
-             "\n3. Рекомендуемое количество столбцов для более"
-             " наглядной визуализации — до 25."
-             "\n4. Названия столбцов в файле не должны состоять только из"
-             " цифр и содержать специальные символы",
-    )
-    if "describe" in command:
-        clear_user_files(call.from_user.id)
-
-    elif "cluster" in command:
-        clear_user_files(call.from_user.id)
-
-    result = get_user_file(bot, command)
-    file_name = find_user_file(call.from_user.id)
-    print(result)
-    print(file_name)
-    return
-
-
-def get_user_file(bot, command):
-    """
-    Обработка загрузки файла для описательного анализа.
-    """
-
-    @bot.message_handler(content_types=["document"])
-    def handle_document(message):
-        try:
-            file_info = bot.get_file(message.document.file_id)
-
-            file_url = f"https://api.telegram.org/file/bot{test_bot_token}/{file_info.file_path}"
-
-            response = requests.get(file_url)
-
-            if response.status_code == 200:
-                file_name = save_file(
-                    response.content, message.document.file_name,
-                    message.chat.id,
-                )
-                result = check_input_file(bot, message, file_name, command)
-                if result:
-                    choose_replace_null_values(bot, message)
-                    return result
-
-            else:
-                bot.reply_to(message, "Произошла ошибка при загрузке файла")
-
-        except ApiTelegramException as e:
-            if e.description == "Bad Request: file is too big":
-                bot.reply_to(
-                    message=message,
-                    text="Ваш файл превышает допустимый лимит 20 Мегабайт.",
-                )
-
-            else:
-                bot.reply_to(message, "Произошла ошибка при загрузке файла")
-
-            print(f"Error: {e}")
-
-        except RequestException as e:
-            print(f"Error while downloading file: {e}")
-            bot.reply_to(message, "Произошла ошибка при загрузке файла")
-        except Exception as e:
-            print(f"Unexpected error: {e}")
-            bot.reply_to(message, "Произошла ошибка при загрузке файла")
-
-
-def choose_replace_null_values(bot, message):
-    # if "describe" in command:
-    #     bot.reply_to(
-    #         message,
-    #         f"Файл {message.document.file_name} успешно прочитан."
-    #         f" Выберите метод обработки пустых значений в Вашем файле:",
-    #         reply_markup=keyboard_replace_null_values_describe,
-    #     )
-    # elif "cluster" in command:
-    #     bot.reply_to(
-    #         message,
-    #         f"Файл {message.document.file_name} успешно прочитан."
-    #         f" Выберите метод обработки пустых значений в Вашем файле:",
-    #         reply_markup=keyboard_replace_null_values_cluster,
-    #     )
-
-    bot.reply_to(
-        message,
-        f"Файл {message.document.file_name} успешно прочитан."
-        f" Выберите метод обработки пустых значений в Вашем файле:",
-    )
-
-
-def find_user_file(chat_id):
-    directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/"
-    pattern = f"{chat_id}"
-
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if pattern in file:
-                return os.path.join(root, file)
 
 
 def handle_downloaded_describe_file(bot, call, command):

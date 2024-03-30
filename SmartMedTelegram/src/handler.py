@@ -9,7 +9,7 @@ from describe_analysis.functions_descriptive import (
     handle_describe_table,
     handle_describe_box_plot,
     handle_pagination_columns,
-    handle_box_plot, handle_download,
+    handle_box_plot
 )
 from dictionary.functions_dictionary import (
     handle_pagination_dictionary,
@@ -19,7 +19,7 @@ from keyboard import keyboard_main_menu, keyboard_in_development
 from functions import (
     get_reply_markup,
     handle_back,
-    send_text_message,
+    send_text_message, handle_download,
 )
 
 

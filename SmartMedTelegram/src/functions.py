@@ -1,6 +1,9 @@
 import os
 
 import pandas as pd
+import requests
+from requests import RequestException
+from telebot.apihelper import ApiTelegramException
 
 from cluster_analysis.keyboard_cluster import keyboard_cluster_analysis, \
     keyboard_replace_null_values_cluster
@@ -21,6 +24,7 @@ from preprocessing.preprocessing import PandasPreprocessor
 
 "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
+user_commands = {}
 
 
 def get_reply_markup(command):
@@ -48,10 +52,75 @@ def send_text_message(bot, chat_id, text, reply_markup=None):
 
 
 def save_file(file_content, file_name, chat_id):
+    directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}"
+    pattern = f"{chat_id}"
+
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if pattern in file:
+                return
+
     file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{chat_id}_{file_name}"
     with open(file_path, "wb") as file:
         file.write(file_content)
     return file_path
+
+
+def get_user_file(bot):
+    """
+    Обработка загрузки файла для описательного анализа.
+    """
+
+    @bot.message_handler(content_types=["document"])
+    def handle_document(message):
+        try:
+            command = user_commands.pop(message.chat.id)
+            if not command:
+                raise ApiTelegramException
+            file_info = bot.get_file(message.document.file_id)
+
+            file_url = f"https://api.telegram.org/file/bot{test_bot_token}/{file_info.file_path}"
+
+            response = requests.get(file_url)
+
+            if response.status_code == 200:
+                file_name = save_file(
+                    response.content, message.document.file_name,
+                    message.chat.id,
+                )
+                check_input_file(bot, message, file_name, command)
+
+            else:
+                bot.reply_to(message, "Произошла ошибка при загрузке файла")
+
+        except ApiTelegramException as e:
+            if e.description == "Bad Request: file is too big":
+                bot.reply_to(
+                    message=message,
+                    text="Ваш файл превышает допустимый лимит 20 Мегабайт.",
+                )
+
+            else:
+                bot.reply_to(message, "Произошла ошибка при загрузке файла")
+
+            print(f"Error: {e}")
+
+        except RequestException as e:
+            print(f"Error while downloading file: {e}")
+            bot.reply_to(message, "Произошла ошибка при загрузке файла")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            bot.reply_to(message, "Произошла ошибка при загрузке файла")
+
+
+def find_user_file(chat_id):
+    directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/"
+    pattern = f"{chat_id}"
+
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if pattern in file:
+                return os.path.join(root, file)
 
 
 def handle_back(bot, user_id):
@@ -97,6 +166,33 @@ def clear_user_files(chat_id):
                 os.remove(file_path)
 
 
+def handle_download(bot, call, command):
+    """
+    Обработка запроса на загрузку файла для descriptive analysis.
+
+    Parameters:
+        bot (telebot.TeleBot): Экземпляр бота.
+        call (telebot.types.CallbackQuery): Callback-запрос от пользователя.
+    """
+    bot.send_message(
+        chat_id=call.from_user.id,
+        text="Загрузите Ваш файл.\n\n"
+             "Файл должен иметь следующие характеристики:\n"
+             "\n1. Формат файла: .csv, .xlsx или .xls"
+             "\n2. Размер файла: до 20 Мб"
+             "\n3. Рекомендуемое количество столбцов для более"
+             " наглядной визуализации — до 25."
+             "\n4. Названия столбцов в файле не должны состоять только из"
+             " цифр и содержать специальные символы",
+    )
+    if call.from_user.id in user_commands:
+        user_commands.pop(call.from_user.id)
+
+    user_commands[call.from_user.id] = command
+    clear_user_files(call.from_user.id)
+    get_user_file(bot)
+
+
 def check_input_file(bot, message, file_path, command):
     """
     Начальная проверка файла, загруженного
@@ -138,6 +234,21 @@ def check_input_file(bot, message, file_path, command):
             df = pd.read_excel(file_path)
 
         if df is not None:
+            if command == "download_describe":
+                bot.reply_to(
+                    message,
+                    f"Файл {message.document.file_name} успешно прочитан."
+                    f" Выберите метод обработки пустых значений в Вашем файле:",
+                    reply_markup=keyboard_replace_null_values_describe,
+                )
+            elif command == "download_cluster":
+                bot.reply_to(
+                    message,
+                    f"Файл {message.document.file_name} успешно прочитан."
+                    f" Выберите метод обработки пустых значений в Вашем файле:",
+                    reply_markup=keyboard_replace_null_values_cluster,
+                )
+
             return True
 
         else:
