@@ -1,13 +1,16 @@
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import colors as mcolors
 from pyclustering.cluster.kmeans import kmeans
 from pyclustering.utils.metric import distance_metric, type_metric
 from pyclustering.cluster.center_initializer import kmeans_plusplus_initializer
 from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 
 from data.paths import MEDIA_PATH, DATA_PATH, CLUSTER_ANALYSIS, USER_DATA_PATH, \
-    ELBOW_METHOD
+    ELBOW_METHOD, K_MEANS
+from preprocessing.preprocessing import get_numeric_df
 
 
 class ClusterModule:
@@ -16,23 +19,6 @@ class ClusterModule:
         self.chat_id = chat_id
         self.settings = {"fillna": "mean", "method": 0, "metric": 0,
                          "encoding": "label_encoding", "scaling": False}
-
-    # def _prepare_dashboard_settings(self):
-    #     settings = dict()
-    #
-    #     # prepare metrics as names list from str -> bool
-    #     settings['metric'] = self.settings['metric']
-    #     # prepare graphs as names list from str -> bool
-    #     settings['method'] = self.settings['method']
-    #     self.graph_to_method = {
-    #         0: self._generate_kmeans,
-    #         1: self._generate_hirarchy,
-    #         2: self._generate_component
-    #     }
-    #
-    #     settings['data'] = self.data
-    #
-    #     return settings
 
     def elbow_method_and_optimal_clusters(self, max_clusters):
         inertia_values = []
@@ -57,250 +43,65 @@ class ClusterModule:
         differences = [inertia_values[i] - inertia_values[i - 1] for i in
                        range(1, len(inertia_values))]
         norm_diff = differences / np.max(differences)
-        elbow_cluster = np.argmax(norm_diff) + 1
+
+        elbow_cluster = np.argmax(
+            norm_diff) + 1
+
+        if elbow_cluster == 1:
+            elbow_cluster = np.argmax(
+                norm_diff[1:]) + 2
 
         return elbow_cluster
 
-    # Пример использования функ
-    def _generate_layout(self):
-        met_list = []
-        metrics_method = {
-            0: self._generate_kmeans(),
-            1: self._generate_hirarchy(),
-            2: self._generate_component(),
-        }
-        for metric in metrics_method:
-            if metric == self.settings['method']:
-                met_list.append(metrics_method[metric])
+    def generate_k_means(self, num_clusters, file_path="hi.xlsx"):
+        df_numeric = get_numeric_df(self.df)
+        kmeans = KMeans(n_clusters=num_clusters, init='k-means++')
+        kmeans.fit(df_numeric)
+        labels = kmeans.labels_
+        centers = kmeans.cluster_centers_
 
-        # def _generate_kmeans(self):
-        #     print(np.__version__)
-        #     df = self.pp.get_numeric_df(self.settings['data'])
-        #     print(self.pp.get_categorical_df(self.settings['data']))
-        #     df = (df - df.mean()) / df.std()
-        #     x = list(df.values.tolist())
-        #     p = 2
-        #     r = 1
-        #     df = self.settings['data']
-        #     print(df.dtypes)
-        #
-        #     # create function to calculate Manhattan distance
-        #     def user1(a, b):
-        #         ch = sum((val1 * val2) for val1, val2 in zip(a, b))
-        #         z1 = sum((val1 ** 2) for val1, val2 in zip(a, b))
-        #         z2 = sum((val2 ** 2) for val1, val2 in zip(a, b))
-        #         return 1 - ch / (z1 * z2)
-        #
-        #     def user2(a, b):
-        #         global p, r
-        #         ch = (sum((val1 - val2) ** p for val1, val2 in zip(a, b))) ** (
-        #                 1 / r)
-        #         return ch
-        #
-        #     def k_znach(n, met):
-        #         try:
-        #             n = int(n)
-        #             metric = int(met)
-        #             mini = 10000000
-        #             clusters = []
-        #             final = []
-        #             begin = []
-        #             for i in range(len(x) * n):
-        #                 initial_centers = kmeans_plusplus_initializer(x,
-        #                                                               n).initialize()
-        #                 if metric == 0:
-        #                     kmeans_instance = kmeans(x, initial_centers,
-        #                                              metric=distance_metric(
-        #                                                  type_metric.EUCLIDEAN))
-        #                 elif metric == 1:
-        #                     kmeans_instance = kmeans(x, initial_centers,
-        #                                              metric=distance_metric(
-        #                                                  type_metric.EUCLIDEAN_SQUARE))
-        #                 elif metric == 2:
-        #                     kmeans_instance = kmeans(x, initial_centers,
-        #                                              metric=distance_metric(
-        #                                                  type_metric.MANHATTAN))
-        #                 elif metric == 3:
-        #                     kmeans_instance = kmeans(x, initial_centers,
-        #                                              metric=distance_metric(
-        #                                                  type_metric.CHEBYSHEV))
-        #                 elif metric == 4:
-        #                     kmeans_instance = kmeans(x, initial_centers,
-        #                                              metric=distance_metric(
-        #                                                  type_metric.USER_DEFINED,
-        #                                                  func=user1))
-        #                 elif metric == 5:
-        #                     kmeans_instance = kmeans(x, initial_centers,
-        #                                              metric=distance_metric(
-        #                                                  type_metric.USER_DEFINED,
-        #                                                  func=user2))
-        #
-        #                 kmeans_instance.process()
-        #                 if kmeans_instance.get_total_wce() < mini:
-        #                     clusters = kmeans_instance.get_clusters()
-        #                     final = kmeans_instance.get_centers()
-        #                     begin = initial_centers
-        #                     mini = kmeans_instance.get_total_wce()
-        #             num = []
-        #             for i in clusters:
-        #                 num.append(len(i))
-        #             clusters2 = []
-        #             for i in clusters:
-        #                 l = ""
-        #                 for j in range(len(i)):
-        #                     l += str(i[j]) + " "
-        #                 clusters2.append(l)
-        #             print(final)
-        #             fin2 = []
-        #             for i in range(len(final)):
-        #                 l = []
-        #                 for j in range(len(final[i])):
-        #                     l += str(round(final[i][j], 2)) + " "
-        #                 fin2.append(l)
-        #
-        #             beg2 = []
-        #             for i in range(len(begin)):
-        #                 l = []
-        #                 for j in range(len(begin[i])):
-        #                     l += str(round(begin[i][j], 2)) + " "
-        #                 beg2.append(l)
-        #
-        #             d = {"Кластер": pd.Series(clusters2,
-        #                                       index=[i for i in range(n)]),
-        #                  "Число элементов в кластере": pd.Series(num,
-        #                                                          index=[i for i
-        #                                                                 in
-        #                                                                 range(
-        #                                                                     n)]),
-        #                  "Начальные центры кластера": pd.Series(beg2,
-        #                                                         index=[i for i
-        #                                                                in range(
-        #                                                                 n)]),
-        #                  "Конечные центры кластера": pd.Series(fin2,
-        #                                                        index=[i for i in
-        #                                                               range(
-        #                                                                   n)])}
-        #             df1 = pd.DataFrame(d)
-        #             print(df1)
-        #             return df1
-        #         except ValueError:
-        #             print("")
-        #
-        #     metrics = ['euclidean', 'sqeuclidean', 'cityblock', 'chebyshev',
-        #                'cosine', 'power']
+        cluster_elements = [[] for _ in range(num_clusters)]
+        for i, label in enumerate(labels):
+            cluster_elements[label].append(i)
 
-    def _generate_kmeans(self):
-        print(np.__version__)
-        df = self.pp.get_numeric_df(self.settings['data'])
-        print(self.pp.get_categorical_df(self.settings['data']))
-        df = (df - df.mean()) / df.std()
-        x = list(df.values.tolist())
-        p = 2
-        r = 1
-        df = self.settings['data']
-        print(df.dtypes)
+        df_cluster_assignments = pd.DataFrame(
+            {'Кластеры': [i + 1 for i in range(num_clusters)],
+             'Количество элементов': [len(elements) for elements in
+                                      cluster_elements],
+             'Элементы': [', '.join(map(str, elements)) for elements in
+                          cluster_elements],
+             },
+        )
 
-        # create function to calculate Manhattan distance
-        def user1(a, b):
-            ch = sum((val1 * val2) for val1, val2 in zip(a, b))
-            z1 = sum((val1 ** 2) for val1, val2 in zip(a, b))
-            z2 = sum((val2 ** 2) for val1, val2 in zip(a, b))
-            return 1 - ch / (z1 * z2)
+        df_cluster_assignments.to_excel(
+            f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{K_MEANS}/k_means_{self.chat_id}.xlsx",
+            index=False)
 
-        def user2(a, b):
-            global p, r
-            ch = (sum((val1 - val2) ** p for val1, val2 in zip(a, b))) ** (
-                    1 / r)
-            return ch
+        num_features = min(2, df_numeric.shape[1])
+        feature_columns = np.random.choice(df_numeric.columns,
+                                           size=num_features, replace=False)
 
-        def k_znach(n, met):
-            try:
-                n = int(n)
-                metric = int(met)
-                mini = 10000000
-                clusters = []
-                final = []
-                begin = []
-                for i in range(len(x) * n):
-                    initial_centers = kmeans_plusplus_initializer(x,
-                                                                  n).initialize()
-                    if metric == 0:
-                        kmeans_instance = kmeans(x, initial_centers,
-                                                 metric=distance_metric(
-                                                     type_metric.EUCLIDEAN))
-                    elif metric == 1:
-                        kmeans_instance = kmeans(x, initial_centers,
-                                                 metric=distance_metric(
-                                                     type_metric.EUCLIDEAN_SQUARE))
-                    elif metric == 2:
-                        kmeans_instance = kmeans(x, initial_centers,
-                                                 metric=distance_metric(
-                                                     type_metric.MANHATTAN))
-                    elif metric == 3:
-                        kmeans_instance = kmeans(x, initial_centers,
-                                                 metric=distance_metric(
-                                                     type_metric.CHEBYSHEV))
-                    elif metric == 4:
-                        kmeans_instance = kmeans(x, initial_centers,
-                                                 metric=distance_metric(
-                                                     type_metric.USER_DEFINED,
-                                                     func=user1))
-                    elif metric == 5:
-                        kmeans_instance = kmeans(x, initial_centers,
-                                                 metric=distance_metric(
-                                                     type_metric.USER_DEFINED,
-                                                     func=user2))
+        fig, ax = plt.subplots()
+        colors = list(mcolors.TABLEAU_COLORS.keys())[:num_clusters]
 
-                    kmeans_instance.process()
-                    if kmeans_instance.get_total_wce() < mini:
-                        clusters = kmeans_instance.get_clusters()
-                        final = kmeans_instance.get_centers()
-                        begin = initial_centers
-                        mini = kmeans_instance.get_total_wce()
-                num = []
-                for i in clusters:
-                    num.append(len(i))
-                clusters2 = []
-                for i in clusters:
-                    l = ""
-                    for j in range(len(i)):
-                        l += str(i[j]) + " "
-                    clusters2.append(l)
-                print(final)
-                fin2 = []
-                for i in range(len(final)):
-                    l = []
-                    for j in range(len(final[i])):
-                        l += str(round(final[i][j], 2)) + " "
-                    fin2.append(l)
+        for i in range(num_clusters):
+            if i < len(cluster_elements):
+                cluster_data = df_numeric.iloc[cluster_elements[i]]
+                ax.scatter(cluster_data[feature_columns[0]],
+                           cluster_data[feature_columns[1]], c=colors[i],
+                           label=f'Кластер №{i + 1}')
 
-                beg2 = []
-                for i in range(len(begin)):
-                    l = []
-                    for j in range(len(begin[i])):
-                        l += str(round(begin[i][j], 2)) + " "
-                    beg2.append(l)
+        ax.scatter(centers[:, df_numeric.columns.get_loc(feature_columns[0])],
+                   centers[:, df_numeric.columns.get_loc(feature_columns[1])],
+                   c='black', marker='x', label='Центроиды')
 
-                d = {"Кластер": pd.Series(clusters2,
-                                          index=[i for i in range(n)]),
-                     "Число элементов в кластере": pd.Series(num,
-                                                             index=[i for i
-                                                                    in
-                                                                    range(
-                                                                        n)]),
-                     "Начальные центры кластера": pd.Series(beg2,
-                                                            index=[i for i
-                                                                   in range(
-                                                                    n)]),
-                     "Конечные центры кластера": pd.Series(fin2,
-                                                           index=[i for i in
-                                                                  range(
-                                                                      n)])}
-                df1 = pd.DataFrame(d)
-                print(df1)
-                return df1
-            except ValueError:
-                print("")
+        ax.set_xlabel(f"Параметр {feature_columns[0]}")
+        ax.set_ylabel(f"Параметр {feature_columns[1]}")
+        ax.set_title('Визуализация кластеризации k-средними')
+        ax.legend()
+        plt.savefig(
+            f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{K_MEANS}/k_means_{self.chat_id}.png",
+        )
 
-        metrics = ['euclidean', 'sqeuclidean', 'cityblock', 'chebyshev',
-                   'cosine', 'power']
+        plt.clf()
+        plt.close()

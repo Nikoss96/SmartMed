@@ -14,3 +14,4 @@ BOXPLOTS = "boxplots"
 
 CLUSTER_ANALYSIS = "cluster_analysis"
 ELBOW_METHOD = "elbow_method"
+K_MEANS = "k_means"

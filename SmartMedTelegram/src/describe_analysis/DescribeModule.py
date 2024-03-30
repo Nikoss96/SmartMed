@@ -209,6 +209,9 @@ class DescribeModule:
             pad_inches=0.0,
         )
 
+        plt.clf()
+        plt.close()
+
     def make_plots(self):
         num_cols = len(self.df.columns)
         num_rows = (num_cols + 3) // 4

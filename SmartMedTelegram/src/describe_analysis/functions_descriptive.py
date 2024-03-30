@@ -1,10 +1,6 @@
 import os
-import time
 
 import pandas as pd
-import requests
-from requests import RequestException
-from telebot.apihelper import ApiTelegramException
 from telebot.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
@@ -15,12 +11,10 @@ from describe_analysis.DescribeModule import (
     filter_columns_with_more_than_2_unique_values,
 )
 from describe_analysis.keyboard_descriptive import (
-    keyboard_choice_describe, keyboard_replace_null_values_describe,
+    keyboard_choice_describe,
 )
 
-from functions import save_file, send_document_from_file, check_input_file, \
-    clear_user_files, create_dataframe_and_save_file, get_user_file, \
-    user_commands
+from functions import send_document_from_file, create_dataframe_and_save_file
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
@@ -29,7 +23,8 @@ from data.paths import (
     DESCRIBE_TABLES,
     CORRELATION_MATRICES,
     PLOTS,
-    BOXPLOTS, CLUSTER_ANALYSIS, EXAMPLES,
+    BOXPLOTS,
+    EXAMPLES,
 )
 
 test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"

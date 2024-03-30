@@ -47,7 +47,7 @@ keyboard_choice_cluster = InlineKeyboardMarkup()
 keyboard_choice_cluster.add(
     InlineKeyboardButton(
         text="Метод k-средних",
-        callback_data="cluster_k_means"
+        callback_data="k_means_cluster"
     )
 )
 keyboard_choice_cluster.add(
@@ -58,13 +58,13 @@ keyboard_choice_number_of_clusters = InlineKeyboardMarkup()
 keyboard_choice_number_of_clusters.add(
     InlineKeyboardButton(
         text="Оставить рекомендованное количество кластеров",
-        callback_data="recommended"
+        callback_data="recommended_number_of_clusters"
     )
 )
 keyboard_choice_number_of_clusters.add(
     InlineKeyboardButton(
         text="Выбрать количество кластеров самостоятельно",
-        callback_data="recommended"
+        callback_data="choose_number_of_clusters"
     )
 )
 keyboard_choice_number_of_clusters.add(

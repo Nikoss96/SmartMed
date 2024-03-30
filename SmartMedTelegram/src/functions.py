@@ -17,8 +17,6 @@ from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
     USER_DATA_PATH,
-    DESCRIBE_ANALYSIS,
-    DESCRIBE_TABLES,
 )
 from preprocessing.preprocessing import PandasPreprocessor
 

@@ -1,6 +1,7 @@
 from cluster_analysis.functions_cluster import \
-    handle_example_cluster_analysis, handle_download_cluster, \
-    handle_downloaded_cluster_file, handle_cluster_k_means
+    handle_example_cluster_analysis, handle_downloaded_cluster_file, \
+    handle_cluster_k_means, handle_choose_number_of_clusters, \
+    handle_pagination_columns_cluster, handle_cluster_numbers
 from describe_analysis.functions_descriptive import (
     handle_example_describe,
     handle_describe_build_graphs,
@@ -45,11 +46,18 @@ def callback_query_handler(bot, call):
                 "boxplot_next_"):
             handle_pagination_columns(bot, call)
 
+        elif command.startswith("cluster_prev_") or command.startswith(
+                "cluster_next_"):
+            handle_pagination_columns_cluster(bot, call)
+
         elif command.startswith("statistical_term"):
             handle_statistical_term(bot, call)
 
         elif command.startswith("column_"):
             handle_box_plot(bot, call)
+
+        elif command.startswith("cluster_"):
+            handle_cluster_numbers(bot, call, command)
 
         elif command == "example_describe":
             handle_example_describe(bot, call)
@@ -89,7 +97,13 @@ def callback_query_handler(bot, call):
         ]:
             handle_downloaded_cluster_file(bot, call, command)
 
-        elif command == "cluster_k_means":
+        elif command == "choose_number_of_clusters":
+            handle_choose_number_of_clusters(bot, call)
+
+        elif command == "recommended_number_of_clusters":
+            handle_cluster_numbers(bot, call, command)
+
+        elif command == "k_means_cluster":
             handle_cluster_k_means(bot, call)
 
     except Exception as e:
