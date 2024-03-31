@@ -14,7 +14,8 @@ from data.paths import (
     CLUSTER_ANALYSIS,
     USER_DATA_PATH,
     ELBOW_METHOD,
-    K_MEANS, HIERARCHICAL,
+    K_MEANS,
+    HIERARCHICAL,
 )
 from preprocessing.preprocessing import get_numeric_df
 
@@ -82,8 +83,7 @@ class ClusterModule:
                     len(elements) for elements in cluster_elements
                 ],
                 "Элементы": [
-                    ", ".join(map(str, elements)) for elements in
-                    cluster_elements
+                    ", ".join(map(str, elements)) for elements in cluster_elements
                 ],
             },
         )
@@ -142,24 +142,33 @@ class ClusterModule:
 
         linked = linkage(dists, n=data.shape[0], method=5)
 
-        cluster_labels = fcluster(linked, n_clusters, criterion='maxclust')
+        cluster_labels = fcluster(linked, n_clusters, criterion="maxclust")
 
-        fig = ff.create_dendrogram(data, orientation='bottom',
-                                   labels=self.df.index,
-                                   linkagefun=lambda x: linked)
-        fig.update_layout(title=f'Дендрограмма',
-                          xaxis_title='Строка',
-                          yaxis_title='Евклидово расстояние')
+        fig = ff.create_dendrogram(
+            data,
+            orientation="bottom",
+            labels=self.df.index,
+            linkagefun=lambda x: linked,
+        )
+        fig.update_layout(
+            title=f"Дендрограмма",
+            xaxis_title="Строка",
+            yaxis_title="Евклидово расстояние",
+        )
 
         for cluster_num in range(1, n_clusters + 1):
             cluster_points = self.df.index[cluster_labels == cluster_num]
             fig.add_trace(
-                go.Scatter(x=cluster_points, y=np.zeros(len(cluster_points)),
-                           mode='markers', name=f'Кластер {cluster_num}'))
+                go.Scatter(
+                    x=cluster_points,
+                    y=np.zeros(len(cluster_points)),
+                    mode="markers",
+                    name=f"Кластер {cluster_num}",
+                )
+            )
 
         fig.update_layout(height=1000, width=1400)
-        fig.update_xaxes(
-            showticklabels=True)
+        fig.update_xaxes(showticklabels=True)
 
         fig.write_image(
             f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{HIERARCHICAL}/hierarchical_{self.chat_id}.png"

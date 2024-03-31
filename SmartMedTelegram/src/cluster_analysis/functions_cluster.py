@@ -15,7 +15,8 @@ from data.paths import (
     USER_DATA_PATH,
     ELBOW_METHOD,
     EXAMPLES,
-    K_MEANS, HIERARCHICAL,
+    K_MEANS,
+    HIERARCHICAL,
 )
 from describe_analysis.DescribeModule import (
     filter_columns_with_more_than_2_unique_values,
@@ -93,9 +94,9 @@ def handle_cluster_method(bot, call, command):
         bot.send_message(
             chat_id=chat_id,
             text=f"На основе Ваших данных был построен график Метод Локтя для определения "
-                 f"оптимального количества кластеров по данным.\n\n"
-                 f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
-                 "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
+            f"оптимального количества кластеров по данным.\n\n"
+            f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
+            "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
             reply_markup=keyboard,
         )
 
@@ -128,7 +129,6 @@ def handle_pagination_columns_cluster(bot, call, command) -> None:
     columns = [i + 1 for i in range(10)]
 
     if command.startswith("cluster_"):
-
         data = call.data.split("_") if "_" in call.data else (call.data, 0)
         _, action, page = data[0], data[1], int(data[2])
 
@@ -136,8 +136,7 @@ def handle_pagination_columns_cluster(bot, call, command) -> None:
             page -= 1
 
         edit_column_selection_message(
-            bot, call.message.chat.id, call.message.message_id, columns, page,
-            command
+            bot, call.message.chat.id, call.message.message_id, columns, page, command
         )
 
     elif command.startswith("hierarchical"):
@@ -148,13 +147,11 @@ def handle_pagination_columns_cluster(bot, call, command) -> None:
             page -= 1
 
         edit_column_selection_message(
-            bot, call.message.chat.id, call.message.message_id, columns, page,
-            command
+            bot, call.message.chat.id, call.message.message_id, columns, page, command
         )
 
 
-def edit_column_selection_message(bot, chat_id, message_id, columns, page,
-                                  command):
+def edit_column_selection_message(bot, chat_id, message_id, columns, page, command):
     """
     Редактирует сообщение для выбора столбца для построения ящика с усами.
 
@@ -178,8 +175,7 @@ def edit_column_selection_message(bot, chat_id, message_id, columns, page,
     )
 
 
-def generate_column_keyboard(columns: list, page: int,
-                             command) -> InlineKeyboardMarkup:
+def generate_column_keyboard(columns: list, page: int, command) -> InlineKeyboardMarkup:
     """
     Создает клавиатуру с названиями колонок для пагинации.
 
@@ -212,7 +208,7 @@ def generate_column_keyboard(columns: list, page: int,
 
 
 def add_pagination_buttons(
-        keyboard: InlineKeyboardMarkup, columns: list, page: int, prefix
+    keyboard: InlineKeyboardMarkup, columns: list, page: int, prefix
 ) -> None:
     """
     Добавляет кнопки пагинации на клавиатуру.
@@ -226,14 +222,12 @@ def add_pagination_buttons(
         None
     """
     prev_button = (
-        InlineKeyboardButton("Назад",
-                             callback_data=f"{prefix}cluster_prev_{page}")
+        InlineKeyboardButton("Назад", callback_data=f"{prefix}cluster_prev_{page}")
         if page > 0
         else None
     )
     next_button = (
-        InlineKeyboardButton("Далее",
-                             callback_data=f"{prefix}cluster_next_{page + 1}")
+        InlineKeyboardButton("Далее", callback_data=f"{prefix}cluster_next_{page + 1}")
         if (page + 1) * 4 < len(columns)
         else None
     )
@@ -278,8 +272,8 @@ def handle_cluster_numbers(bot, call, command):
         bot.send_message(
             chat_id=call.from_user.id,
             text="По заданному количеству кластеров с помощью метода k-средних"
-                 " был построен точечный график распределения элементов,"
-                 " а также создана таблица распределения элементов.",
+            " был построен точечный график распределения элементов,"
+            " а также создана таблица распределения элементов.",
         )
 
         file_cur = open(png_file_path, "rb")
@@ -311,15 +305,13 @@ def handle_hierarchical(bot, call, command):
 
     chat_id = call.from_user.id
 
-    png_file_path = (
-        f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{HIERARCHICAL}/hierarchical_{chat_id}.png"
-    )
+    png_file_path = f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{HIERARCHICAL}/hierarchical_{chat_id}.png"
 
     if os.path.isfile(png_file_path):
         bot.send_message(
             chat_id=call.from_user.id,
             text="По заданному количеству кластеров с помощью иерархической кластеризации"
-                 " была построена дендрограмма."
+            " была построена дендрограмма.",
         )
 
         file_cur = open(png_file_path, "rb")
