@@ -12,7 +12,7 @@ keyboard_in_development: При отсутствии дальнейшего ал
 """
 
 keyboard_main_menu = ReplyKeyboardMarkup(one_time_keyboard=True)
-keyboard_main_menu.row("Модули", "Словарь")
+keyboard_main_menu.row("Модули", "Словарь", "GPT")
 
 keyboard_modules = ReplyKeyboardMarkup(one_time_keyboard=True)
 keyboard_modules.row("Описательный анализ", "Кластерный анализ")

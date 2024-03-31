@@ -21,6 +21,7 @@ from dictionary.functions_dictionary import (
     handle_pagination_dictionary,
     handle_statistical_term,
 )
+from gpt.functions_gpt import handle_gpt_message
 from keyboard import keyboard_main_menu, keyboard_in_development
 from functions import (
     get_reply_markup,
@@ -48,13 +49,16 @@ def callback_query_handler(bot, call):
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination_dictionary(bot, call)
 
-        elif command.startswith("boxplot_prev_") or command.startswith("boxplot_next_"):
+        elif command.startswith("boxplot_prev_") or command.startswith(
+                "boxplot_next_"):
             handle_pagination_columns(bot, call)
 
-        elif command.startswith("cluster_prev_") or command.startswith("cluster_next_"):
+        elif command.startswith("cluster_prev_") or command.startswith(
+                "cluster_next_"):
             handle_pagination_columns_cluster(bot, call, command)
 
-        elif command.startswith("hierarchical_cluster_prev_") or command.startswith(
+        elif command.startswith(
+                "hierarchical_cluster_prev_") or command.startswith(
             "hierarchical_cluster_next_"
         ):
             handle_pagination_columns_cluster(bot, call, command)
@@ -149,7 +153,9 @@ def start_message_handler(bot, message):
             "- Словарь терминов"
         )
 
-        send_text_message(bot, chat_id, greeting_text, reply_markup=keyboard_main_menu)
+        send_text_message(bot, chat_id, greeting_text,
+                          reply_markup=keyboard_main_menu,
+                          parse_mode="Markdown")
 
     except Exception as e:
         print(f"Ошибка: \n{e}")
@@ -174,7 +180,7 @@ def text_handler(bot, message):
             )
             return
 
-        if command in ["Описательный анализ"]:
+        if command in ["описательный анализ"]:
             send_text_message(
                 bot,
                 chat_id=message.chat.id,
@@ -182,7 +188,7 @@ def text_handler(bot, message):
                 reply_markup=reply_markup,
             )
 
-        elif command == "Кластерный анализ":
+        elif command == "кластерный анализ":
             send_text_message(
                 bot,
                 chat_id=message.chat.id,
@@ -197,13 +203,15 @@ def text_handler(bot, message):
                 text="Выберите интересующий Вас модуль:",
                 reply_markup=reply_markup,
             )
-        else:
+
+        elif command == "gpt":
             send_text_message(
                 bot,
                 chat_id=message.chat.id,
-                text="Выберите интересующий Вас раздел:",
-                reply_markup=reply_markup,
+                text="Напишите Ваш запрос к GPT:",
             )
+        else:
+            handle_gpt_message(bot, message)
 
         print(f"User {username} in {chat_id} chat wrote {command}")
     except Exception as e:
