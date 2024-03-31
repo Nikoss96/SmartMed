@@ -43,7 +43,7 @@ class ClusterModule:
         plt.plot(range(1, max_clusters + 1), inertia_values, marker="o")
         plt.xlabel("Количество Кластеров")
         plt.ylabel("Инерция")
-        plt.title("Метод Локтя")
+        plt.title("Метод локтя")
 
         plt.savefig(
             f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{ELBOW_METHOD}/elbow_method_{self.chat_id}.png",
@@ -83,7 +83,8 @@ class ClusterModule:
                     len(elements) for elements in cluster_elements
                 ],
                 "Элементы": [
-                    ", ".join(map(str, elements)) for elements in cluster_elements
+                    ", ".join(map(str, elements)) for elements in
+                    cluster_elements
                 ],
             },
         )
@@ -121,7 +122,7 @@ class ClusterModule:
 
         ax.set_xlabel(f"Параметр {feature_columns[0]}")
         ax.set_ylabel(f"Параметр {feature_columns[1]}")
-        ax.set_title("Визуализация кластеризации k-средними")
+        ax.set_title("Кластеризация методом к-средних")
         ax.legend()
         plt.savefig(
             f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{K_MEANS}/k_means_{self.chat_id}.png",
@@ -130,7 +131,7 @@ class ClusterModule:
         plt.clf()
         plt.close()
 
-    def plot_dendrogram(self, n_clusters):
+    def plot_dendrogram(self, n_clusters=1):
         data = self.df.to_numpy()
         dists = np.zeros((data.shape[0] * (data.shape[0] - 1)) // 2)
 

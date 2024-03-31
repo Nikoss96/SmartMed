@@ -72,9 +72,6 @@ def callback_query_handler(bot, call):
         elif command.startswith("cluster_"):
             handle_cluster_numbers(bot, call, command)
 
-        elif command.startswith("hierarchical_cluster_"):
-            handle_hierarchical(bot, call, command)
-
         elif command == "example_describe":
             handle_example_describe(bot, call)
 
@@ -123,14 +120,10 @@ def callback_query_handler(bot, call):
             handle_cluster_method(bot, call, command)
 
         elif command == "hierarchical_cluster":
-            handle_cluster_method(bot, call, command)
+            handle_hierarchical(bot, call)
 
         elif command == "choose_number_of_clusters_hierarchical":
             handle_choose_number_of_clusters(bot, call, command)
-
-        elif command == "recommended_number_of_clusters_hierarchical":
-            pass
-            handle_hierarchical(bot, call, command)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")

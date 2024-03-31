@@ -96,7 +96,7 @@ def handle_cluster_method(bot, call, command):
 
         bot.send_message(
             chat_id=chat_id,
-            text=f"На основе Ваших данных был построен график Метод Локтя для определения "
+            text=f"На основе Ваших данных был построен график Метод локтя для определения "
                  f"оптимального количества кластеров по данным.\n\n"
                  f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
                  "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
@@ -109,7 +109,6 @@ def handle_choose_number_of_clusters(bot, call, command):
     Отправляет сообщение для выбора количества кластеров.
 
     Parameters:
-        bot (telegram.Bot): Объект бота.
         call (telebot.types.CallbackQuery): Callback-запрос от пользователя.
     Returns:
         None
@@ -117,9 +116,6 @@ def handle_choose_number_of_clusters(bot, call, command):
     columns = [i + 1 for i in range(10)]
 
     keyboard = generate_column_keyboard(columns, 0, command)
-
-    if call.from_user.id in number_of_clusters:
-        number_of_clusters.pop(call.from_user.id)
 
     bot.send_message(
         chat_id=call.from_user.id,
@@ -280,9 +276,9 @@ def handle_cluster_numbers(bot, call, command):
     if os.path.isfile(png_file_path) and os.path.isfile(excel_file_path):
         bot.send_message(
             chat_id=call.from_user.id,
-            text="По заданному количеству кластеров с помощью метода k-средних"
-                 " был построен точечный график распределения элементов,"
-                 " а также создана таблица распределения элементов.",
+            text="По заданному количеству кластеров с помощью Метода k-средних"
+                 " был построен точечный график,"
+                 " а также создана таблица распределения элементов по кластерам.",
         )
 
         file_cur = open(png_file_path, "rb")
@@ -296,7 +292,7 @@ def handle_cluster_numbers(bot, call, command):
         )
 
 
-def handle_hierarchical(bot, call, command):
+def handle_hierarchical(bot, call):
     df = get_user_file_df(
         f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
         call.from_user.id,
@@ -304,13 +300,8 @@ def handle_hierarchical(bot, call, command):
 
     df = filter_columns_with_more_than_2_unique_values(df)
 
-    if command.startswith("hierarchical_cluster_"):
-        n_clusters = int(call.data.replace("hierarchical_cluster_", ""))
-    else:
-        n_clusters = number_of_clusters.pop(call.from_user.id)
-
     module = ClusterModule(df, call.from_user.id)
-    module.plot_dendrogram(n_clusters)
+    module.plot_dendrogram()
 
     chat_id = call.from_user.id
 
@@ -319,7 +310,7 @@ def handle_hierarchical(bot, call, command):
     if os.path.isfile(png_file_path):
         bot.send_message(
             chat_id=call.from_user.id,
-            text="По заданному количеству кластеров с помощью иерархической кластеризации"
+            text="По Вашим данным с помощью метода Иерархической кластеризации"
                  " была построена дендрограмма.",
         )
 
