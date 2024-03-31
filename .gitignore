@@ -121,6 +121,7 @@ celerybeat.pid
 
 # Environments
 SmartMedDemo/.env
+SmartMedTelegram/.env
 .venv
 env/
 venv/
