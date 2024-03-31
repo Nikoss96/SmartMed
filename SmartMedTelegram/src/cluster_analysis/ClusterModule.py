@@ -2,11 +2,11 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import colors as mcolors
-from pyclustering.cluster.kmeans import kmeans
-from pyclustering.utils.metric import distance_metric, type_metric
-from pyclustering.cluster.center_initializer import kmeans_plusplus_initializer
-from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
+import plotly.graph_objects as go
+from scipy.cluster._hierarchy import linkage
+from sklearn.cluster import KMeans, AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, fcluster
+import plotly.figure_factory as ff
 
 from data.paths import (
     MEDIA_PATH,
@@ -14,7 +14,7 @@ from data.paths import (
     CLUSTER_ANALYSIS,
     USER_DATA_PATH,
     ELBOW_METHOD,
-    K_MEANS,
+    K_MEANS, HIERARCHICAL,
 )
 from preprocessing.preprocessing import get_numeric_df
 
@@ -64,7 +64,7 @@ class ClusterModule:
 
         return elbow_cluster
 
-    def generate_k_means(self, num_clusters, file_path="hi.xlsx"):
+    def generate_k_means(self, num_clusters):
         df_numeric = get_numeric_df(self.df)
         kmeans = KMeans(n_clusters=num_clusters, init="k-means++")
         kmeans.fit(df_numeric)
@@ -82,7 +82,8 @@ class ClusterModule:
                     len(elements) for elements in cluster_elements
                 ],
                 "Элементы": [
-                    ", ".join(map(str, elements)) for elements in cluster_elements
+                    ", ".join(map(str, elements)) for elements in
+                    cluster_elements
                 ],
             },
         )
@@ -128,3 +129,38 @@ class ClusterModule:
 
         plt.clf()
         plt.close()
+
+    def plot_dendrogram(self, n_clusters):
+        data = self.df.to_numpy()
+        dists = np.zeros((data.shape[0] * (data.shape[0] - 1)) // 2)
+
+        k = 0
+        for i in range(data.shape[0]):
+            for j in range(i + 1, data.shape[0]):
+                dists[k] = np.linalg.norm(data[i] - data[j])
+                k += 1
+
+        linked = linkage(dists, n=data.shape[0], method=5)
+
+        cluster_labels = fcluster(linked, n_clusters, criterion='maxclust')
+
+        fig = ff.create_dendrogram(data, orientation='bottom',
+                                   labels=self.df.index,
+                                   linkagefun=lambda x: linked)
+        fig.update_layout(title=f'Дендрограмма',
+                          xaxis_title='Строка',
+                          yaxis_title='Евклидово расстояние')
+
+        for cluster_num in range(1, n_clusters + 1):
+            cluster_points = self.df.index[cluster_labels == cluster_num]
+            fig.add_trace(
+                go.Scatter(x=cluster_points, y=np.zeros(len(cluster_points)),
+                           mode='markers', name=f'Кластер {cluster_num}'))
+
+        fig.update_layout(height=1000, width=1400)
+        fig.update_xaxes(
+            showticklabels=True)
+
+        fig.write_image(
+            f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{HIERARCHICAL}/hierarchical_{self.chat_id}.png"
+        )

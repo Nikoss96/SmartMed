@@ -6,6 +6,7 @@ from cluster_analysis.ClusterModule import ClusterModule
 from cluster_analysis.keyboard_cluster import (
     keyboard_choice_cluster,
     keyboard_choice_number_of_clusters,
+    keyboard_choice_number_of_clusters_hierarchical,
 )
 from data.paths import (
     MEDIA_PATH,
@@ -14,7 +15,7 @@ from data.paths import (
     USER_DATA_PATH,
     ELBOW_METHOD,
     EXAMPLES,
-    K_MEANS,
+    K_MEANS, HIERARCHICAL,
 )
 from describe_analysis.DescribeModule import (
     filter_columns_with_more_than_2_unique_values,
@@ -56,10 +57,9 @@ def handle_downloaded_cluster_file(bot, call, command):
     )
 
 
-def handle_cluster_k_means(bot, call):
+def handle_cluster_method(bot, call, command):
     """
-    Обработка при нажатии на "Метод k-средних"
-    после прочтения файла кластерного анализа.
+    Обработка при выборе метода осле прочтения файла кластерного анализа.
     """
     df = get_user_file_df(
         f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
@@ -77,6 +77,14 @@ def handle_cluster_k_means(bot, call):
 
     file_path = f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{ELBOW_METHOD}/elbow_method_{chat_id}.png"
 
+    keyboard = None
+
+    if command == "hierarchical_cluster":
+        keyboard = keyboard_choice_number_of_clusters_hierarchical
+
+    elif command == "k_means_cluster":
+        keyboard = keyboard_choice_number_of_clusters
+
     if os.path.isfile(file_path):
         file = open(file_path, "rb")
 
@@ -84,15 +92,15 @@ def handle_cluster_k_means(bot, call):
 
         bot.send_message(
             chat_id=chat_id,
-            text=f"На основе Ваших данных был построен Метод Локтя для определения "
-            f"оптимального количества кластеров по данным.\n\n"
-            f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
-            "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
-            reply_markup=keyboard_choice_number_of_clusters,
+            text=f"На основе Ваших данных был построен график Метод Локтя для определения "
+                 f"оптимального количества кластеров по данным.\n\n"
+                 f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
+                 "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
+            reply_markup=keyboard,
         )
 
 
-def handle_choose_number_of_clusters(bot, call):
+def handle_choose_number_of_clusters(bot, call, command):
     """
     Отправляет сообщение для выбора количества кластеров.
 
@@ -102,9 +110,9 @@ def handle_choose_number_of_clusters(bot, call):
     Returns:
         None
     """
-    columns = [i + 1 for i in range(20)]
+    columns = [i + 1 for i in range(10)]
 
-    keyboard = generate_column_keyboard(columns, 0)
+    keyboard = generate_column_keyboard(columns, 0, command)
 
     if call.from_user.id in number_of_clusters:
         number_of_clusters.pop(call.from_user.id)
@@ -116,21 +124,37 @@ def handle_choose_number_of_clusters(bot, call):
     )
 
 
-def handle_pagination_columns_cluster(bot, call) -> None:
-    columns = [i + 1 for i in range(20)]
+def handle_pagination_columns_cluster(bot, call, command) -> None:
+    columns = [i + 1 for i in range(10)]
 
-    data = call.data.split("_") if "_" in call.data else (call.data, 0)
-    _, action, page = data[0], data[1], int(data[2])
+    if command.startswith("cluster_"):
 
-    if action == "prev":
-        page -= 1
+        data = call.data.split("_") if "_" in call.data else (call.data, 0)
+        _, action, page = data[0], data[1], int(data[2])
 
-    edit_column_selection_message(
-        bot, call.message.chat.id, call.message.message_id, columns, page
-    )
+        if action == "prev":
+            page -= 1
+
+        edit_column_selection_message(
+            bot, call.message.chat.id, call.message.message_id, columns, page,
+            command
+        )
+
+    elif command.startswith("hierarchical"):
+        data = call.data.split("_") if "_" in call.data else (call.data, 0)
+        _, prefix, action, page = data[0], data[1], data[2], int(data[3])
+
+        if action == "prev":
+            page -= 1
+
+        edit_column_selection_message(
+            bot, call.message.chat.id, call.message.message_id, columns, page,
+            command
+        )
 
 
-def edit_column_selection_message(bot, chat_id, message_id, columns, page):
+def edit_column_selection_message(bot, chat_id, message_id, columns, page,
+                                  command):
     """
     Редактирует сообщение для выбора столбца для построения ящика с усами.
 
@@ -144,7 +168,7 @@ def edit_column_selection_message(bot, chat_id, message_id, columns, page):
     Returns:
         None
     """
-    keyboard = generate_column_keyboard(columns, page)
+    keyboard = generate_column_keyboard(columns, page, command)
 
     bot.edit_message_text(
         chat_id=chat_id,
@@ -154,7 +178,8 @@ def edit_column_selection_message(bot, chat_id, message_id, columns, page):
     )
 
 
-def generate_column_keyboard(columns: list, page: int) -> InlineKeyboardMarkup:
+def generate_column_keyboard(columns: list, page: int,
+                             command) -> InlineKeyboardMarkup:
     """
     Создает клавиатуру с названиями колонок для пагинации.
 
@@ -171,19 +196,23 @@ def generate_column_keyboard(columns: list, page: int) -> InlineKeyboardMarkup:
     end_index = min((page + 1) * columns_per_page, len(columns))
     current_columns = columns[start_index:end_index]
 
+    prefix = ""
+    if "hierarchical" in command:
+        prefix = "hierarchical_"
+
     for index, column in enumerate(current_columns):
         button = InlineKeyboardButton(
-            column, callback_data=f"cluster_{start_index + index + 1}"
+            column, callback_data=f"{prefix}cluster_{start_index + index + 1}"
         )
         keyboard.add(button)
 
-    add_pagination_buttons(keyboard, columns, page)
+    add_pagination_buttons(keyboard, columns, page, prefix)
 
     return keyboard
 
 
 def add_pagination_buttons(
-    keyboard: InlineKeyboardMarkup, columns: list, page: int
+        keyboard: InlineKeyboardMarkup, columns: list, page: int, prefix
 ) -> None:
     """
     Добавляет кнопки пагинации на клавиатуру.
@@ -197,12 +226,14 @@ def add_pagination_buttons(
         None
     """
     prev_button = (
-        InlineKeyboardButton("Назад", callback_data=f"cluster_prev_{page}")
+        InlineKeyboardButton("Назад",
+                             callback_data=f"{prefix}cluster_prev_{page}")
         if page > 0
         else None
     )
     next_button = (
-        InlineKeyboardButton("Далее", callback_data=f"cluster_next_{page + 1}")
+        InlineKeyboardButton("Далее",
+                             callback_data=f"{prefix}cluster_next_{page + 1}")
         if (page + 1) * 4 < len(columns)
         else None
     )
@@ -247,8 +278,8 @@ def handle_cluster_numbers(bot, call, command):
         bot.send_message(
             chat_id=call.from_user.id,
             text="По заданному количеству кластеров с помощью метода k-средних"
-            " была построен точечный график распределения элементов,"
-            " а также создана таблица распределения элементов.",
+                 " был построен точечный график распределения элементов,"
+                 " а также создана таблица распределения элементов.",
         )
 
         file_cur = open(png_file_path, "rb")
@@ -260,3 +291,36 @@ def handle_cluster_numbers(bot, call, command):
             document=file_cur,
             visible_file_name="Принадлежность_элементов_к_кластерам.xlsx",
         )
+
+
+def handle_hierarchical(bot, call, command):
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
+        call.from_user.id,
+    )
+
+    df = filter_columns_with_more_than_2_unique_values(df)
+
+    if command.startswith("hierarchical_cluster_"):
+        n_clusters = int(call.data.replace("hierarchical_cluster_", ""))
+    else:
+        n_clusters = number_of_clusters.pop(call.from_user.id)
+
+    module = ClusterModule(df, call.from_user.id)
+    module.plot_dendrogram(n_clusters)
+
+    chat_id = call.from_user.id
+
+    png_file_path = (
+        f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{HIERARCHICAL}/hierarchical_{chat_id}.png"
+    )
+
+    if os.path.isfile(png_file_path):
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="По заданному количеству кластеров с помощью иерархической кластеризации"
+                 " была построена дендрограмма."
+        )
+
+        file_cur = open(png_file_path, "rb")
+        bot.send_photo(chat_id=chat_id, photo=file_cur)

@@ -1,10 +1,10 @@
 from cluster_analysis.functions_cluster import (
     handle_example_cluster_analysis,
     handle_downloaded_cluster_file,
-    handle_cluster_k_means,
+    handle_cluster_method,
     handle_choose_number_of_clusters,
     handle_pagination_columns_cluster,
-    handle_cluster_numbers,
+    handle_cluster_numbers, handle_hierarchical,
 )
 from describe_analysis.functions_descriptive import (
     handle_example_describe,
@@ -47,11 +47,19 @@ def callback_query_handler(bot, call):
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination_dictionary(bot, call)
 
-        elif command.startswith("boxplot_prev_") or command.startswith("boxplot_next_"):
+        elif command.startswith("boxplot_prev_") or command.startswith(
+                "boxplot_next_"):
             handle_pagination_columns(bot, call)
 
-        elif command.startswith("cluster_prev_") or command.startswith("cluster_next_"):
-            handle_pagination_columns_cluster(bot, call)
+        elif command.startswith("cluster_prev_") or command.startswith(
+                "cluster_next_"):
+            handle_pagination_columns_cluster(bot, call, command)
+
+
+        elif command.startswith(
+                "hierarchical_cluster_prev_") or command.startswith(
+            "hierarchical_cluster_next_"):
+            handle_pagination_columns_cluster(bot, call, command)
 
         elif command.startswith("statistical_term"):
             handle_statistical_term(bot, call)
@@ -61,6 +69,9 @@ def callback_query_handler(bot, call):
 
         elif command.startswith("cluster_"):
             handle_cluster_numbers(bot, call, command)
+
+        elif command.startswith("hierarchical_cluster_"):
+            handle_hierarchical(bot, call, command)
 
         elif command == "example_describe":
             handle_example_describe(bot, call)
@@ -101,13 +112,23 @@ def callback_query_handler(bot, call):
             handle_downloaded_cluster_file(bot, call, command)
 
         elif command == "choose_number_of_clusters":
-            handle_choose_number_of_clusters(bot, call)
+            handle_choose_number_of_clusters(bot, call, command)
 
         elif command == "recommended_number_of_clusters":
             handle_cluster_numbers(bot, call, command)
 
         elif command == "k_means_cluster":
-            handle_cluster_k_means(bot, call)
+            handle_cluster_method(bot, call, command)
+
+        elif command == "hierarchical_cluster":
+            handle_cluster_method(bot, call, command)
+
+        elif command == "choose_number_of_clusters_hierarchical":
+            handle_choose_number_of_clusters(bot, call, command)
+
+        elif command == "recommended_number_of_clusters_hierarchical":
+            pass
+            # handle_cluster_numbers(bot, call, command)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")
@@ -130,7 +151,8 @@ def start_message_handler(bot, message):
             "- Словарь терминов"
         )
 
-        send_text_message(bot, chat_id, greeting_text, reply_markup=keyboard_main_menu)
+        send_text_message(bot, chat_id, greeting_text,
+                          reply_markup=keyboard_main_menu)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")

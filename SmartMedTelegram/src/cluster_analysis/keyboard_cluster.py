@@ -14,7 +14,8 @@ keyboard_cluster_analysis.add(
     InlineKeyboardButton(text="Пример файла", callback_data="example_cluster")
 )
 keyboard_cluster_analysis.add(
-    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_cluster")
+    InlineKeyboardButton(text="Загрузить свой файл",
+                         callback_data="download_cluster")
 )
 keyboard_cluster_analysis.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back")
@@ -43,7 +44,12 @@ keyboard_replace_null_values_cluster.add(
 )
 keyboard_choice_cluster = InlineKeyboardMarkup()
 keyboard_choice_cluster.add(
-    InlineKeyboardButton(text="Метод k-средних", callback_data="k_means_cluster")
+    InlineKeyboardButton(text="Метод k-средних",
+                         callback_data="k_means_cluster")
+)
+keyboard_choice_cluster.add(
+    InlineKeyboardButton(text="Иерархическая кластеризация",
+                         callback_data="hierarchical_cluster")
 )
 keyboard_choice_cluster.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back")
@@ -63,5 +69,22 @@ keyboard_choice_number_of_clusters.add(
     )
 )
 keyboard_choice_number_of_clusters.add(
+    InlineKeyboardButton(text="Главное меню", callback_data="back")
+)
+
+keyboard_choice_number_of_clusters_hierarchical = InlineKeyboardMarkup()
+keyboard_choice_number_of_clusters_hierarchical.add(
+    InlineKeyboardButton(
+        text="Оставить рекомендованное количество кластеров",
+        callback_data="recommended_number_of_clusters_hierarchical",
+    )
+)
+keyboard_choice_number_of_clusters_hierarchical.add(
+    InlineKeyboardButton(
+        text="Выбрать количество кластеров самостоятельно",
+        callback_data="choose_number_of_clusters_hierarchical",
+    )
+)
+keyboard_choice_number_of_clusters_hierarchical.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back")
 )
