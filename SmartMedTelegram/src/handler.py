@@ -210,6 +210,15 @@ def text_handler(bot, message):
                 chat_id=message.chat.id,
                 text="Напишите Ваш запрос к GPT:",
             )
+
+        elif command == "словарь":
+            send_text_message(
+                bot,
+                chat_id=message.chat.id,
+                text="Выберите интересующий Вас раздел:",
+                reply_markup=reply_markup,
+            )
+
         else:
             handle_gpt_message(bot, message)
 
