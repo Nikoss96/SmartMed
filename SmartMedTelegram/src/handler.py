@@ -9,7 +9,10 @@ from cluster_analysis.functions_cluster import (
 )
 from comparative_analysis.functions_comparative import \
     handle_example_comparative_analysis, handle_downloaded_comparative_file, \
-    handle_kolmogorov_smirnov_test_comparative
+    handle_kolmogorov_smirnov_test_comparative, user_columns, \
+    handle_categorical_columns_comparative
+from comparative_analysis.keyboard_implementation import \
+    handle_pagination_columns_comparative
 from describe_analysis.functions_descriptive import (
     handle_example_describe,
     handle_describe_build_graphs,
@@ -52,6 +55,18 @@ def callback_query_handler(bot, call):
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination_dictionary(bot, call)
 
+        elif command.startswith(
+                "continuous_columns_prev_") or command.startswith(
+            "continuous_columns_next_"):
+            columns = user_columns[call.from_user.id]["continuous_columns"]
+            handle_pagination_columns_comparative(bot, call, command, columns)
+
+        elif command.startswith(
+                "categorical_columns_prev_") or command.startswith(
+            "categorical_columns_next_"):
+            columns = user_columns[call.from_user.id]["categorical_columns"]
+            handle_pagination_columns_comparative(bot, call, command, columns)
+
         elif command.startswith("boxplot_prev_") or command.startswith(
                 "boxplot_next_"):
             handle_pagination_columns(bot, call)
@@ -74,6 +89,9 @@ def callback_query_handler(bot, call):
 
         elif command.startswith("cluster_"):
             handle_cluster_numbers(bot, call, command)
+
+        elif command.startswith("continuous_column_"):
+            handle_categorical_columns_comparative(bot, call)
 
         elif command == "example_describe":
             handle_example_describe(bot, call)

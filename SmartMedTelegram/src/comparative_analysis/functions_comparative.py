@@ -1,8 +1,14 @@
+from comparative_analysis.ComparativeModule import ComparativeModule
 from comparative_analysis.keyboard_comparative import \
     keyboard_choice_comparative
-from data.paths import MEDIA_PATH, DATA_PATH, EXAMPLES
+from comparative_analysis.keyboard_implementation import \
+    handle_choose_column_comparative
+from data.paths import MEDIA_PATH, DATA_PATH, EXAMPLES, USER_DATA_PATH
+from describe_analysis.functions_descriptive import get_user_file_df
 from functions import send_document_from_file, create_dataframe_and_save_file
 from keyboard import keyboard_in_development
+
+user_columns = {}
 
 
 def handle_example_comparative_analysis(bot, call):
@@ -28,6 +34,8 @@ def handle_downloaded_comparative_file(bot, call, command):
     """
     Обработка файла, присланного пользователем для дальнейших расчетов.
     """
+    if call.from_user.id in user_columns:
+        user_columns.pop(call.from_user.id)
     create_dataframe_and_save_file(call.from_user.id, command)
     bot.send_message(
         chat_id=call.from_user.id,
@@ -40,33 +48,40 @@ def handle_kolmogorov_smirnov_test_comparative(bot, call, command):
     """
     Обработка при выборе метода после прочтения файла сравнительного анализа.
     """
+
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
+        call.from_user.id,
+    )
+
+    module = ComparativeModule(df, call.from_user.id)
+
+    categorical_columns, continuous_columns = module.get_categorical_and_continuous_columns()
+
+    user_columns[call.from_user.id] = {}
+    user_columns[call.from_user.id]["categorical_columns"] = categorical_columns
+    user_columns[call.from_user.id]["continuous_columns"] = continuous_columns
+
     bot.send_message(
         chat_id=call.from_user.id,
         text=f"Критерий согласия Колмогорова-Смирнова предназначен для "
              f"проверки гипотезы о принадлежности выборки нормальному "
              f"закону распределения.\n\nВам необходимо указать независимую и "
-             f"группирующую переменные.",
-    )
-
-    bot.send_message(
-        chat_id=call.from_user.id,
-        text=f"Группирующая переменная - переменная, используемая для разбиения "
+             f"группирующую переменные.\n\n"
+             f"Группирующая переменная - переменная, используемая для разбиения "
              f"независимой переменной на группы, для данного критерия является "
              f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
              f" переменная представляет набор количественных, непрерывных "
              f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
     )
 
-    # Критерий согласия Колмогорова-Смирнова предназначен для проверки гипотезы о принадлежности выборки нормальному закону распределения.
-    # df = get_user_file_df(
-    #     f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
-    #     call.from_user.id,
-    # )
-    #
-    # df = filter_columns_with_more_than_2_unique_values(df)
-    #
-    # module = ClusterModule(df, call.from_user.id)
-    #
+    handle_continuous_columns_comparative(bot, call)
+
+    # Клавиатура с независимой переменной
+    # Клавиатура с группирующей переменной
+
+    # Вывод значения и интерпретация
+
     # optimal_clusters = module.elbow_method_and_optimal_clusters(max_clusters=10)
     #
     # if call.from_user.id in number_of_clusters:
@@ -98,3 +113,19 @@ def handle_kolmogorov_smirnov_test_comparative(bot, call, command):
     #              "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
     #         reply_markup=keyboard,
     #     )
+
+
+def handle_continuous_columns_comparative(bot, call):
+    continuous_columns = user_columns[call.from_user.id]["continuous_columns"]
+
+    handle_choose_column_comparative(bot, call, continuous_columns,
+                                     "continuous_columns")
+
+
+def handle_categorical_columns_comparative(bot, call):
+    categorical_columns = user_columns[call.from_user.id]["categorical_columns"]
+
+    # Проверка на наличие выбранной группирующей
+
+    handle_choose_column_comparative(bot, call, categorical_columns,
+                                     "categorical_columns")
