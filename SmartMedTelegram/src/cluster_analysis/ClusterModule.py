@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import colors as mcolors
 import plotly.graph_objects as go
-from scipy.cluster._hierarchy import linkage
+from scipy.cluster.hierarchy import linkage
 from sklearn.cluster import KMeans, AgglomerativeClustering
 from scipy.cluster.hierarchy import dendrogram, fcluster
 import plotly.figure_factory as ff
@@ -36,7 +36,7 @@ class ClusterModule:
         inertia_values = []
 
         for n_clusters in range(1, max_clusters + 1):
-            kmeans = KMeans(n_clusters=n_clusters)
+            kmeans = KMeans(n_clusters=n_clusters, n_init="warn")
             kmeans.fit(self.df)
             inertia_values.append(kmeans.inertia_)
 
@@ -132,91 +132,56 @@ class ClusterModule:
         plt.close()
 
     def plot_dendrogram(self, n_clusters=1):
-        data = self.df.to_numpy()
-        dists = np.zeros((data.shape[0] * (data.shape[0] - 1)) // 2)
+        df = get_numeric_df(self.df)
+        df = (df - df.mean()) / df.std()
+        x = list(df.values.tolist())
 
-        k = 0
-        for i in range(data.shape[0]):
-            for j in range(i + 1, data.shape[0]):
-                dists[k] = np.linalg.norm(data[i] - data[j])
-                k += 1
+        model = AgglomerativeClustering(n_clusters=n_clusters,
+                                        metric="euclidean",
+                                        linkage="complete").fit(x)
 
-        linked = linkage(dists, n=data.shape[0], method=5)
+        labs = model.labels_
+        lst = []
+        s = [i for i in range(n_clusters)]
+        for i in s:
+            l = []
+            for j in range(len(labs)):
+                if labs[j] == i:
+                    l.append(j)
+            lst.append(l)
+        clusters2 = []
+        for i in lst:
+            l = ""
+            for j in range(len(i)):
+                l += str(i[j]) + " "
+            clusters2.append(l)
+        num = []
+        for i in lst:
+            num.append(len(i))
+        d = {"Кластер": pd.Series(clusters2,
+                                  index=[i for i in range(n_clusters)]),
+             "Число элементов в кластере": pd.Series(num, index=[i for i in
+                                                                 range(
+                                                                     n_clusters)])}
+        df1 = pd.DataFrame(d)
 
-        cluster_labels = fcluster(linked, n_clusters, criterion="maxclust")
-
-        fig = ff.create_dendrogram(
-            data,
-            orientation="bottom",
-            labels=self.df.index,
-            linkagefun=lambda x: linked,
-        )
+        di = sorted(
+            linkage(x, method="complete", metric="euclidean",
+                    optimal_ordering=False)[:, 2])
+        fig = ff.create_dendrogram(df,
+                                   linkagefun=lambda ci: linkage(df, "complete",
+                                                                 metric="euclidean"),
+                                   color_threshold=di[-n_clusters + 1])
         fig.update_layout(
-            title=f"Дендрограмма",
+            title=f"Дендрограмма ({n_clusters} кластера(-ов))",
             xaxis_title="Строка",
             yaxis_title="Евклидово расстояние",
         )
-
-        for cluster_num in range(1, n_clusters + 1):
-            cluster_points = self.df.index[cluster_labels == cluster_num]
-            fig.add_trace(
-                go.Scatter(
-                    x=cluster_points,
-                    y=np.zeros(len(cluster_points)),
-                    mode="markers",
-                    name=f"Кластер {cluster_num}",
-                )
-            )
-
         fig.update_layout(height=1000, width=1400)
-        fig.update_xaxes(showticklabels=True)
+        fig.update_xaxes(mirror=False, showgrid=True, showline=False,
+                         showticklabels=True)
+        fig.update_yaxes(mirror=False, showgrid=True, showline=True)
 
         fig.write_image(
             f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{HIERARCHICAL}/hierarchical_{self.chat_id}.png"
         )
-
-        # df = self.pp.get_numeric_df(self.settings['data'])
-        # df = (df - df.mean()) / df.std()
-        # x = list(df.values.tolist())
-        #
-        # def update_output_div(n, met, meth):
-        #     n = int(n)
-        #
-        #     model = AgglomerativeClustering(n_clusters=n, affinity=met,
-        #                                     linkage=meth).fit(x)
-        #     labs = model.labels_
-        #     lst = []
-        #     s = [i for i in range(n)]
-        #     for i in s:
-        #         l = []
-        #         for j in range(len(labs)):
-        #             if labs[j] == i:
-        #                 l.append(j)
-        #         lst.append(l)
-        #     clusters2 = []
-        #     for i in lst:
-        #         l = ""
-        #         for j in range(len(i)):
-        #             l += str(i[j]) + " "
-        #         clusters2.append(l)
-        #     num = []
-        #     for i in lst:
-        #         num.append(len(i))
-        #     d = {"Кластер": pd.Series(clusters2, index=[i for i in range(n)]),
-        #          "Число элементов в кластере": pd.Series(num, index=[i for i in
-        #                                                              range(n)])}
-        #     df1 = pd.DataFrame(d)
-        #
-        #     di = sorted(
-        #         linkage(x, method=meth, metric=met, optimal_ordering=False)[:,
-        #         2])
-        #
-        #     fig = ff.create_dendrogram(df,
-        #                                linkagefun=lambda ci: linkage(df, meth,
-        #                                                              metric=met),
-        #                                color_threshold=di[-n + 1])
-        #     fig.update_layout(autosize=True, hovermode='closest')
-        #     fig.update_xaxes(mirror=False, showgrid=True, showline=False,
-        #                      showticklabels=False)
-        #     fig.update_yaxes(mirror=False, showgrid=True, showline=True)
-        #

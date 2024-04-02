@@ -5,7 +5,7 @@ from cluster_analysis.functions_cluster import (
     handle_choose_number_of_clusters,
     handle_pagination_columns_cluster,
     handle_cluster_numbers,
-    handle_hierarchical,
+    handle_hierarchical, handle_hierarchical_cluster_numbers,
 )
 from comparative_analysis.functions_comparative import (
     handle_example_comparative_analysis,
@@ -96,6 +96,9 @@ def callback_query_handler(bot, call):
 
         elif command.startswith("cluster_"):
             handle_cluster_numbers(bot, call, command)
+
+        elif command.startswith("hierarchical_cluster_"):
+            handle_hierarchical_cluster_numbers(bot, call, command)
 
         elif command.startswith("continuous_column_"):
             handle_categorical_columns_comparative(bot, call, command)
