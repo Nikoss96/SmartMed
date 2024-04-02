@@ -36,6 +36,7 @@ def get_reply_markup(command):
         "bioequal": keyboard_in_development,
         "описательный анализ": keyboard_describe_analysis,
         "кластерный анализ": keyboard_cluster_analysis,
+        "сравнительный анализ": keyboard_in_development,
         "predict": keyboard_in_development,
         "модули": keyboard_modules,
         "назад": keyboard_main_menu,
