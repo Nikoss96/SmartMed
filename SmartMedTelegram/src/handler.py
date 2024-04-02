@@ -7,6 +7,9 @@ from cluster_analysis.functions_cluster import (
     handle_cluster_numbers,
     handle_hierarchical,
 )
+from comparative_analysis.functions_comparative import \
+    handle_example_comparative_analysis, handle_downloaded_comparative_file, \
+    handle_kolmogorov_smirnov_test_comparative
 from describe_analysis.functions_descriptive import (
     handle_example_describe,
     handle_describe_build_graphs,
@@ -75,7 +78,8 @@ def callback_query_handler(bot, call):
         elif command == "example_describe":
             handle_example_describe(bot, call)
 
-        elif command in ["download_describe", "download_cluster"]:
+        elif command in ["download_describe", "download_cluster",
+                         "download_comparative"]:
             handle_download(bot, call, command)
 
         elif command == "back":
@@ -96,6 +100,9 @@ def callback_query_handler(bot, call):
         elif command == "example_cluster":
             handle_example_cluster_analysis(bot, call)
 
+        elif command == "example_comparative":
+            handle_example_comparative_analysis(bot, call)
+
         elif command in [
             "replace_null_with_mean_describe",
             "delete_null_rows_dropna_describe",
@@ -109,6 +116,14 @@ def callback_query_handler(bot, call):
             "replace_null_with_median_cluster",
         ]:
             handle_downloaded_cluster_file(bot, call, command)
+
+
+        elif command in [
+            "replace_null_with_mean_comparative",
+            "delete_null_rows_dropna_comparative",
+            "replace_null_with_median_comparative",
+        ]:
+            handle_downloaded_comparative_file(bot, call, command)
 
         elif command == "choose_number_of_clusters":
             handle_choose_number_of_clusters(bot, call, command)
@@ -124,6 +139,9 @@ def callback_query_handler(bot, call):
 
         elif command == "choose_number_of_clusters_hierarchical":
             handle_choose_number_of_clusters(bot, call, command)
+
+        elif command == "kolmogorov_smirnov_test_comparative":
+            handle_kolmogorov_smirnov_test_comparative(bot, call, command)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")
@@ -182,6 +200,14 @@ def text_handler(bot, message):
             )
 
         elif command == "кластерный анализ":
+            send_text_message(
+                bot,
+                chat_id=message.chat.id,
+                text="Выберите опцию при работе с модулем:",
+                reply_markup=reply_markup,
+            )
+
+        elif command == "сравнительный анализ":
             send_text_message(
                 bot,
                 chat_id=message.chat.id,

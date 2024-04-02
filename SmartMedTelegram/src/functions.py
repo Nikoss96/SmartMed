@@ -9,6 +9,8 @@ from cluster_analysis.keyboard_cluster import (
     keyboard_cluster_analysis,
     keyboard_replace_null_values_cluster,
 )
+from comparative_analysis.keyboard_comparative import \
+    keyboard_comparative_analysis, keyboard_replace_null_values_comparative
 from describe_analysis.keyboard_descriptive import (
     keyboard_describe_analysis,
     keyboard_replace_null_values_describe,
@@ -36,7 +38,7 @@ def get_reply_markup(command):
         "bioequal": keyboard_in_development,
         "описательный анализ": keyboard_describe_analysis,
         "кластерный анализ": keyboard_cluster_analysis,
-        "сравнительный анализ": keyboard_in_development,
+        "сравнительный анализ": keyboard_comparative_analysis,
         "predict": keyboard_in_development,
         "модули": keyboard_modules,
         "назад": keyboard_main_menu,
@@ -251,6 +253,14 @@ def check_input_file(bot, message, file_path, command):
                     f"Файл {message.document.file_name} успешно прочитан."
                     f" Выберите метод обработки пустых значений в Вашем файле:",
                     reply_markup=keyboard_replace_null_values_cluster,
+                )
+
+            elif command == "download_comparative":
+                bot.reply_to(
+                    message,
+                    f"Файл {message.document.file_name} успешно прочитан."
+                    f" Выберите метод обработки пустых значений в Вашем файле:",
+                    reply_markup=keyboard_replace_null_values_comparative,
                 )
 
             return True
