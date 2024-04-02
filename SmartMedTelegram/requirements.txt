@@ -159,7 +159,7 @@ webencodings==0.5.1
 whatthepatch==1.0.5
 yapf==0.40.2
 zipp==3.17.0
-scikit-learn==1.4.1.post1
+scikit-learn==1.2.0
 plotly==5.20.0
 kaleido==0.2.1
 pyclustering==0.10.1.2
