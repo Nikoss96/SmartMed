@@ -1,5 +1,6 @@
 from comparative_analysis.ComparativeModule import ComparativeModule
-from comparative_analysis.keyboard_comparative import keyboard_choice_comparative
+from comparative_analysis.keyboard_comparative import \
+    keyboard_choice_comparative, keyboard_comparative_analysis
 from comparative_analysis.keyboard_implementation import (
     handle_choose_column_comparative,
 )
@@ -61,61 +62,43 @@ def handle_kolmogorov_smirnov_test_comparative(bot, call, command):
         continuous_columns,
     ) = module.get_categorical_and_continuous_columns()
 
-    user_columns[call.from_user.id] = {}
-    user_columns[call.from_user.id]["categorical_columns"] = categorical_columns
-    user_columns[call.from_user.id]["continuous_columns"] = continuous_columns
+    if len(categorical_columns) < 1:
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="В Вашем файле отсутствуют категориальные переменные. "
+                 "Загрузите файл, который содержит категориальные переменные.",
+            reply_markup=keyboard_comparative_analysis,
+        )
+    elif len(continuous_columns) < 1:
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="В Вашем файле отсутствуют непрерывные переменные. "
+                 "Загрузите файл, который содержит непрерывные переменные.",
+            reply_markup=keyboard_comparative_analysis,
+        )
 
-    bot.send_message(
-        chat_id=call.from_user.id,
-        text=f"Критерий согласия Колмогорова-Смирнова предназначен для "
-        f"проверки гипотезы о принадлежности выборки нормальному "
-        f"закону распределения.\n\nВам необходимо указать независимую и "
-        f"группирующую переменные.\n\n"
-        f"Группирующая переменная - переменная, используемая для разбиения "
-        f"независимой переменной на группы, для данного критерия является "
-        f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
-        f" переменная представляет набор количественных, непрерывных "
-        f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
-    )
+    else:
 
-    handle_continuous_columns_comparative(bot, call)
+        user_columns[call.from_user.id] = {}
+        user_columns[call.from_user.id][
+            "categorical_columns"] = categorical_columns
+        user_columns[call.from_user.id][
+            "continuous_columns"] = continuous_columns
 
-    # Клавиатура с независимой переменной
-    # Клавиатура с группирующей переменной
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text=f"Критерий согласия Колмогорова-Смирнова предназначен для "
+                 f"проверки гипотезы о принадлежности выборки нормальному "
+                 f"закону распределения.\n\nВам необходимо указать независимую и "
+                 f"группирующую переменные.\n\n"
+                 f"Группирующая переменная - переменная, используемая для разбиения "
+                 f"независимой переменной на группы, для данного критерия является "
+                 f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
+                 f" переменная представляет набор количественных, непрерывных "
+                 f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
+        )
 
-    # Вывод значения и интерпретация
-
-    # optimal_clusters = module.elbow_method_and_optimal_clusters(max_clusters=10)
-    #
-    # if call.from_user.id in number_of_clusters:
-    #     number_of_clusters.pop(call.from_user.id)
-    #
-    # number_of_clusters[call.from_user.id] = optimal_clusters
-    # chat_id = call.from_user.id
-    #
-    # file_path = f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{ELBOW_METHOD}/elbow_method_{chat_id}.png"
-    #
-    # keyboard = None
-    #
-    # if command == "hierarchical_cluster":
-    #     keyboard = keyboard_choice_number_of_clusters_hierarchical
-    #
-    # elif command == "k_means_cluster":
-    #     keyboard = keyboard_choice_number_of_clusters
-    #
-    # if os.path.isfile(file_path):
-    #     file = open(file_path, "rb")
-    #
-    #     bot.send_photo(chat_id=chat_id, photo=file)
-    #
-    #     bot.send_message(
-    #         chat_id=chat_id,
-    #         text=f"На основе Ваших данных был построен график Метод локтя для определения "
-    #              f"оптимального количества кластеров по данным.\n\n"
-    #              f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
-    #              "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
-    #         reply_markup=keyboard,
-    #     )
+        handle_continuous_columns_comparative(bot, call)
 
 
 def handle_continuous_columns_comparative(bot, call):
@@ -126,11 +109,50 @@ def handle_continuous_columns_comparative(bot, call):
     )
 
 
-def handle_categorical_columns_comparative(bot, call):
+def handle_categorical_columns_comparative(bot, call, command):
     categorical_columns = user_columns[call.from_user.id]["categorical_columns"]
 
-    # Проверка на наличие выбранной группирующей
+    user_columns[call.from_user.id]["continuous_column"] = int(
+        command.replace("continuous_column_", ""))
 
-    handle_choose_column_comparative(
-        bot, call, categorical_columns, "categorical_columns"
+    if "categorical_column" in user_columns[call.from_user.id]:
+        build_kolmogorova_smirnova(bot, call)
+
+    else:
+        handle_choose_column_comparative(
+            bot, call, categorical_columns, "categorical_columns"
+        )
+
+
+def handle_categorical_column_comparative(bot, call, command):
+    user_columns[call.from_user.id]["categorical_column"] = int(
+        command.replace("categorical_column_", ""))
+
+    build_kolmogorova_smirnova(bot, call)
+
+
+def build_kolmogorova_smirnova(bot, call):
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
+        call.from_user.id,
     )
+
+    module = ComparativeModule(df, call.from_user.id)
+    categorical_column_index = user_columns[call.from_user.id][
+        "categorical_column"]
+
+    categorical_column = user_columns[call.from_user.id]["categorical_columns"][
+        categorical_column_index]
+
+    continuous_column_index = user_columns[call.from_user.id][
+        "continuous_column"]
+
+    continuous_column = user_columns[call.from_user.id]["continuous_columns"][
+        continuous_column_index]
+
+    if not categorical_column or not continuous_column:
+        bot.send_message(chat_id=call.from_user.id,
+                         text="Ошибка при обработке файла, попробуйте еще раз",
+                         reply_markup=keyboard_comparative_analysis)
+    module.generate_test_kolmagorova_smirnova(categorical_column,
+                                              continuous_column)

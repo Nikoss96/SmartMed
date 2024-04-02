@@ -37,11 +37,13 @@ def handle_pagination_columns_comparative(bot, call, command, columns) -> None:
         page -= 1
 
     edit_column_selection_message(
-        bot, call.message.chat.id, call.message.message_id, columns, page, command
+        bot, call.message.chat.id, call.message.message_id, columns, page,
+        command
     )
 
 
-def edit_column_selection_message(bot, chat_id, message_id, columns, page, command):
+def edit_column_selection_message(bot, chat_id, message_id, columns, page,
+                                  command):
     """
     Редактирует сообщение для выбора столбца для построения ящика с усами.
 
@@ -74,7 +76,8 @@ def edit_column_selection_message(bot, chat_id, message_id, columns, page, comma
         )
 
 
-def generate_column_keyboard(columns: list, page: int, command) -> InlineKeyboardMarkup:
+def generate_column_keyboard(columns: list, page: int,
+                             command) -> InlineKeyboardMarkup:
     """
     Создает клавиатуру с названиями колонок для пагинации.
 
@@ -91,10 +94,11 @@ def generate_column_keyboard(columns: list, page: int, command) -> InlineKeyboar
     end_index = min((page + 1) * columns_per_page, len(columns))
     current_columns = columns[start_index:end_index]
 
-    if command == "categorical_columns":
+    if command.startswith("categorical_columns"):
         for index, column in enumerate(current_columns):
             button = InlineKeyboardButton(
-                column, callback_data=f"categorical_column_{start_index + index + 1}"
+                column,
+                callback_data=f"categorical_column_{start_index + index}"
             )
             keyboard.add(button)
 
@@ -103,7 +107,7 @@ def generate_column_keyboard(columns: list, page: int, command) -> InlineKeyboar
     else:
         for index, column in enumerate(current_columns):
             button = InlineKeyboardButton(
-                column, callback_data=f"continuous_column_{start_index + index + 1}"
+                column, callback_data=f"continuous_column_{start_index + index}"
             )
             keyboard.add(button)
 
@@ -113,7 +117,7 @@ def generate_column_keyboard(columns: list, page: int, command) -> InlineKeyboar
 
 
 def add_pagination_buttons(
-    keyboard: InlineKeyboardMarkup, columns: list, page: int, command: str
+        keyboard: InlineKeyboardMarkup, columns: list, page: int, command: str
 ) -> None:
     """
     Добавляет кнопки пагинации на клавиатуру.
@@ -127,7 +131,7 @@ def add_pagination_buttons(
         None
     """
 
-    if command == "categorical_columns":
+    if command.startswith("categorical_columns"):
         prev_button = (
             InlineKeyboardButton(
                 "Назад", callback_data=f"categorical_columns_prev_{page}"

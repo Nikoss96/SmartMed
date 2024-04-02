@@ -19,52 +19,50 @@ class ComparativeModule:
 
         return list(categorical_columns), continuous_columns
 
-    def generate_test_kolmagorova_smirnova(self):
-        pass
+    def generate_test_kolmagorova_smirnova(self, categorical_column,
+                                           continuous_column):
+        if group_var is None:
+            data = np.array(self.data[var])
+            data = preprocessing.normalize([data])
+            res = kstest(data, 'norm')
+            print(res)
+            if res[1] < 0.001:
+                p = '< 0.001'
+            else:
+                p = np.round(res[1], 3)
+            df = pd.DataFrame(columns=['Значение', 'p-value'])
+            df.loc[1] = [np.round(res[0], 3), p]
+        else:
+            classes = get_class_names(group_var, self.settings['path'],
+                                      self.data)
+            class1 = list(classes.keys())[0]
+            class2 = list(classes.keys())[1]
+            data1 = self.data[self.data[group_var] == class1][var]
+            data2 = self.data[self.data[group_var] == class2][var]
 
-        # def update_table(var, group_var):
-        #     if group_var is None:
-        #         data = np.array(self.data[var])
-        #         data = preprocessing.normalize([data])
-        #         res = kstest(data, 'norm')
-        #         print(res)
-        #         if res[1] < 0.001:
-        #             p = '< 0.001'
-        #         else:
-        #             p = np.round(res[1], 3)
-        #         df = pd.DataFrame(columns=['Значение', 'p-value'])
-        #         df.loc[1] = [np.round(res[0], 3), p]
-        #     else:
-        #         classes = get_class_names(group_var, self.settings['path'],
-        #                                   self.data)
-        #         class1 = list(classes.keys())[0]
-        #         class2 = list(classes.keys())[1]
-        #         data1 = self.data[self.data[group_var] == class1][var]
-        #         data2 = self.data[self.data[group_var] == class2][var]
-        #
-        #         print("это информация!!!!!!!!!!!!!!!")
-        #         print(data2)
-        #
-        #         data1 = preprocessing.normalize([data1])
-        #         data2 = preprocessing.normalize([data2])
-        #         res1 = kstest(data1, 'norm')
-        #         res2 = kstest(data2, 'norm')
-        #         if res1[1] < 0.001:
-        #             p1 = '< 0.001'
-        #         else:
-        #             p1 = np.round(res1[1], 3)
-        #
-        #         if res2[1] < 0.001:
-        #             p2 = '< 0.001'
-        #         else:
-        #             p2 = np.round(res2[1], 3)
-        #         classes = get_class_names(group_var, self.settings['path'],
-        #                                   self.data)
-        #         df = pd.DataFrame(columns=['Группы', 'Значение', 'p-value'])
-        #         df.loc[1] = [classes[class1], np.round(res1[0], 3), p1]
-        #         df.loc[2] = [classes[class2], np.round(res2[0], 3), p2]
-        #     return df.to_dict('records'), [{"name": i, "id": i} for i in
-        #                                    df.columns]
+            print("это информация!!!!!!!!!!!!!!!")
+            print(data2)
+
+            data1 = preprocessing.normalize([data1])
+            data2 = preprocessing.normalize([data2])
+            res1 = kstest(data1, 'norm')
+            res2 = kstest(data2, 'norm')
+            if res1[1] < 0.001:
+                p1 = '< 0.001'
+            else:
+                p1 = np.round(res1[1], 3)
+
+            if res2[1] < 0.001:
+                p2 = '< 0.001'
+            else:
+                p2 = np.round(res2[1], 3)
+            classes = get_class_names(group_var, self.settings['path'],
+                                      self.data)
+            df = pd.DataFrame(columns=['Группы', 'Значение', 'p-value'])
+            df.loc[1] = [classes[class1], np.round(res1[0], 3), p1]
+            df.loc[2] = [classes[class2], np.round(res2[0], 3), p2]
+        return df.to_dict('records'), [{"name": i, "id": i} for i in
+                                       df.columns]
         #
         # self.app.callback(dash.dependencies.Output('kolm_smirn_table', 'data'),
         #                   dash.dependencies.Output('kolm_smirn_table',
