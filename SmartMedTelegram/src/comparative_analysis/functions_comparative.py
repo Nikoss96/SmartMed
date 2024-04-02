@@ -154,5 +154,8 @@ def build_kolmogorova_smirnova(bot, call):
         bot.send_message(chat_id=call.from_user.id,
                          text="Ошибка при обработке файла, попробуйте еще раз",
                          reply_markup=keyboard_comparative_analysis)
-    module.generate_test_kolmagorova_smirnova(categorical_column,
-                                              continuous_column)
+    result1, resul2 = module.generate_test_kolmagorova_smirnova(
+        categorical_column,
+        continuous_column)
+
+    print(result1, resul2)

@@ -83,7 +83,8 @@ class ClusterModule:
                     len(elements) for elements in cluster_elements
                 ],
                 "Элементы": [
-                    ", ".join(map(str, elements)) for elements in cluster_elements
+                    ", ".join(map(str, elements)) for elements in
+                    cluster_elements
                 ],
             },
         )
@@ -173,3 +174,49 @@ class ClusterModule:
         fig.write_image(
             f"{MEDIA_PATH}/{DATA_PATH}/{CLUSTER_ANALYSIS}/{HIERARCHICAL}/hierarchical_{self.chat_id}.png"
         )
+
+        # df = self.pp.get_numeric_df(self.settings['data'])
+        # df = (df - df.mean()) / df.std()
+        # x = list(df.values.tolist())
+        #
+        # def update_output_div(n, met, meth):
+        #     n = int(n)
+        #
+        #     model = AgglomerativeClustering(n_clusters=n, affinity=met,
+        #                                     linkage=meth).fit(x)
+        #     labs = model.labels_
+        #     lst = []
+        #     s = [i for i in range(n)]
+        #     for i in s:
+        #         l = []
+        #         for j in range(len(labs)):
+        #             if labs[j] == i:
+        #                 l.append(j)
+        #         lst.append(l)
+        #     clusters2 = []
+        #     for i in lst:
+        #         l = ""
+        #         for j in range(len(i)):
+        #             l += str(i[j]) + " "
+        #         clusters2.append(l)
+        #     num = []
+        #     for i in lst:
+        #         num.append(len(i))
+        #     d = {"Кластер": pd.Series(clusters2, index=[i for i in range(n)]),
+        #          "Число элементов в кластере": pd.Series(num, index=[i for i in
+        #                                                              range(n)])}
+        #     df1 = pd.DataFrame(d)
+        #
+        #     di = sorted(
+        #         linkage(x, method=meth, metric=met, optimal_ordering=False)[:,
+        #         2])
+        #
+        #     fig = ff.create_dendrogram(df,
+        #                                linkagefun=lambda ci: linkage(df, meth,
+        #                                                              metric=met),
+        #                                color_threshold=di[-n + 1])
+        #     fig.update_layout(autosize=True, hovermode='closest')
+        #     fig.update_xaxes(mirror=False, showgrid=True, showline=False,
+        #                      showticklabels=False)
+        #     fig.update_yaxes(mirror=False, showgrid=True, showline=True)
+        #
