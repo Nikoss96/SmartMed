@@ -11,18 +11,11 @@ keyboard_in_development: При отсутствии дальнейшего ал
 возвращается клавиатура с возможность вернуться домой.
 """
 
-keyboard_main_menu = ReplyKeyboardMarkup(
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
+keyboard_main_menu = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 keyboard_main_menu.row("Модули", "Словарь", "GPT")
 
-keyboard_modules = ReplyKeyboardMarkup(
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
-keyboard_modules.row("Описательный анализ", "Кластерный анализ",
-                     "Сравнительный анализ")
+keyboard_modules = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+keyboard_modules.row("Описательный анализ", "Кластерный анализ", "Сравнительный анализ")
 
 keyboard_in_development = InlineKeyboardMarkup()
 keyboard_in_development.add(

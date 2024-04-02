@@ -22,7 +22,7 @@ def handle_gpt_message(bot, message):
     try:
         text = account.create_completion(
             message.text,
-            '0.6',
+            "0.6",
         )
 
         if text:
@@ -31,13 +31,12 @@ def handle_gpt_message(bot, message):
                 message_id=bot_message.message_id,
                 text=text,
                 parse_mode="Markdown",
-                reply_markup=keyboard_in_development
+                reply_markup=keyboard_in_development,
             )
-
 
     except ApiTelegramException as e:
         bot.send_message(
             chat_id=message.from_user.id,
             text="Извините, не удалось сгенерировать ответ. Попробуйте еще раз.",
-            reply_markup=keyboard_in_development
+            reply_markup=keyboard_in_development,
         )

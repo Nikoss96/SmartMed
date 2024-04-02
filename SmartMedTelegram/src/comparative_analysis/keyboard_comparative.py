@@ -11,12 +11,12 @@ keyboard_choice: Выбор опции описательного анализа
 
 keyboard_comparative_analysis = InlineKeyboardMarkup()
 keyboard_comparative_analysis.add(
-    InlineKeyboardButton(text="Пример файла",
-                         callback_data="example_comparative")
+    InlineKeyboardButton(text="Пример файла", callback_data="example_comparative")
 )
 keyboard_comparative_analysis.add(
-    InlineKeyboardButton(text="Загрузить свой файл",
-                         callback_data="download_comparative")
+    InlineKeyboardButton(
+        text="Загрузить свой файл", callback_data="download_comparative"
+    )
 )
 keyboard_comparative_analysis.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back")
@@ -47,8 +47,10 @@ keyboard_replace_null_values_comparative.add(
 
 keyboard_choice_comparative = InlineKeyboardMarkup()
 keyboard_choice_comparative.add(
-    InlineKeyboardButton(text="Критерий Колмогорова-Смирнова",
-                         callback_data="kolmogorov_smirnov_test_comparative")
+    InlineKeyboardButton(
+        text="Критерий Колмогорова-Смирнова",
+        callback_data="kolmogorov_smirnov_test_comparative",
+    )
 )
 keyboard_choice_comparative.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back")

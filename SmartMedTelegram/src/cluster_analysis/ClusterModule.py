@@ -83,8 +83,7 @@ class ClusterModule:
                     len(elements) for elements in cluster_elements
                 ],
                 "Элементы": [
-                    ", ".join(map(str, elements)) for elements in
-                    cluster_elements
+                    ", ".join(map(str, elements)) for elements in cluster_elements
                 ],
             },
         )

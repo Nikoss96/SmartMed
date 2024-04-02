@@ -11,9 +11,11 @@ class ComparativeModule:
     def get_categorical_and_continuous_columns(self):
         categorical_columns = np.array(get_categorical_col(self.df))
         columns_list = np.array(self.df.columns)
-        continuous_columns = [v for v in columns_list if
-                              v not in set(categorical_columns) & set(
-                                  columns_list)]
+        continuous_columns = [
+            v
+            for v in columns_list
+            if v not in set(categorical_columns) & set(columns_list)
+        ]
 
         return list(categorical_columns), continuous_columns
 
