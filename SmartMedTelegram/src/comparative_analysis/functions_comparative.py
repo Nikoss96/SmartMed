@@ -1,10 +1,13 @@
+import os
+
 from comparative_analysis.ComparativeModule import ComparativeModule
 from comparative_analysis.keyboard_comparative import \
     keyboard_choice_comparative, keyboard_comparative_analysis
 from comparative_analysis.keyboard_implementation import (
     handle_choose_column_comparative,
 )
-from data.paths import MEDIA_PATH, DATA_PATH, EXAMPLES, USER_DATA_PATH
+from data.paths import MEDIA_PATH, DATA_PATH, EXAMPLES, USER_DATA_PATH, \
+    COMPARATIVE_ANALYSIS
 from describe_analysis.functions_descriptive import get_user_file_df
 from functions import send_document_from_file, create_dataframe_and_save_file
 from keyboard import keyboard_in_development

@@ -9,11 +9,10 @@ from keyboard import keyboard_in_development
 load_dotenv()
 yandex_gpt_folder = os.getenv("YANDEX_GPT_FOLDER")
 yandex_gpt_token = os.getenv("YANDEX_GPT_TOKEN")
+account = YandexGPTLite(yandex_gpt_folder, yandex_gpt_token)
 
 
 def handle_gpt_message(bot, message):
-    account = YandexGPTLite(yandex_gpt_folder, yandex_gpt_token)
-
     bot_message = bot.send_message(
         chat_id=message.from_user.id,
         text="Ваш запрос обрабатывается...",

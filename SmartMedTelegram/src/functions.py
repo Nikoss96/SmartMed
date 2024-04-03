@@ -1,4 +1,5 @@
 import os
+import pathlib
 
 import pandas as pd
 import requests
@@ -18,11 +19,12 @@ from describe_analysis.keyboard_descriptive import (
     keyboard_replace_null_values_describe,
 )
 from dictionary.functions_dictionary import generate_dictionary_keyboard
-from keyboard import keyboard_in_development, keyboard_modules, keyboard_main_menu
+from keyboard import keyboard_in_development, keyboard_modules, \
+    keyboard_main_menu
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
-    USER_DATA_PATH,
+    USER_DATA_PATH, COMPARATIVE_ANALYSIS,
 )
 from preprocessing.preprocessing import PandasPreprocessor
 
@@ -54,7 +56,8 @@ def send_text_message(bot, chat_id, text, reply_markup=None, parse_mode=None):
     Вспомогательная функция для отправки текстовых сообщений.
     """
     bot.send_message(
-        chat_id=chat_id, text=text, reply_markup=reply_markup, parse_mode=parse_mode
+        chat_id=chat_id, text=text, reply_markup=reply_markup,
+        parse_mode=parse_mode
     )
 
 
@@ -68,6 +71,21 @@ def save_file(file_content, file_name, chat_id):
                 return
 
     file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{chat_id}_{file_name}"
+    with open(file_path, "wb") as file:
+        file.write(file_content)
+    return file_path
+
+
+def save_comparative_file(file_content, file_name, chat_id):
+    directory = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}"
+    pattern = f"{chat_id}"
+
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if pattern in file:
+                return
+
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}/{chat_id}_{file_name}"
     with open(file_path, "wb") as file:
         file.write(file_content)
     return file_path
@@ -97,6 +115,13 @@ def get_user_file(bot):
                     message.chat.id,
                 )
                 check_input_file(bot, message, file_name, command)
+                if command == "download_comparative":
+                    save_comparative_file(
+                        response.content,
+                        message.document.file_name,
+                        message.chat.id,
+                    )
+
 
             else:
                 bot.reply_to(message, "Произошла ошибка при загрузке файла")
@@ -185,13 +210,13 @@ def handle_download(bot, call, command):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Загрузите Ваш файл.\n\n"
-        "Файл должен иметь следующие характеристики:\n"
-        "\n1. Формат файла: .csv, .xlsx или .xls"
-        "\n2. Размер файла: до 20 Мб"
-        "\n3. Рекомендуемое количество столбцов для более"
-        " наглядной визуализации — до 25."
-        "\n4. Названия столбцов в файле не должны состоять только из"
-        " цифр и содержать специальные символы",
+             "Файл должен иметь следующие характеристики:\n"
+             "\n1. Формат файла: .xlsx или .xls"
+             "\n2. Размер файла: до 20 Мб"
+             "\n3. Рекомендуемое количество столбцов для более"
+             " наглядной визуализации — до 25."
+             "\n4. Названия столбцов в файле не должны состоять только из"
+             " цифр и содержать специальные символы.",
     )
     if call.from_user.id in user_commands:
         user_commands.pop(call.from_user.id)
@@ -208,13 +233,13 @@ def check_input_file(bot, message, file_path, command):
     """
     try:
         file_extension = os.path.splitext(file_path)[1].lower()
-        supported_formats = [".csv", ".xlsx", ".xls"]
+        supported_formats = [".xlsx", ".xls"]
 
         if file_extension not in supported_formats:
             bot.reply_to(
                 message,
                 "Ваш файл не подходит. "
-                "Файл должен иметь формат .csv, "
+                "Файл должен иметь формат "
                 ".xlsx или .xls",
             )
             if os.path.exists(file_path):
@@ -236,9 +261,7 @@ def check_input_file(bot, message, file_path, command):
 
         df = None
 
-        if file_extension == ".csv":
-            df = pd.read_csv(file_path)
-        elif file_extension in [".xlsx", ".xls"]:
+        if file_extension in [".xlsx", ".xls"]:
             df = pd.read_excel(file_path)
 
         if df is not None:
@@ -293,7 +316,8 @@ def create_dataframe_and_save_file(chat_id, command):
     directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}"
     files_in_directory = os.listdir(directory)
 
-    file_name = [file for file in files_in_directory if file.startswith(f"{chat_id}")]
+    file_name = [file for file in files_in_directory if
+                 file.startswith(f"{chat_id}")]
 
     # Формируем настройки для корректной предобработки данных
     path = f"{directory}/{file_name[0]}"
@@ -304,3 +328,21 @@ def create_dataframe_and_save_file(chat_id, command):
     settings["encoding"] = "label_encoding"
 
     PandasPreprocessor(settings, chat_id)
+
+
+def get_user_file_df(directory, chat_id):
+    files = os.listdir(directory)
+    pattern = f"{chat_id}"
+
+    matching_files = [file for file in files if pattern in file]
+
+    if matching_files:
+        df = None
+        file_path = os.path.join(directory, matching_files[0])
+
+        ext = pathlib.Path(file_path).suffix
+
+        if ext == ".xlsx" or ext == ".xls":
+            df = pd.read_excel(file_path)
+
+        return df

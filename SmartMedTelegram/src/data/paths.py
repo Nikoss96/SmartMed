@@ -16,3 +16,5 @@ CLUSTER_ANALYSIS = "cluster_analysis"
 ELBOW_METHOD = "elbow_method"
 K_MEANS = "k_means"
 HIERARCHICAL = "hierarchical"
+
+COMPARATIVE_ANALYSIS = "comparative_analysis"

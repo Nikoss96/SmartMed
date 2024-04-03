@@ -29,13 +29,8 @@ class PandasPreprocessor:
     def __read_file(self):
         ext = pathlib.Path(self.settings["path"]).suffix
 
-        if ext == ".csv":
-            self.df = pd.read_csv(self.settings["path"], sep=";")
-        elif ext == ".xlsx" or ext == ".xls":
+        if ext == ".xlsx" or ext == ".xls":
             self.df = pd.read_excel(self.settings["path"])
-
-        elif ext == ".tsv":
-            self.df = pd.read_table(self.settings["path"], sep=";")
 
         self.df.columns = self.df.columns.astype("str")
 
@@ -80,7 +75,10 @@ class PandasPreprocessor:
                 self.df[column].astype(str).values)
 
     def save_df_to_file(self):
-        self.file = self.df.to_excel(self.settings["path"], index=False)
+        ext = pathlib.Path(self.settings["path"]).suffix
+
+        if ext == ".xlsx" or ext == ".xls":
+            self.df.to_excel(self.settings["path"], index=False)
 
     def get_categorical_df(self, df):
         return df.select_dtypes(exclude=self.numerics_list)

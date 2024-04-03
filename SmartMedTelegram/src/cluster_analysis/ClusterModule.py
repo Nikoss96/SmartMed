@@ -36,7 +36,7 @@ class ClusterModule:
         inertia_values = []
 
         for n_clusters in range(1, max_clusters + 1):
-            kmeans = KMeans(n_clusters=n_clusters, n_init="warn")
+            kmeans = KMeans(n_clusters=n_clusters, n_init='auto')
             kmeans.fit(self.df)
             inertia_values.append(kmeans.inertia_)
 
@@ -139,7 +139,6 @@ class ClusterModule:
         model = AgglomerativeClustering(n_clusters=n_clusters,
                                         metric="euclidean",
                                         linkage="complete").fit(x)
-
         labs = model.labels_
         lst = []
         s = [i for i in range(n_clusters)]
@@ -164,7 +163,6 @@ class ClusterModule:
                                                                  range(
                                                                      n_clusters)])}
         df1 = pd.DataFrame(d)
-
         di = sorted(
             linkage(x, method="complete", metric="euclidean",
                     optimal_ordering=False)[:, 2])

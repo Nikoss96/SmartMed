@@ -1,7 +1,12 @@
+import pathlib
+
 import numpy as np
 import pandas as pd
 from scipy.stats import kstest
 
+from data.paths import MEDIA_PATH, DATA_PATH, COMPARATIVE_ANALYSIS, \
+    USER_DATA_PATH
+from describe_analysis.functions_descriptive import get_user_file_df
 from preprocessing.preprocessing import get_categorical_col
 from sklearn import preprocessing
 
@@ -23,20 +28,23 @@ class ComparativeModule:
         return list(categorical_columns), continuous_columns
 
     def get_class_names(self, group_var, data):
-        init_unique_values = np.unique(self.df[group_var])
+        init_df = get_user_file_df(
+            f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}",
+            self.chat_id,
+        )
+        init_unique_values = np.unique(init_df[group_var])
+        print(init_unique_values)
         number_class = []
         data_col = data[group_var].tolist()
         for name in init_unique_values:
-            number_class.append(data_col[list(self.df[group_var]).index(name)])
+            number_class.append(data_col[list(init_df[group_var]).index(name)])
         dict_classes = dict(zip(number_class, init_unique_values))
         return dict_classes
 
     def generate_test_kolmagorova_smirnova(self, categorical_column,
                                            continuous_column):
-        print(categorical_column, continuous_column)
         classes = self.get_class_names(categorical_column, self.df)
 
-        print(classes)
         class1 = list(classes.keys())[0]
         class2 = list(classes.keys())[1]
         data1 = self.df[self.df[categorical_column] == class1][
@@ -58,12 +66,25 @@ class ComparativeModule:
             p2 = '< 0.001'
         else:
             p2 = np.round(res2[1], 3)
+
         classes = self.get_class_names(categorical_column, self.df)
         df = pd.DataFrame(columns=['Группы', 'Значение', 'p-value'])
         df.loc[1] = [classes[class1], np.round(res1[0], 3), p1]
         df.loc[2] = [classes[class2], np.round(res2[0], 3), p2]
         return df.to_dict('records'), [{"name": i, "id": i} for i in
                                        df.columns]
+
+
+def read_file(path):
+    ext = pathlib.Path(path).suffix
+
+    if ext == '.xlsx' or ext == '.xls':
+        df = pd.read_excel(path)
+
+    else:
+        df = pd.DataFrame()
+    return df
+
     #
     # self.app.callback(dash.dependencies.Output('kolm_smirn_table', 'data'),
     #                   dash.dependencies.Output('kolm_smirn_table',
