@@ -5,7 +5,8 @@ from cluster_analysis.functions_cluster import (
     handle_choose_number_of_clusters,
     handle_pagination_columns_cluster,
     handle_cluster_numbers,
-    handle_hierarchical, handle_hierarchical_cluster_numbers,
+    handle_hierarchical,
+    handle_hierarchical_cluster_numbers,
 )
 from comparative_analysis.functions_comparative import (
     handle_example_comparative_analysis,
@@ -60,30 +61,25 @@ def callback_query_handler(bot, call):
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination_dictionary(bot, call)
 
-        elif command.startswith(
-                "continuous_columns_prev_") or command.startswith(
+        elif command.startswith("continuous_columns_prev_") or command.startswith(
             "continuous_columns_next_"
         ):
             columns = user_columns[call.from_user.id]["continuous_columns"]
             handle_pagination_columns_comparative(bot, call, command, columns)
 
-        elif command.startswith(
-                "categorical_columns_prev_") or command.startswith(
+        elif command.startswith("categorical_columns_prev_") or command.startswith(
             "categorical_columns_next_"
         ):
             columns = user_columns[call.from_user.id]["categorical_columns"]
             handle_pagination_columns_comparative(bot, call, command, columns)
 
-        elif command.startswith("boxplot_prev_") or command.startswith(
-                "boxplot_next_"):
+        elif command.startswith("boxplot_prev_") or command.startswith("boxplot_next_"):
             handle_pagination_columns(bot, call)
 
-        elif command.startswith("cluster_prev_") or command.startswith(
-                "cluster_next_"):
+        elif command.startswith("cluster_prev_") or command.startswith("cluster_next_"):
             handle_pagination_columns_cluster(bot, call, command)
 
-        elif command.startswith(
-                "hierarchical_cluster_prev_") or command.startswith(
+        elif command.startswith("hierarchical_cluster_prev_") or command.startswith(
             "hierarchical_cluster_next_"
         ):
             handle_pagination_columns_cluster(bot, call, command)

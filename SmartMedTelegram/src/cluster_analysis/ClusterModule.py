@@ -36,7 +36,7 @@ class ClusterModule:
         inertia_values = []
 
         for n_clusters in range(1, max_clusters + 1):
-            kmeans = KMeans(n_clusters=n_clusters, n_init='auto')
+            kmeans = KMeans(n_clusters=n_clusters, n_init="auto")
             kmeans.fit(self.df)
             inertia_values.append(kmeans.inertia_)
 
@@ -83,8 +83,7 @@ class ClusterModule:
                     len(elements) for elements in cluster_elements
                 ],
                 "Элементы": [
-                    ", ".join(map(str, elements)) for elements in
-                    cluster_elements
+                    ", ".join(map(str, elements)) for elements in cluster_elements
                 ],
             },
         )
@@ -136,9 +135,9 @@ class ClusterModule:
         df = (df - df.mean()) / df.std()
         x = list(df.values.tolist())
 
-        model = AgglomerativeClustering(n_clusters=n_clusters,
-                                        metric="euclidean",
-                                        linkage="complete").fit(x)
+        model = AgglomerativeClustering(
+            n_clusters=n_clusters, metric="euclidean", linkage="complete"
+        ).fit(x)
         labs = model.labels_
         lst = []
         s = [i for i in range(n_clusters)]
@@ -157,27 +156,32 @@ class ClusterModule:
         num = []
         for i in lst:
             num.append(len(i))
-        d = {"Кластер": pd.Series(clusters2,
-                                  index=[i for i in range(n_clusters)]),
-             "Число элементов в кластере": pd.Series(num, index=[i for i in
-                                                                 range(
-                                                                     n_clusters)])}
+        d = {
+            "Кластер": pd.Series(clusters2, index=[i for i in range(n_clusters)]),
+            "Число элементов в кластере": pd.Series(
+                num, index=[i for i in range(n_clusters)]
+            ),
+        }
         df1 = pd.DataFrame(d)
         di = sorted(
-            linkage(x, method="complete", metric="euclidean",
-                    optimal_ordering=False)[:, 2])
-        fig = ff.create_dendrogram(df,
-                                   linkagefun=lambda ci: linkage(df, "complete",
-                                                                 metric="euclidean"),
-                                   color_threshold=di[-n_clusters + 1])
+            linkage(x, method="complete", metric="euclidean", optimal_ordering=False)[
+                :, 2
+            ]
+        )
+        fig = ff.create_dendrogram(
+            df,
+            linkagefun=lambda ci: linkage(df, "complete", metric="euclidean"),
+            color_threshold=di[-n_clusters + 1],
+        )
         fig.update_layout(
             title=f"Дендрограмма ({n_clusters} кластера(-ов))",
             xaxis_title="Строка",
             yaxis_title="Евклидово расстояние",
         )
         fig.update_layout(height=1000, width=1400)
-        fig.update_xaxes(mirror=False, showgrid=True, showline=False,
-                         showticklabels=True)
+        fig.update_xaxes(
+            mirror=False, showgrid=True, showline=False, showticklabels=True
+        )
         fig.update_yaxes(mirror=False, showgrid=True, showline=True)
 
         fig.write_image(

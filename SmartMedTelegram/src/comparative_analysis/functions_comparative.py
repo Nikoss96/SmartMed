@@ -1,13 +1,20 @@
 import os
 
 from comparative_analysis.ComparativeModule import ComparativeModule
-from comparative_analysis.keyboard_comparative import \
-    keyboard_choice_comparative, keyboard_comparative_analysis
+from comparative_analysis.keyboard_comparative import (
+    keyboard_choice_comparative,
+    keyboard_comparative_analysis,
+)
 from comparative_analysis.keyboard_implementation import (
     handle_choose_column_comparative,
 )
-from data.paths import MEDIA_PATH, DATA_PATH, EXAMPLES, USER_DATA_PATH, \
-    COMPARATIVE_ANALYSIS
+from data.paths import (
+    MEDIA_PATH,
+    DATA_PATH,
+    EXAMPLES,
+    USER_DATA_PATH,
+    COMPARATIVE_ANALYSIS,
+)
 from describe_analysis.functions_descriptive import get_user_file_df
 from functions import send_document_from_file, create_dataframe_and_save_file
 from keyboard import keyboard_in_development
@@ -69,36 +76,33 @@ def handle_kolmogorov_smirnov_test_comparative(bot, call, command):
         bot.send_message(
             chat_id=call.from_user.id,
             text="В Вашем файле отсутствуют категориальные переменные. "
-                 "Загрузите файл, который содержит категориальные переменные.",
+            "Загрузите файл, который содержит категориальные переменные.",
             reply_markup=keyboard_comparative_analysis,
         )
     elif len(continuous_columns) < 1:
         bot.send_message(
             chat_id=call.from_user.id,
             text="В Вашем файле отсутствуют непрерывные переменные. "
-                 "Загрузите файл, который содержит непрерывные переменные.",
+            "Загрузите файл, который содержит непрерывные переменные.",
             reply_markup=keyboard_comparative_analysis,
         )
 
     else:
-
         user_columns[call.from_user.id] = {}
-        user_columns[call.from_user.id][
-            "categorical_columns"] = categorical_columns
-        user_columns[call.from_user.id][
-            "continuous_columns"] = continuous_columns
+        user_columns[call.from_user.id]["categorical_columns"] = categorical_columns
+        user_columns[call.from_user.id]["continuous_columns"] = continuous_columns
 
         bot.send_message(
             chat_id=call.from_user.id,
             text=f"Критерий согласия Колмогорова-Смирнова предназначен для "
-                 f"проверки гипотезы о принадлежности выборки нормальному "
-                 f"закону распределения.\n\nВам необходимо указать независимую и "
-                 f"группирующую переменные.\n\n"
-                 f"Группирующая переменная - переменная, используемая для разбиения "
-                 f"независимой переменной на группы, для данного критерия является "
-                 f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
-                 f" переменная представляет набор количественных, непрерывных "
-                 f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
+            f"проверки гипотезы о принадлежности выборки нормальному "
+            f"закону распределения.\n\nВам необходимо указать независимую и "
+            f"группирующую переменные.\n\n"
+            f"Группирующая переменная - переменная, используемая для разбиения "
+            f"независимой переменной на группы, для данного критерия является "
+            f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
+            f" переменная представляет набор количественных, непрерывных "
+            f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
         )
 
         handle_continuous_columns_comparative(bot, call)
@@ -116,7 +120,8 @@ def handle_categorical_columns_comparative(bot, call, command):
     categorical_columns = user_columns[call.from_user.id]["categorical_columns"]
 
     user_columns[call.from_user.id]["continuous_column"] = int(
-        command.replace("continuous_column_", ""))
+        command.replace("continuous_column_", "")
+    )
 
     if "categorical_column" in user_columns[call.from_user.id]:
         build_kolmogorova_smirnova(bot, call)
@@ -129,7 +134,8 @@ def handle_categorical_columns_comparative(bot, call, command):
 
 def handle_categorical_column_comparative(bot, call, command):
     user_columns[call.from_user.id]["categorical_column"] = int(
-        command.replace("categorical_column_", ""))
+        command.replace("categorical_column_", "")
+    )
 
     build_kolmogorova_smirnova(bot, call)
 
@@ -141,24 +147,26 @@ def build_kolmogorova_smirnova(bot, call):
     )
 
     module = ComparativeModule(df, call.from_user.id)
-    categorical_column_index = user_columns[call.from_user.id][
-        "categorical_column"]
+    categorical_column_index = user_columns[call.from_user.id]["categorical_column"]
 
     categorical_column = user_columns[call.from_user.id]["categorical_columns"][
-        categorical_column_index]
+        categorical_column_index
+    ]
 
-    continuous_column_index = user_columns[call.from_user.id][
-        "continuous_column"]
+    continuous_column_index = user_columns[call.from_user.id]["continuous_column"]
 
     continuous_column = user_columns[call.from_user.id]["continuous_columns"][
-        continuous_column_index]
+        continuous_column_index
+    ]
 
     if not categorical_column or not continuous_column:
-        bot.send_message(chat_id=call.from_user.id,
-                         text="Ошибка при обработке файла, попробуйте еще раз",
-                         reply_markup=keyboard_comparative_analysis)
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Ошибка при обработке файла, попробуйте еще раз",
+            reply_markup=keyboard_comparative_analysis,
+        )
     result1, resul2 = module.generate_test_kolmagorova_smirnova(
-        categorical_column,
-        continuous_column)
+        categorical_column, continuous_column
+    )
 
     print(result1, resul2)
