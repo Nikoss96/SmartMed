@@ -18,3 +18,4 @@ K_MEANS = "k_means"
 HIERARCHICAL = "hierarchical"
 
 COMPARATIVE_ANALYSIS = "comparative_analysis"
+KOLMOGOROVA_SMIRNOVA = "kolmogorova_smirnova"

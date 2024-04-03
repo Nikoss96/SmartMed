@@ -13,7 +13,7 @@ from data.paths import (
     DATA_PATH,
     EXAMPLES,
     USER_DATA_PATH,
-    COMPARATIVE_ANALYSIS,
+    COMPARATIVE_ANALYSIS, KOLMOGOROVA_SMIRNOVA,
 )
 from describe_analysis.functions_descriptive import get_user_file_df
 from functions import send_document_from_file, create_dataframe_and_save_file
@@ -76,33 +76,35 @@ def handle_kolmogorov_smirnov_test_comparative(bot, call, command):
         bot.send_message(
             chat_id=call.from_user.id,
             text="В Вашем файле отсутствуют категориальные переменные. "
-            "Загрузите файл, который содержит категориальные переменные.",
+                 "Загрузите файл, который содержит категориальные переменные.",
             reply_markup=keyboard_comparative_analysis,
         )
     elif len(continuous_columns) < 1:
         bot.send_message(
             chat_id=call.from_user.id,
-            text="В Вашем файле отсутствуют непрерывные переменные. "
-            "Загрузите файл, который содержит непрерывные переменные.",
+            text="В Вашем файле отсутствуют независимые переменные. "
+                 "Загрузите файл, который содержит независимые переменные.",
             reply_markup=keyboard_comparative_analysis,
         )
 
     else:
         user_columns[call.from_user.id] = {}
-        user_columns[call.from_user.id]["categorical_columns"] = categorical_columns
-        user_columns[call.from_user.id]["continuous_columns"] = continuous_columns
+        user_columns[call.from_user.id][
+            "categorical_columns"] = categorical_columns
+        user_columns[call.from_user.id][
+            "continuous_columns"] = continuous_columns
 
         bot.send_message(
             chat_id=call.from_user.id,
             text=f"Критерий согласия Колмогорова-Смирнова предназначен для "
-            f"проверки гипотезы о принадлежности выборки нормальному "
-            f"закону распределения.\n\nВам необходимо указать независимую и "
-            f"группирующую переменные.\n\n"
-            f"Группирующая переменная - переменная, используемая для разбиения "
-            f"независимой переменной на группы, для данного критерия является "
-            f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
-            f" переменная представляет набор количественных, непрерывных "
-            f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
+                 f"проверки гипотезы о принадлежности выборки нормальному "
+                 f"закону распределения.\n\nВам необходимо указать независимую и "
+                 f"группирующую переменные.\n\n"
+                 f"Группирующая переменная - переменная, используемая для разбиения "
+                 f"независимой переменной на группы, для данного критерия является "
+                 f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
+                 f" переменная представляет набор количественных, непрерывных "
+                 f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
         )
 
         handle_continuous_columns_comparative(bot, call)
@@ -147,13 +149,15 @@ def build_kolmogorova_smirnova(bot, call):
     )
 
     module = ComparativeModule(df, call.from_user.id)
-    categorical_column_index = user_columns[call.from_user.id]["categorical_column"]
+    categorical_column_index = user_columns[call.from_user.id][
+        "categorical_column"]
 
     categorical_column = user_columns[call.from_user.id]["categorical_columns"][
         categorical_column_index
     ]
 
-    continuous_column_index = user_columns[call.from_user.id]["continuous_column"]
+    continuous_column_index = user_columns[call.from_user.id][
+        "continuous_column"]
 
     continuous_column = user_columns[call.from_user.id]["continuous_columns"][
         continuous_column_index
@@ -165,8 +169,21 @@ def build_kolmogorova_smirnova(bot, call):
             text="Ошибка при обработке файла, попробуйте еще раз",
             reply_markup=keyboard_comparative_analysis,
         )
-    result1, resul2 = module.generate_test_kolmagorova_smirnova(
+    module.generate_test_kolmagorova_smirnova(
         categorical_column, continuous_column
     )
 
-    print(result1, resul2)
+    table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{KOLMOGOROVA_SMIRNOVA}/kolmogorova_smirnova_{call.from_user.id}.png"
+
+    if os.path.isfile(table_file):
+        file_cur = open(table_file, "rb")
+        bot.send_photo(chat_id=call.from_user.id, photo=file_cur)
+
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Если p < 0.05, нулевая гипотеза отвергается, принимается"
+                 " альтернативная, выборка не подчиняется закону нормального "
+                 "распределения. \n\nЕсли p ≥ 0.05, принимается нулевая "
+                 "гипотеза, выборка подчиняется закону нормального "
+                 "распределения.",
+        )
