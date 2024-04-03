@@ -13,7 +13,7 @@ from data.paths import (
     DATA_PATH,
     EXAMPLES,
     USER_DATA_PATH,
-    COMPARATIVE_ANALYSIS, KOLMOGOROVA_SMIRNOVA,
+    COMPARATIVE_ANALYSIS, KOLMOGOROVA_SMIRNOVA, T_CRITERIA_INDEPENDENT,
 )
 from describe_analysis.functions_descriptive import get_user_file_df
 from functions import send_document_from_file, create_dataframe_and_save_file
@@ -55,7 +55,7 @@ def handle_downloaded_comparative_file(bot, call, command):
     )
 
 
-def handle_kolmogorov_smirnov_test_comparative(bot, call, command):
+def handle_comparative_module(bot, call, command):
     """
     Обработка при выборе метода после прочтения файла сравнительного анализа.
     """
@@ -93,20 +93,40 @@ def handle_kolmogorov_smirnov_test_comparative(bot, call, command):
             "categorical_columns"] = categorical_columns
         user_columns[call.from_user.id][
             "continuous_columns"] = continuous_columns
+        user_columns[call.from_user.id][
+            "command"] = command
 
-        bot.send_message(
-            chat_id=call.from_user.id,
-            text=f"Критерий согласия Колмогорова-Смирнова предназначен для "
-                 f"проверки гипотезы о принадлежности выборки нормальному "
-                 f"закону распределения.\n\nВам необходимо указать независимую и "
-                 f"группирующую переменные.\n\n"
-                 f"Группирующая переменная - переменная, используемая для разбиения "
-                 f"независимой переменной на группы, для данного критерия является "
-                 f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
-                 f" переменная представляет набор количественных, непрерывных "
-                 f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
-        )
+        if command.startswith("kolmogorov"):
 
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text=f"Критерий согласия Колмогорова-Смирнова предназначен для "
+                     f"проверки гипотезы о принадлежности выборки нормальному "
+                     f"закону распределения.\n\nВам необходимо указать независимую и "
+                     f"группирующую переменные.\n\n"
+                     f"Группирующая переменная - переменная, используемая для разбиения "
+                     f"независимой переменной на группы, для данного критерия является "
+                     f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
+                     f" переменная представляет набор количественных, непрерывных "
+                     f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
+            )
+        else:
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text=f"Для применения t-критерия Стьюдента необходимо, чтобы "
+                     f"исходные данные имели нормальное распределение.\n\n"
+                     f"Данный статистический метод служит для сравнения двух "
+                     f"независимых между собой групп. Примеры сравниваемых "
+                     f"величин: возраст в основной и контрольной группе, "
+                     f"содержание глюкозы в крови пациентов, принимавших "
+                     f"препарат или плацебо.\n\nВам необходимо указать независимую и "
+                     f"группирующую переменные.\n\n"
+                     f"Группирующая переменная - переменная, используемая для разбиения "
+                     f"независимой переменной на группы, для данного критерия является "
+                     f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
+                     f" переменная представляет набор количественных, непрерывных "
+                     f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
+            )
         handle_continuous_columns_comparative(bot, call)
 
 
@@ -126,7 +146,7 @@ def handle_categorical_columns_comparative(bot, call, command):
     )
 
     if "categorical_column" in user_columns[call.from_user.id]:
-        build_kolmogorova_smirnova(bot, call)
+        handle_create_table_for_module_comparative(bot, call)
 
     else:
         handle_choose_column_comparative(
@@ -139,10 +159,10 @@ def handle_categorical_column_comparative(bot, call, command):
         command.replace("categorical_column_", "")
     )
 
-    build_kolmogorova_smirnova(bot, call)
+    handle_create_table_for_module_comparative(bot, call)
 
 
-def build_kolmogorova_smirnova(bot, call):
+def handle_create_table_for_module_comparative(bot, call):
     df = get_user_file_df(
         f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
         call.from_user.id,
@@ -169,21 +189,57 @@ def build_kolmogorova_smirnova(bot, call):
             text="Ошибка при обработке файла, попробуйте еще раз",
             reply_markup=keyboard_comparative_analysis,
         )
-    module.generate_test_kolmagorova_smirnova(
-        categorical_column, continuous_column
-    )
 
-    table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{KOLMOGOROVA_SMIRNOVA}/kolmogorova_smirnova_{call.from_user.id}.png"
+    command = user_columns[call.from_user.id][
+        "command"]
 
-    if os.path.isfile(table_file):
-        file_cur = open(table_file, "rb")
-        bot.send_photo(chat_id=call.from_user.id, photo=file_cur)
-
+    if not command:
         bot.send_message(
             chat_id=call.from_user.id,
-            text="Если p < 0.05, нулевая гипотеза отвергается, принимается"
-                 " альтернативная, выборка не подчиняется закону нормального "
-                 "распределения. \n\nЕсли p ≥ 0.05, принимается нулевая "
-                 "гипотеза, выборка подчиняется закону нормального "
-                 "распределения.",
+            text="Ошибка при обработке файла, попробуйте еще раз",
+            reply_markup=keyboard_comparative_analysis,
         )
+
+    else:
+
+        if command == "kolmogorov_smirnov_test_comparative":
+
+            module.generate_test_kolmagorova_smirnova(
+                categorical_column, continuous_column
+            )
+
+            table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{KOLMOGOROVA_SMIRNOVA}/kolmogorova_smirnova_{call.from_user.id}.png"
+
+            if os.path.isfile(table_file):
+                file_cur = open(table_file, "rb")
+                bot.send_photo(chat_id=call.from_user.id, photo=file_cur)
+
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text="Если p < 0.05, нулевая гипотеза отвергается, принимается"
+                         " альтернативная, выборка не подчиняется закону нормального "
+                         "распределения. \n\nЕсли p ≥ 0.05, принимается нулевая "
+                         "гипотеза, выборка подчиняется закону нормального "
+                         "распределения.",
+                )
+
+        else:
+            module.generate_t_criterion_student_independent(
+                categorical_column, continuous_column
+            )
+
+            table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_INDEPENDENT}/t_criteria_independent_{call.from_user.id}.png"
+
+            if os.path.isfile(table_file):
+                file_cur = open(table_file, "rb")
+                bot.send_photo(chat_id=call.from_user.id, photo=file_cur)
+
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text="Если p < 0.05, нулевая гипотеза отвергается, "
+                         "принимается альтернативная, различия обладают "
+                         "статистической значимостью и носят системный"
+                         " характер.\n\nЕсли p ≥ 0.05, принимается нулевая"
+                         " гипотеза, различия не являются статистически "
+                         "значимыми и носят случайный характер",
+                )

@@ -19,3 +19,5 @@ HIERARCHICAL = "hierarchical"
 
 COMPARATIVE_ANALYSIS = "comparative_analysis"
 KOLMOGOROVA_SMIRNOVA = "kolmogorova_smirnova"
+
+T_CRITERIA_INDEPENDENT = "t_criteria_independent"
