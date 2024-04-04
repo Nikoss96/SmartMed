@@ -166,3 +166,4 @@ pyclustering==0.10.1.2
 python-dotenv==1.0.1
 yandexgptlite==0.1.7
 python-telegram-bot==21.0.1
+XlsxWriter==3.2.0
