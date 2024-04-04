@@ -11,8 +11,7 @@ keyboard_choice: Выбор опции описательного анализа
 
 keyboard_comparative_analysis = InlineKeyboardMarkup()
 keyboard_comparative_analysis.add(
-    InlineKeyboardButton(text="Пример файла",
-                         callback_data="example_comparative")
+    InlineKeyboardButton(text="Пример файла", callback_data="example_comparative")
 )
 keyboard_comparative_analysis.add(
     InlineKeyboardButton(
