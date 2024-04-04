@@ -116,6 +116,29 @@ def generate_column_keyboard(columns: list, page: int,
     return keyboard
 
 
+def generate_categorical_value_column_keyboard(
+        columns: dict) -> InlineKeyboardMarkup:
+    """
+    Создает клавиатуру с названиями колонок для пагинации.
+
+    Parameters:
+        columns (dict): Список названий колонок.
+
+    Returns:
+        InlineKeyboardMarkup: Созданная встроенная клавиатура.
+    """
+    keyboard = InlineKeyboardMarkup()
+
+    for key, value in columns.items():
+        button = InlineKeyboardButton(
+            str(value),
+            callback_data=f"t_criteria_categorical_value_{key}"
+        )
+        keyboard.add(button)
+
+    return keyboard
+
+
 def add_pagination_buttons(
         keyboard: InlineKeyboardMarkup, columns: list, page: int, command: str
 ) -> None:

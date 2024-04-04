@@ -100,7 +100,7 @@ def get_user_file(bot):
     @bot.message_handler(content_types=["document"])
     def handle_document(message):
         try:
-            command = user_commands.pop(message.chat.id)
+            command = user_commands.get(message.chat.id)
             if not command:
                 raise ApiTelegramException
             file_info = bot.get_file(message.document.file_id)
@@ -333,7 +333,16 @@ def create_dataframe_and_save_file(chat_id, command):
     settings["fillna"] = command[3]
     settings["encoding"] = "label_encoding"
 
-    PandasPreprocessor(settings, chat_id)
+    command = user_commands.pop(chat_id)
+
+    preprocessor = PandasPreprocessor(settings, chat_id)
+
+    if command == "download_describe":
+        pass
+    elif command == "download_cluster":
+        preprocessor.fillna()
+    elif command == "download_comparative":
+        preprocessor.preprocess()
 
 
 def get_user_file_df(directory, chat_id):

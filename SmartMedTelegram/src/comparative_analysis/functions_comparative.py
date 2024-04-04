@@ -7,6 +7,7 @@ from comparative_analysis.keyboard_comparative import (
 )
 from comparative_analysis.keyboard_implementation import (
     handle_choose_column_comparative,
+    generate_categorical_value_column_keyboard,
 )
 from data.paths import (
     MEDIA_PATH,
@@ -158,7 +159,6 @@ def handle_categorical_column_comparative(bot, call, command):
     user_columns[call.from_user.id]["categorical_column"] = int(
         command.replace("categorical_column_", "")
     )
-
     handle_create_table_for_module_comparative(bot, call)
 
 
@@ -208,38 +208,170 @@ def handle_create_table_for_module_comparative(bot, call):
                 categorical_column, continuous_column
             )
 
-            table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{KOLMOGOROVA_SMIRNOVA}/kolmogorova_smirnova_{call.from_user.id}.png"
+            table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{KOLMOGOROVA_SMIRNOVA}/kolmogorova_smirnova_{call.from_user.id}.xlsx"
 
             if os.path.isfile(table_file):
-                file_cur = open(table_file, "rb")
-                bot.send_photo(chat_id=call.from_user.id, photo=file_cur)
-
                 bot.send_message(
                     chat_id=call.from_user.id,
-                    text="Если p < 0.05, нулевая гипотеза отвергается, принимается"
-                         " альтернативная, выборка не подчиняется закону нормального "
-                         "распределения. \n\nЕсли p ≥ 0.05, принимается нулевая "
-                         "гипотеза, выборка подчиняется закону нормального "
-                         "распределения.",
+                    text=f"На основе Ваших данных была построена таблица "
+                         f"распределения переменной '{continuous_column}' "
+                         f"по группирующей переменной '{categorical_column}'. ",
+                )
+
+                file_cur = open(table_file, "rb")
+                bot.send_document(
+                    chat_id=call.from_user.id,
+                    document=file_cur,
+                    visible_file_name=f"Колмогорова_Смирнова_{continuous_column}_{categorical_column}.xlsx",
                 )
 
         else:
-            module.generate_t_criterion_student_independent(
-                categorical_column, continuous_column
-            )
+            class_names = module.get_class_names(categorical_column, module.df)
 
-            table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_INDEPENDENT}/t_criteria_independent_{call.from_user.id}.png"
-
-            if os.path.isfile(table_file):
-                file_cur = open(table_file, "rb")
-                bot.send_photo(chat_id=call.from_user.id, photo=file_cur)
-
+            if len(class_names) < 2:
                 bot.send_message(
                     chat_id=call.from_user.id,
-                    text="Если p < 0.05, нулевая гипотеза отвергается, "
-                         "принимается альтернативная, различия обладают "
-                         "статистической значимостью и носят системный"
-                         " характер.\n\nЕсли p ≥ 0.05, принимается нулевая"
-                         " гипотеза, различия не являются статистически "
-                         "значимыми и носят случайный характер",
+                    text="Выбранная группирующая переменная должна иметь "
+                         "хотя бы два уникальных значения."
+                         " Загрузите файл, который содержит хотя бы два"
+                         " уникальных значения в группирующей переменной.",
+                    reply_markup=keyboard_comparative_analysis,
                 )
+            elif len(class_names) == 2:
+                module.generate_t_criterion_student_independent(
+                    categorical_column, continuous_column, class_names
+                )
+
+                table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_INDEPENDENT}/t_criteria_independent_{call.from_user.id}.xlsx"
+
+                if os.path.isfile(table_file):
+                    values_as_strings = [str(value) for value in
+                                         class_names.values()]
+
+                    bot.send_message(
+                        chat_id=call.from_user.id,
+                        text=f"На основе Ваших данных была построена таблица "
+                             f"распределения переменной '{continuous_column}' "
+                             f"по группирующей переменной '{categorical_column}'."
+                             f" Группы, выбранные в группирующей переменной: {', '.join(values_as_strings)} ",
+                    )
+
+                    file_cur = open(table_file, "rb")
+                    bot.send_document(
+                        chat_id=call.from_user.id,
+                        document=file_cur,
+                        visible_file_name=f"T_критерий_Стьюдента_независимых_{continuous_column}_{categorical_column}_{', '.join(values_as_strings)}.xlsx",
+                    )
+            else:
+                keyboard = generate_categorical_value_column_keyboard(
+                    class_names)
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text="Выберите два значения группирующей переменной, по "
+                         "которым рассчитать T-критерий Стьюдента",
+                    reply_markup=keyboard
+                )
+                user_columns[call.from_user.id]["class_names"] = class_names
+
+
+def build_t_criteria_independent(bot, call):
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
+        call.from_user.id,
+    )
+
+    module = ComparativeModule(df, call.from_user.id)
+    categorical_column_index = user_columns[call.from_user.id][
+        "categorical_column"]
+
+    categorical_column = user_columns[call.from_user.id]["categorical_columns"][
+        categorical_column_index
+    ]
+
+    continuous_column_index = user_columns[call.from_user.id][
+        "continuous_column"]
+
+    continuous_column = user_columns[call.from_user.id]["continuous_columns"][
+        continuous_column_index
+    ]
+
+    categorical_values = user_columns[call.from_user.id][
+        "categorical_column_values"]
+
+    class_names = user_columns[call.from_user.id][
+        "class_names"]
+
+    merged_dict = {key: class_names[key] for key in categorical_values if
+                   key in class_names}
+
+    module.generate_t_criterion_student_independent(
+        categorical_column, continuous_column, merged_dict
+    )
+
+    values_as_strings = [str(value) for value in
+                         merged_dict.values()]
+
+    table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_INDEPENDENT}/t_criteria_independent_{call.from_user.id}.xlsx"
+
+    if os.path.isfile(table_file):
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text=f"На основе Ваших данных была построена таблица "
+                 f"распределения переменной '{continuous_column}' "
+                 f"по группирующей переменной '{categorical_column}'. "
+                 f" Группы, выбранные в группирующей переменной: {', '.join(values_as_strings)} ",
+        )
+
+        file_cur = open(table_file, "rb")
+        bot.send_document(
+            chat_id=call.from_user.id,
+            document=file_cur,
+            visible_file_name=f"T_критерий_Стьюдента_независимых_{continuous_column}_{categorical_column}_{', '.join(values_as_strings)}.xlsx",
+        )
+
+
+def handle_t_criteria_categorical_value(bot, call, command):
+    current_value = command.replace("t_criteria_categorical_value_", "")
+    if current_value.isdigit():
+        current_value = int(current_value)
+
+    if "categorical_column_values" in user_columns[call.from_user.id]:
+        current_length = len(
+            user_columns[call.from_user.id]["categorical_column_values"])
+
+        if current_length == 1:
+
+            if current_value in user_columns[call.from_user.id][
+                "categorical_column_values"]:
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text="Вы уже выбрали эту переменную. Выберите другую вторую переменную"
+                )
+
+            else:
+                user_columns[call.from_user.id][
+                    "categorical_column_values"].append(
+                    current_value)
+                build_t_criteria_independent(bot, call)
+
+        elif current_length == 2:
+
+            user_columns[call.from_user.id]["categorical_column_values"].pop(0)
+            if current_value in user_columns[call.from_user.id][
+                "categorical_column_values"]:
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text="Вы уже выбрали эту переменную. Выберите другую вторую переменную"
+                )
+            else:
+                user_columns[call.from_user.id][
+                    "categorical_column_values"].append(
+                    current_value)
+                build_t_criteria_independent(bot, call)
+    else:
+        user_columns[call.from_user.id]["categorical_column_values"] = [
+            current_value]
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Выберите вторую переменную на клавиатуре:"
+        )

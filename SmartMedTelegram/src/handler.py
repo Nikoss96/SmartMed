@@ -14,7 +14,7 @@ from comparative_analysis.functions_comparative import (
     handle_comparative_module,
     user_columns,
     handle_categorical_columns_comparative,
-    handle_categorical_column_comparative,
+    handle_categorical_column_comparative, handle_t_criteria_categorical_value,
 )
 from comparative_analysis.keyboard_implementation import (
     handle_pagination_columns_comparative,
@@ -106,6 +106,9 @@ def callback_query_handler(bot, call):
 
         elif command.startswith("categorical_column_"):
             handle_categorical_column_comparative(bot, call, command)
+
+        elif command.startswith("t_criteria_categorical_value_"):
+            handle_t_criteria_categorical_value(bot, call, command)
 
         elif command == "example_describe":
             handle_example_describe(bot, call)

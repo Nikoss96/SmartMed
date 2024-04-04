@@ -46,73 +46,40 @@ class ComparativeModule:
                                            continuous_column):
         classes = self.get_class_names(categorical_column, self.df)
 
-        class1 = list(classes.keys())[0]
-        class2 = list(classes.keys())[1]
-        data1 = self.df[self.df[categorical_column] == class1][
-            continuous_column]
-        data2 = self.df[self.df[categorical_column] == class2][
-            continuous_column]
+        def test_kolmagorova_smirnova(group_value):
+            data = self.df[self.df[categorical_column] == group_value][
+                continuous_column]
+            data = preprocessing.normalize([data])
+            res = kstest(data, "norm")
 
-        data1 = preprocessing.normalize([data1])
-        data2 = preprocessing.normalize([data2])
-        res1 = kstest(data1, "norm")
-        res2 = kstest(data2, "norm")
+            if res[1] < 0.001:
+                p = "< 0.001"
+            else:
+                p = np.round(res[1], 3)
 
-        if res1[1] < 0.001:
-            p1 = "< 0.001"
-        else:
-            p1 = np.round(res1[1], 3)
+            class_name = classes[group_value]
 
-        if res2[1] < 0.001:
-            p2 = "< 0.001"
-        else:
-            p2 = np.round(res2[1], 3)
-
-        class1_name = classes[class1]
-        class2_name = classes[class2]
+            return res, p, class_name
 
         df = pd.DataFrame(columns=["Группа", "Значение", "p-value"])
-        df.loc[0] = [class1_name, np.round(res1[0], 3), p1]
-        df.loc[1] = [class2_name, np.round(res2[0], 3), p2]
 
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.axis('off')
+        classes_array = list(classes.keys())
 
-        table = ax.table(
-            cellText=df.values,
-            colLabels=df.columns,
-            cellLoc='center',
-            colLoc='center',
-            loc='center')
-        table.auto_set_font_size(False)
-        table.set_fontsize(10)
-        table.auto_set_column_width(col=list(range(len(df.columns))))
+        for i in range(len(classes_array)):
+            res, p, class_name = test_kolmagorova_smirnova(classes_array[i])
 
-        ax.text(0.5, 1.1, f"Группирующая переменная: {categorical_column}",
-                transform=ax.transAxes, ha='center')
-        ax.text(0.5, 1.05, f"Независимая переменная: {continuous_column}",
-                transform=ax.transAxes, ha='center')
+            df.loc[i] = [class_name, np.round(res[0], 3), p]
 
-        header_cells = table.get_celld()
-        for (i, j), cell in header_cells.items():
-            if i == 0:
-                cell.set_text_props(fontweight='bold', color='w')
-                cell.set_facecolor('#1d0691')
-
-        for i, row in enumerate(table.get_children()):
-            if i % 2 == 0:
-                for cell in row.get_children():
-                    cell.set_facecolor('#120303')
-
-        plt.savefig(
-            f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{KOLMOGOROVA_SMIRNOVA}/kolmogorova_smirnova_{self.chat_id}.png",
-            bbox_inches="tight",
+        df.to_excel(
+            f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{KOLMOGOROVA_SMIRNOVA}/kolmogorova_smirnova_{self.chat_id}.xlsx",
+            index=False,
         )
-        plt.clf()
-        plt.close()
 
-    def generate_t_criterion_student_independent(self, categorical_column,
-                                                 continuous_column):
+    def generate_t_criterion_student_independent(self,
+                                                 categorical_column,
+                                                 continuous_column,
+                                                 classes
+                                                 ):
         def independent_ttest(x, y, alpha):
             mean1, mean2 = np.mean(x), np.mean(y)
             se1, se2 = sem(x), sem(y)
@@ -138,9 +105,6 @@ class ComparativeModule:
         result_columns = ['Доверительная вероятность', 'Эмпирическое значение',
                           'Критическое значение',
                           'Число степеней свободы']
-
-        classes = self.get_class_names(categorical_column, self.df)
-
         class1 = list(classes.keys())[0]
         class2 = list(classes.keys())[1]
         data1 = self.df[self.df[categorical_column] == class1][
@@ -168,34 +132,13 @@ class ComparativeModule:
         df2 = pd.DataFrame(columns=mean_p_columns_header)
         df2.loc[1] = res_list2
 
-        fig, ax = plt.subplots()
+        with pd.ExcelWriter(
+                f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_INDEPENDENT}/t_criteria_independent_{self.chat_id}.xlsx",
+                engine='xlsxwriter') as writer:
 
-        ax.text(0.5, 1.1, f"Группирующая переменная: {categorical_column}",
-                transform=ax.transAxes, ha='center')
-        ax.text(0.5, 1.05, f"Независимая переменная: {continuous_column}",
-                transform=ax.transAxes, ha='center')
-
-        ax.axis('tight')
-        ax.axis('off')
-        table1 = ax.table(cellText=df.values, colLabels=df.columns,
-                          cellLoc='center', colLoc='center', rowLoc='center',
-                          loc='upper center',
-                          colWidths=[0.3, 0.3, 0.3, 0.3])
-        table1.auto_set_font_size(False)
-        table1.set_fontsize(7)
-
-        table2 = ax.table(cellText=df2.values, colLabels=df2.columns,
-                          cellLoc='center', colLoc='center', rowLoc='center',
-                          loc='center')
-        table2.auto_set_font_size(False)
-        table2.set_fontsize(10)
-
-        plt.savefig(
-            f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_INDEPENDENT}/t_criteria_independent_{self.chat_id}.png",
-            bbox_inches="tight",
-        )
-        plt.clf()
-        plt.close()
+            df.to_excel(writer, sheet_name='Sheet1', index=False)
+            df2.to_excel(writer, sheet_name='Sheet1', startrow=len(df) + 2,
+                         index=False)
 
 
 def read_file(path):
