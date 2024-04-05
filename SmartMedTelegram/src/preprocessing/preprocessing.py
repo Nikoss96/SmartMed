@@ -1,11 +1,21 @@
 import pathlib
-import time
 from typing import Dict
 
 import pandas as pd
-import numpy as np
 
 from sklearn import preprocessing
+
+numerics_list = [
+    "int16",
+    "int32",
+    "int",
+    "float",
+    "bool",
+    "int64",
+    "float16",
+    "float32",
+    "float64",
+]
 
 
 class PandasPreprocessor:
@@ -13,17 +23,7 @@ class PandasPreprocessor:
         self.chat_id = chat_id
         self.settings = settings
         self.__read_file()
-        self.numerics_list = [
-            "int16",
-            "int32",
-            "int",
-            "float",
-            "bool",
-            "int64",
-            "float16",
-            "float32",
-            "float64",
-        ]
+        self.numerics_list = numerics_list
 
     def __read_file(self):
         ext = pathlib.Path(self.settings["path"]).suffix
@@ -92,15 +92,4 @@ def get_categorical_col(data):
 
 
 def get_numeric_df(df):
-    numerics_list = [
-        "int16",
-        "int32",
-        "int",
-        "float",
-        "bool",
-        "int64",
-        "float16",
-        "float32",
-        "float64",
-    ]
     return df.select_dtypes(include=numerics_list)

@@ -1,14 +1,9 @@
-import os
-
-from dotenv import load_dotenv
 from telebot.apihelper import ApiTelegramException
 from yandexgptlite import YandexGPTLite
 
-from keyboard import keyboard_in_development
+from keyboard import keyboard_main_menu
+from settings import yandex_gpt_folder, yandex_gpt_token
 
-load_dotenv()
-yandex_gpt_folder = os.getenv("YANDEX_GPT_FOLDER")
-yandex_gpt_token = os.getenv("YANDEX_GPT_TOKEN")
 account = YandexGPTLite(yandex_gpt_folder, yandex_gpt_token)
 
 
@@ -32,12 +27,12 @@ def handle_gpt_message(bot, message):
                 message_id=bot_message.message_id,
                 text=text,
                 parse_mode="Markdown",
-                reply_markup=keyboard_in_development,
+                reply_markup=keyboard_main_menu,
             )
 
     except ApiTelegramException as e:
         bot.send_message(
             chat_id=chat_id,
             text="Извините, не удалось сгенерировать ответ. Попробуйте еще раз.",
-            reply_markup=keyboard_in_development,
+            reply_markup=keyboard_main_menu,
         )

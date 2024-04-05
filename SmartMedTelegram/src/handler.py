@@ -38,7 +38,7 @@ from dictionary.functions_dictionary import (
     handle_statistical_term,
 )
 from gpt.functions_gpt import handle_gpt_message
-from keyboard import keyboard_main_menu, keyboard_in_development
+from keyboard import keyboard_start
 from functions import (
     get_reply_markup,
     handle_back,
@@ -75,7 +75,46 @@ def callback_query_handler(bot, call):
         elif command.startswith("statistical_term"):
             handle_statistical_term(bot, call)
 
+        # Общие команды при обработке модулей
+        elif command in [
+            "download_describe",
+            "download_cluster",
+            "download_comparative",
+        ]:
+            handle_download(bot, call, command)
+
         # Обработка кнопок Описательного анализа
+        elif command == "example_describe":
+            handle_example_describe(bot, call)
+
+        elif command in [
+            "replace_null_with_mean_describe",
+            "delete_null_rows_dropna_describe",
+            "replace_null_with_median_describe",
+        ]:
+            handle_downloaded_describe_file(bot, call, command)
+
+        elif command == "describe_build_graphs":
+            handle_describe_build_graphs(bot, call)
+
+        elif command == "describe_correlation_analysis":
+            handle_describe_correlation_analysis(bot, call)
+
+        elif command == "describe_table":
+            handle_describe_table(bot, call)
+
+        elif command == "describe_box_plot":
+            handle_describe_box_plot(bot, call)
+
+        elif command.startswith("boxplot_prev_") or command.startswith(
+                "boxplot_next_"):
+            handle_pagination_columns(bot, call)
+
+        elif command.startswith("column_"):
+            handle_box_plot(bot, call)
+
+        # Конец
+
         elif command.startswith(
                 "continuous_columns_prev_") or command.startswith(
             "continuous_columns_next_"
@@ -99,10 +138,6 @@ def callback_query_handler(bot, call):
             columns = user_columns[call.from_user.id]["categorical_columns"]
             handle_pagination_columns_comparative(bot, call, command, columns)
 
-        elif command.startswith("boxplot_prev_") or command.startswith(
-                "boxplot_next_"):
-            handle_pagination_columns(bot, call)
-
         elif command.startswith("cluster_prev_") or command.startswith(
                 "cluster_next_"):
             handle_pagination_columns_cluster(bot, call, command)
@@ -112,9 +147,6 @@ def callback_query_handler(bot, call):
             "hierarchical_cluster_next_"
         ):
             handle_pagination_columns_cluster(bot, call, command)
-
-        elif command.startswith("column_"):
-            handle_box_plot(bot, call)
 
         elif command.startswith("cluster_"):
             handle_cluster_numbers(bot, call, command)
@@ -134,40 +166,11 @@ def callback_query_handler(bot, call):
         elif command.startswith("t_criteria_categorical_value_"):
             handle_t_criteria_categorical_value(bot, call, command)
 
-        elif command == "example_describe":
-            handle_example_describe(bot, call)
-
-        elif command in [
-            "download_describe",
-            "download_cluster",
-            "download_comparative",
-        ]:
-            handle_download(bot, call, command)
-
-        elif command == "describe_build_graphs":
-            handle_describe_build_graphs(bot, call)
-
-        elif command == "describe_correlation_analysis":
-            handle_describe_correlation_analysis(bot, call)
-
-        elif command == "describe_table":
-            handle_describe_table(bot, call)
-
-        elif command == "describe_box_plot":
-            handle_describe_box_plot(bot, call)
-
         elif command == "example_cluster":
             handle_example_cluster_analysis(bot, call)
 
         elif command == "example_comparative":
             handle_example_comparative_analysis(bot, call)
-
-        elif command in [
-            "replace_null_with_mean_describe",
-            "delete_null_rows_dropna_describe",
-            "replace_null_with_median_describe",
-        ]:
-            handle_downloaded_describe_file(bot, call, command)
 
         elif command in [
             "replace_null_with_mean_cluster",
@@ -232,7 +235,7 @@ def start_message_handler(bot, message):
             bot,
             chat_id,
             greeting_text,
-            reply_markup=keyboard_main_menu,
+            reply_markup=keyboard_start,
             parse_mode="Markdown",
         )
 

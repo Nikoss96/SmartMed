@@ -44,7 +44,8 @@ def handle_example_describe(bot, call):
     """
     bot.answer_callback_query(
         callback_query_id=call.id,
-        text="Прислали пример файла. Вы можете использовать этот файл для проведения анализа",
+        text="Прислали пример файла. "
+             "Вы можете использовать этот файл для проведения анализа",
     )
     send_document_from_file(
         bot,
@@ -86,7 +87,7 @@ def handle_describe_build_graphs(bot, call):
         bot.send_message(
             chat_id=call.from_user.id,
             text="По каждому параметру Ваших данных построена гистограмма."
-            " Результаты представлены на дашборде.",
+                 " Результаты представлены на дашборде.",
         )
 
         file_cur = open(file_path, "rb")
@@ -103,6 +104,8 @@ def handle_describe_correlation_analysis(bot, call):
         call.from_user.id,
     )
 
+    print(df)
+
     module = DescribeModule(df, call.from_user.id)
 
     module.create_correlation_matrices()
@@ -116,8 +119,8 @@ def handle_describe_correlation_analysis(bot, call):
         bot.send_message(
             chat_id=chat_id,
             text="На основе Ваших данных были построены матрицы корреляций"
-            " с помощью коэффициентов корреляции Пирсона и Спирмена. "
-            "Результаты представлены на дашборде.",
+                 " с помощью коэффициентов корреляции Пирсона и Спирмена. "
+                 "Результаты представлены на дашборде.",
         )
 
         bot.send_photo(chat_id=chat_id, photo=file_cur)
@@ -147,8 +150,8 @@ def handle_describe_table(bot, call):
         bot.send_message(
             chat_id=chat_id,
             text="На основе Ваших данных подготовлена описательная "
-            "таблица с основными статистиками. "
-            "Результаты представлены в прилагаемом Excel файле.",
+                 "таблица с основными статистиками. "
+                 "Результаты представлены в прилагаемом Excel файле.",
         )
 
         bot.send_document(
@@ -270,7 +273,7 @@ def generate_column_keyboard(columns: list, page: int) -> InlineKeyboardMarkup:
 
 
 def add_pagination_buttons(
-    keyboard: InlineKeyboardMarkup, columns: list, page: int
+        keyboard: InlineKeyboardMarkup, columns: list, page: int
 ) -> None:
     """
     Добавляет кнопки пагинации на клавиатуру.

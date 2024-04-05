@@ -19,8 +19,8 @@ from describe_analysis.keyboard_descriptive import (
     keyboard_replace_null_values_describe,
 )
 from dictionary.functions_dictionary import generate_dictionary_keyboard
-from keyboard import keyboard_in_development, keyboard_modules, \
-    keyboard_main_menu
+from keyboard import keyboard_modules, \
+    keyboard_start
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
@@ -28,9 +28,8 @@ from data.paths import (
     COMPARATIVE_ANALYSIS,
 )
 from preprocessing.preprocessing import PandasPreprocessor
+from settings import bot_token
 
-"6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
-test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
 user_commands = {}
 
 
@@ -101,7 +100,7 @@ def get_user_file(bot):
                 raise ApiTelegramException
             file_info = bot.get_file(message.document.file_id)
 
-            file_url = f"https://api.telegram.org/file/bot{test_bot_token}/{file_info.file_path}"
+            file_url = f"https://api.telegram.org/file/bot{bot_token}/{file_info.file_path}"
 
             response = requests.get(file_url)
 
@@ -179,7 +178,7 @@ def handle_back(bot, user_id):
     bot.send_message(
         chat_id=user_id,
         text="Выберите интересующий Вас раздел:",
-        reply_markup=keyboard_main_menu,
+        reply_markup=keyboard_start,
     )
 
 
@@ -250,7 +249,7 @@ def check_input_file(bot, message, file_path, command):
         if file_extension not in supported_formats:
             bot.reply_to(
                 message,
-                "Ваш файл не подходит. " "Файл должен иметь формат " ".xlsx или .xls",
+                "Ваш файл не подходит. Файл должен иметь формат .xlsx или .xls",
             )
             if os.path.exists(file_path):
                 os.remove(file_path)
@@ -322,7 +321,6 @@ def check_input_file(bot, message, file_path, command):
 
 
 def create_dataframe_and_save_file(chat_id, command):
-    # Найти загруженный файл пользователя
     directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}"
     files_in_directory = os.listdir(directory)
 

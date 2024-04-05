@@ -5,17 +5,16 @@ from telebot.types import (
 )
 
 """
-keyboard_main_menu: Первый ответ бота после нажатия пользователем кнопки Start.
-keyboard_modules: Ответ бота после нажатия на "Модули" на стартовой клавиатуре.
-keyboard_in_development: При отсутствии дальнейшего алгоритма у чат-бота, 
-возвращается клавиатура с возможность вернуться домой.
+keyboard_start: Клавиатура, содержащая разделы чат-бота.
+keyboard_modules: Клавиатура, содержащая модули чат-бота.
+keyboard_main_menu: Клавиатура возвращения в главное меню.
 """
 
-keyboard_main_menu = ReplyKeyboardMarkup(
+keyboard_start = ReplyKeyboardMarkup(
     resize_keyboard=True,
     one_time_keyboard=True
 )
-keyboard_main_menu.row(
+keyboard_start.row(
     "Модули",
     "Словарь",
     "Искусственный интеллект"
@@ -31,7 +30,7 @@ keyboard_modules.row(
     "Сравнительный анализ"
 )
 
-keyboard_in_development = InlineKeyboardMarkup()
-keyboard_in_development.add(
+keyboard_main_menu = InlineKeyboardMarkup()
+keyboard_main_menu.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back")
 )
