@@ -39,15 +39,11 @@ def get_reply_markup(command):
     Вспомогательная функция для получения клавиатур.
     """
     switch = {
-        "bioequal": keyboard_in_development,
         "описательный анализ": keyboard_describe_analysis,
         "кластерный анализ": keyboard_cluster_analysis,
         "сравнительный анализ": keyboard_comparative_analysis,
-        "predict": keyboard_in_development,
         "модули": keyboard_modules,
-        "назад": keyboard_main_menu,
-        "словарь": generate_dictionary_keyboard(0),
-        "cluster": keyboard_in_development,
+        "словарь": generate_dictionary_keyboard(),
     }
     return switch.get(command, None)
 

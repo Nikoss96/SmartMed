@@ -13,8 +13,10 @@ account = YandexGPTLite(yandex_gpt_folder, yandex_gpt_token)
 
 
 def handle_gpt_message(bot, message):
+    chat_id = message.from_user.id
+
     bot_message = bot.send_message(
-        chat_id=message.from_user.id,
+        chat_id=chat_id,
         text="Ваш запрос обрабатывается...",
     )
 
@@ -35,7 +37,7 @@ def handle_gpt_message(bot, message):
 
     except ApiTelegramException as e:
         bot.send_message(
-            chat_id=message.from_user.id,
+            chat_id=chat_id,
             text="Извините, не удалось сгенерировать ответ. Попробуйте еще раз.",
             reply_markup=keyboard_in_development,
         )

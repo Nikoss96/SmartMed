@@ -62,12 +62,23 @@ def callback_query_handler(bot, call):
 
         print(f"User {username} in {user_id} chat asked for {command}")
 
-        if command.startswith("prev_") or command.startswith("next_"):
+        # Обработка кнопки "Главное меню"
+        if command == "back":
+            handle_back(bot, user_id)
+
+        # Обработка кнопок словаря
+        elif (command.startswith("dictionary_prev_")
+              or command.startswith("dictionary_next_")
+        ):
             handle_pagination_dictionary(bot, call)
 
+        elif command.startswith("statistical_term"):
+            handle_statistical_term(bot, call)
+
+        # Обработка кнопок Описательного анализа
         elif command.startswith(
                 "continuous_columns_prev_") or command.startswith(
-                "continuous_columns_next_"
+            "continuous_columns_next_"
         ):
             columns = user_columns[call.from_user.id]["continuous_columns"]
             handle_pagination_columns_comparative(bot, call, command, columns)
@@ -83,7 +94,7 @@ def callback_query_handler(bot, call):
 
         elif command.startswith(
                 "categorical_columns_prev_") or command.startswith(
-                "categorical_columns_next_"
+            "categorical_columns_next_"
         ):
             columns = user_columns[call.from_user.id]["categorical_columns"]
             handle_pagination_columns_comparative(bot, call, command, columns)
@@ -98,12 +109,9 @@ def callback_query_handler(bot, call):
 
         elif command.startswith(
                 "hierarchical_cluster_prev_") or command.startswith(
-                "hierarchical_cluster_next_"
+            "hierarchical_cluster_next_"
         ):
             handle_pagination_columns_cluster(bot, call, command)
-
-        elif command.startswith("statistical_term"):
-            handle_statistical_term(bot, call)
 
         elif command.startswith("column_"):
             handle_box_plot(bot, call)
@@ -135,9 +143,6 @@ def callback_query_handler(bot, call):
             "download_comparative",
         ]:
             handle_download(bot, call, command)
-
-        elif command == "back":
-            handle_back(bot, user_id)
 
         elif command == "describe_build_graphs":
             handle_describe_build_graphs(bot, call)
@@ -220,7 +225,7 @@ def start_message_handler(bot, message):
             "Доброго дня!\n\nРады приветствовать Вас "
             "в приложении Smart-Медицина!\n\nВам доступен следующий "
             "функционал: \n- Модули анализа данных\n"
-            "- Словарь терминов"
+            "- Словарь терминов\n- Искусственный интеллект"
         )
 
         send_text_message(
@@ -245,35 +250,14 @@ def text_handler(bot, message):
         chat_id = message.chat.id
         username = message.from_user.username
 
-        if reply_markup is keyboard_in_development:
+        if command in [
+            "описательный анализ",
+            "кластерный анализ",
+            "сравнительный анализ"
+        ]:
             send_text_message(
                 bot,
-                chat_id=message.chat.id,
-                text="Данный модуль пока находится в разработке",
-                reply_markup=reply_markup,
-            )
-            return
-
-        if command in ["описательный анализ"]:
-            send_text_message(
-                bot,
-                chat_id=message.chat.id,
-                text="Выберите опцию при работе с модулем:",
-                reply_markup=reply_markup,
-            )
-
-        elif command == "кластерный анализ":
-            send_text_message(
-                bot,
-                chat_id=message.chat.id,
-                text="Выберите опцию при работе с модулем:",
-                reply_markup=reply_markup,
-            )
-
-        elif command == "сравнительный анализ":
-            send_text_message(
-                bot,
-                chat_id=message.chat.id,
+                chat_id=chat_id,
                 text="Выберите опцию при работе с модулем:",
                 reply_markup=reply_markup,
             )
@@ -281,7 +265,7 @@ def text_handler(bot, message):
         elif command == "модули":
             send_text_message(
                 bot,
-                chat_id=message.chat.id,
+                chat_id=chat_id,
                 text="Выберите интересующий Вас модуль:",
                 reply_markup=reply_markup,
             )
@@ -289,14 +273,14 @@ def text_handler(bot, message):
         elif command == "искусственный интеллект":
             send_text_message(
                 bot,
-                chat_id=message.chat.id,
-                text="Напишите Ваш запрос к GPT:",
+                chat_id=chat_id,
+                text="Напишите Ваш запрос к искусственному интеллекту:",
             )
 
         elif command == "словарь":
             send_text_message(
                 bot,
-                chat_id=message.chat.id,
+                chat_id=chat_id,
                 text="Выберите интересующий Вас раздел:",
                 reply_markup=reply_markup,
             )

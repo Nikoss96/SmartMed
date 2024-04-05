@@ -40,7 +40,6 @@ class PandasPreprocessor:
 
     def fillna(self):
         value = self.settings["fillna"]
-        print(value)
 
         if value == "mean":
             for col in self.df.columns:

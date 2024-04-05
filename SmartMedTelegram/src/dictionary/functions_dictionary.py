@@ -6,7 +6,7 @@ from data.paths import MEDIA_PATH, IMAGES_PATH, TERMS_PATH
 from dictionary.statistical_terms import statistical_terms
 
 
-def generate_dictionary_keyboard(page):
+def generate_dictionary_keyboard(page=0):
     """
     Генерация клавиатуры с терминами для словаря.
     """
@@ -14,8 +14,8 @@ def generate_dictionary_keyboard(page):
     words_per_page = 4
 
     for term_key in list(statistical_terms.keys())[
-        page * words_per_page : (page + 1) * words_per_page
-    ]:
+                    page * words_per_page: (page + 1) * words_per_page
+                    ]:
         term_description = statistical_terms[term_key][0]
         button = InlineKeyboardButton(
             term_description, callback_data=f"statistical_{term_key}"
@@ -23,12 +23,13 @@ def generate_dictionary_keyboard(page):
         keyboard_terms.add(button)
 
     prev_button = (
-        InlineKeyboardButton("Назад", callback_data=f"prev_{page}")
+        InlineKeyboardButton("Назад", callback_data=f"dictionary_prev_{page}")
         if page > 0
         else None
     )
     next_button = (
-        InlineKeyboardButton("Далее", callback_data=f"next_{page + 1}")
+        InlineKeyboardButton("Далее",
+                             callback_data=f"dictionary_next_{page + 1}")
         if (page + 1) * words_per_page < len(statistical_terms)
         else None
     )
@@ -54,7 +55,8 @@ def handle_pagination_dictionary(bot, call):
         bot (telebot.TeleBot): Экземпляр бота.
         call (telebot.types.CallbackQuery): Callback-запрос от пользователя.
     """
-    action, page = call.data.split("_") if "_" in call.data else (call.data, 0)
+    _, action, page = call.data.split("_") if "_" in call.data else (
+        call.data, 0)
     page = int(page)
 
     if action == "prev":

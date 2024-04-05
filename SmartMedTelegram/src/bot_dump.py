@@ -1,11 +1,12 @@
+import os
+
 from telebot import TeleBot
 
 from handler import callback_query_handler, start_message_handler, text_handler
 
-"6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
-test_bot_token = "6727256721:AAEtOViOFY46Vk-cvEyLPRntAkwKPH_KVkU"
+bot_token = os.getenv("BOT_TOKEN")
 
-bot = TeleBot(test_bot_token)
+bot = TeleBot(bot_token)
 
 
 @bot.message_handler(commands=["start"])
