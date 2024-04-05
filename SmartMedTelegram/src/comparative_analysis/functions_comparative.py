@@ -7,7 +7,8 @@ from comparative_analysis.keyboard_comparative import (
 )
 from comparative_analysis.keyboard_implementation import (
     handle_choose_column_comparative,
-    generate_categorical_value_column_keyboard, generate_column_keyboard,
+    generate_categorical_value_column_keyboard,
+    generate_column_keyboard,
 )
 from data.paths import (
     MEDIA_PATH,
@@ -16,7 +17,8 @@ from data.paths import (
     USER_DATA_PATH,
     COMPARATIVE_ANALYSIS,
     KOLMOGOROVA_SMIRNOVA,
-    T_CRITERIA_INDEPENDENT, T_CRITERIA_DEPENDENT,
+    T_CRITERIA_INDEPENDENT,
+    T_CRITERIA_DEPENDENT,
 )
 from describe_analysis.functions_descriptive import get_user_file_df
 from functions import send_document_from_file, create_dataframe_and_save_file
@@ -79,54 +81,52 @@ def handle_comparative_module(bot, call, command):
         bot.send_message(
             chat_id=call.from_user.id,
             text="В Вашем файле отсутствуют категориальные переменные. "
-                 "Загрузите файл, который содержит категориальные переменные.",
+            "Загрузите файл, который содержит категориальные переменные.",
             reply_markup=keyboard_comparative_analysis,
         )
     elif len(continuous_columns) < 1:
         bot.send_message(
             chat_id=call.from_user.id,
             text="В Вашем файле отсутствуют независимые переменные. "
-                 "Загрузите файл, который содержит независимые переменные.",
+            "Загрузите файл, который содержит независимые переменные.",
             reply_markup=keyboard_comparative_analysis,
         )
 
     else:
         user_columns[call.from_user.id] = {}
-        user_columns[call.from_user.id][
-            "categorical_columns"] = categorical_columns
-        user_columns[call.from_user.id][
-            "continuous_columns"] = continuous_columns
+        user_columns[call.from_user.id]["categorical_columns"] = categorical_columns
+        user_columns[call.from_user.id]["continuous_columns"] = continuous_columns
         user_columns[call.from_user.id]["command"] = command
 
         if command.startswith("kolmogorov"):
             bot.send_message(
                 chat_id=call.from_user.id,
                 text=f"Критерий согласия Колмогорова-Смирнова предназначен для "
-                     f"проверки гипотезы о принадлежности выборки нормальному "
-                     f"закону распределения.\n\nВам необходимо указать независимую и "
-                     f"группирующую переменные.\n\n"
-                     f"Группирующая переменная - переменная, используемая для разбиения "
-                     f"независимой переменной на группы, для данного критерия является "
-                     f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
-                     f" переменная представляет набор количественных, непрерывных "
-                     f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
+                f"проверки гипотезы о принадлежности выборки нормальному "
+                f"закону распределения.\n\nВам необходимо указать независимую и "
+                f"группирующую переменные.\n\n"
+                f"Группирующая переменная - переменная, используемая для разбиения "
+                f"независимой переменной на группы, для данного критерия является "
+                f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
+                f" переменная представляет набор количественных, непрерывных "
+                f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
             )
         else:
             bot.send_message(
                 chat_id=call.from_user.id,
                 text=f"Для применения t-критерия Стьюдента необходимо, чтобы "
-                     f"исходные данные имели нормальное распределение.\n\n"
-                     f"Данный статистический метод служит для сравнения двух "
-                     f"независимых между собой групп. Примеры сравниваемых "
-                     f"величин: возраст в основной и контрольной группе, "
-                     f"содержание глюкозы в крови пациентов, принимавших "
-                     f"препарат или плацебо.\n\nВам необходимо указать независимую и "
-                     f"группирующую переменные.\n\n"
-                     f"Группирующая переменная - переменная, используемая для разбиения "
-                     f"независимой переменной на группы, для данного критерия является "
-                     f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
-                     f" переменная представляет набор количественных, непрерывных "
-                     f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
+                f"исходные данные имели нормальное распределение.\n\n"
+                f"Данный статистический метод служит для сравнения двух "
+                f"независимых между собой групп. Примеры сравниваемых "
+                f"величин: возраст в основной и контрольной группе, "
+                f"содержание глюкозы в крови пациентов, принимавших "
+                f"препарат или плацебо.\n\nВам необходимо указать независимую и "
+                f"группирующую переменные.\n\n"
+                f"Группирующая переменная - переменная, используемая для разбиения "
+                f"независимой переменной на группы, для данного критерия является "
+                f"бинарной переменной. Например, пол, группа и т.д.\n\nНезависимая"
+                f" переменная представляет набор количественных, непрерывных "
+                f"значений. Например, возраст пациента, уровень лейкоцитов и т.д.",
             )
         handle_continuous_columns_comparative(bot, call)
 
@@ -169,15 +169,13 @@ def handle_create_table_for_module_comparative(bot, call):
     )
 
     module = ComparativeModule(df, call.from_user.id)
-    categorical_column_index = user_columns[call.from_user.id][
-        "categorical_column"]
+    categorical_column_index = user_columns[call.from_user.id]["categorical_column"]
 
     categorical_column = user_columns[call.from_user.id]["categorical_columns"][
         categorical_column_index
     ]
 
-    continuous_column_index = user_columns[call.from_user.id][
-        "continuous_column"]
+    continuous_column_index = user_columns[call.from_user.id]["continuous_column"]
 
     continuous_column = user_columns[call.from_user.id]["continuous_columns"][
         continuous_column_index
@@ -211,8 +209,8 @@ def handle_create_table_for_module_comparative(bot, call):
                 bot.send_message(
                     chat_id=call.from_user.id,
                     text=f"На основе Ваших данных была построена таблица "
-                         f"распределения переменной '{continuous_column}' "
-                         f"по группирующей переменной '{categorical_column}'. ",
+                    f"распределения переменной '{continuous_column}' "
+                    f"по группирующей переменной '{categorical_column}'. ",
                 )
 
                 file_cur = open(table_file, "rb")
@@ -229,9 +227,9 @@ def handle_create_table_for_module_comparative(bot, call):
                 bot.send_message(
                     chat_id=call.from_user.id,
                     text="Выбранная группирующая переменная должна иметь "
-                         "хотя бы два уникальных значения."
-                         " Загрузите файл, который содержит хотя бы два"
-                         " уникальных значения в группирующей переменной.",
+                    "хотя бы два уникальных значения."
+                    " Загрузите файл, который содержит хотя бы два"
+                    " уникальных значения в группирующей переменной.",
                     reply_markup=keyboard_comparative_analysis,
                 )
             elif len(class_names) == 2:
@@ -242,21 +240,20 @@ def handle_create_table_for_module_comparative(bot, call):
                 table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_INDEPENDENT}/t_criteria_independent_{call.from_user.id}.xlsx"
 
                 if os.path.isfile(table_file):
-                    values_as_strings = [str(value) for value in
-                                         class_names.values()]
+                    values_as_strings = [str(value) for value in class_names.values()]
 
                     bot.send_message(
                         chat_id=call.from_user.id,
                         text=f"На основе Ваших данных была построена таблица "
-                             f"распределения переменной '{continuous_column}' "
-                             f"по группирующей переменной '{categorical_column}'."
-                             f" Группы, выбранные в группирующей переменной: {', '.join(values_as_strings)}."
-                             f"\n\nЕсли p < 0.05, нулевая гипотеза отвергается,"
-                             f" принимается альтернативная, различия обладают "
-                             f"статистической значимостью и носят системный "
-                             f"характер.\n\nЕсли p ≥ 0.05, принимается нулевая "
-                             f"гипотеза, различия не являются статистически "
-                             f"значимыми и носят случайный характер.",
+                        f"распределения переменной '{continuous_column}' "
+                        f"по группирующей переменной '{categorical_column}'."
+                        f" Группы, выбранные в группирующей переменной: {', '.join(values_as_strings)}."
+                        f"\n\nЕсли p < 0.05, нулевая гипотеза отвергается,"
+                        f" принимается альтернативная, различия обладают "
+                        f"статистической значимостью и носят системный "
+                        f"характер.\n\nЕсли p ≥ 0.05, принимается нулевая "
+                        f"гипотеза, различия не являются статистически "
+                        f"значимыми и носят случайный характер.",
                     )
 
                     file_cur = open(table_file, "rb")
@@ -266,12 +263,11 @@ def handle_create_table_for_module_comparative(bot, call):
                         visible_file_name=f"T_критерий_Стьюдента_независимых_{continuous_column}_{categorical_column}_{'_'.join(values_as_strings)}.xlsx",
                     )
             else:
-                keyboard = generate_categorical_value_column_keyboard(
-                    class_names)
+                keyboard = generate_categorical_value_column_keyboard(class_names)
                 bot.send_message(
                     chat_id=call.from_user.id,
                     text="Выберите два значения группирующей переменной, по "
-                         "которым рассчитать T-критерий Стьюдента",
+                    "которым рассчитать T-критерий Стьюдента",
                     reply_markup=keyboard,
                 )
                 user_columns[call.from_user.id]["class_names"] = class_names
@@ -284,28 +280,24 @@ def build_t_criteria_independent(bot, call):
     )
 
     module = ComparativeModule(df, call.from_user.id)
-    categorical_column_index = user_columns[call.from_user.id][
-        "categorical_column"]
+    categorical_column_index = user_columns[call.from_user.id]["categorical_column"]
 
     categorical_column = user_columns[call.from_user.id]["categorical_columns"][
         categorical_column_index
     ]
 
-    continuous_column_index = user_columns[call.from_user.id][
-        "continuous_column"]
+    continuous_column_index = user_columns[call.from_user.id]["continuous_column"]
 
     continuous_column = user_columns[call.from_user.id]["continuous_columns"][
         continuous_column_index
     ]
 
-    categorical_values = user_columns[call.from_user.id][
-        "categorical_column_values"]
+    categorical_values = user_columns[call.from_user.id]["categorical_column_values"]
 
     class_names = user_columns[call.from_user.id]["class_names"]
 
     merged_dict = {
-        key: class_names[key] for key in categorical_values if
-        key in class_names
+        key: class_names[key] for key in categorical_values if key in class_names
     }
 
     module.generate_t_criterion_student_independent(
@@ -320,15 +312,15 @@ def build_t_criteria_independent(bot, call):
         bot.send_message(
             chat_id=call.from_user.id,
             text=f"На основе Ваших данных была построена таблица "
-                 f"распределения переменной '{continuous_column}' "
-                 f"по группирующей переменной '{categorical_column}'. "
-                 f" Группы, выбранные в группирующей переменной: {', '.join(values_as_strings)}."
-                 f"\n\nЕсли p < 0.05, нулевая гипотеза отвергается, "
-                 f"принимается альтернативная, различия обладают "
-                 f"статистической значимостью и носят системный характер."
-                 f"\n\nЕсли p ≥ 0.05, принимается нулевая гипотеза, различия "
-                 f"не являются статистически значимыми и носят случайный "
-                 f"характер.",
+            f"распределения переменной '{continuous_column}' "
+            f"по группирующей переменной '{categorical_column}'. "
+            f" Группы, выбранные в группирующей переменной: {', '.join(values_as_strings)}."
+            f"\n\nЕсли p < 0.05, нулевая гипотеза отвергается, "
+            f"принимается альтернативная, различия обладают "
+            f"статистической значимостью и носят системный характер."
+            f"\n\nЕсли p ≥ 0.05, принимается нулевая гипотеза, различия "
+            f"не являются статистически значимыми и носят случайный "
+            f"характер.",
         )
 
         file_cur = open(table_file, "rb")
@@ -351,9 +343,8 @@ def handle_t_criteria_categorical_value(bot, call, command):
 
         if current_length == 1:
             if (
-                    current_value
-                    in user_columns[call.from_user.id][
-                "categorical_column_values"]
+                current_value
+                in user_columns[call.from_user.id]["categorical_column_values"]
             ):
                 bot.send_message(
                     chat_id=call.from_user.id,
@@ -361,8 +352,7 @@ def handle_t_criteria_categorical_value(bot, call, command):
                 )
 
             else:
-                user_columns[call.from_user.id][
-                    "categorical_column_values"].append(
+                user_columns[call.from_user.id]["categorical_column_values"].append(
                     current_value
                 )
                 build_t_criteria_independent(bot, call)
@@ -370,26 +360,22 @@ def handle_t_criteria_categorical_value(bot, call, command):
         elif current_length == 2:
             user_columns[call.from_user.id]["categorical_column_values"].pop(0)
             if (
-                    current_value
-                    in user_columns[call.from_user.id][
-                "categorical_column_values"]
+                current_value
+                in user_columns[call.from_user.id]["categorical_column_values"]
             ):
                 bot.send_message(
                     chat_id=call.from_user.id,
                     text="Вы уже выбрали эту переменную. Выберите другую вторую переменную",
                 )
             else:
-                user_columns[call.from_user.id][
-                    "categorical_column_values"].append(
+                user_columns[call.from_user.id]["categorical_column_values"].append(
                     current_value
                 )
                 build_t_criteria_independent(bot, call)
     else:
-        user_columns[call.from_user.id]["categorical_column_values"] = [
-            current_value]
+        user_columns[call.from_user.id]["categorical_column_values"] = [current_value]
         bot.send_message(
-            chat_id=call.from_user.id,
-            text="Выберите вторую переменную на клавиатуре:"
+            chat_id=call.from_user.id, text="Выберите вторую переменную на клавиатуре:"
         )
 
 
@@ -411,25 +397,24 @@ def handle_t_criterion_student_dependent(bot, call, command):
         bot.send_message(
             chat_id=call.from_user.id,
             text="В Вашем файле отсутствуют переменные. "
-                 "Загрузите файл, который содержит переменные.",
+            "Загрузите файл, который содержит переменные.",
             reply_markup=keyboard_comparative_analysis,
         )
 
     else:
         user_columns[call.from_user.id] = {}
-        user_columns[call.from_user.id][
-            "columns"] = columns
+        user_columns[call.from_user.id]["columns"] = columns
         user_columns[call.from_user.id]["command"] = command
 
         if command == "t_criterion_student_dependent_comparative":
             bot.send_message(
                 chat_id=call.from_user.id,
                 text=f"Для применения t-критерия Стьюдента необходимо, чтобы"
-                     f" исходные данные имели нормальное распределение."
-                     f" \n\nДанный метод используется для сравнения двух "
-                     f"зависимых групп пациентов. Примеры сравниваемых "
-                     f"величин: частота сердечных сокращений до и после "
-                     f"приема.\n\nВам необходимо указать две переменные.",
+                f" исходные данные имели нормальное распределение."
+                f" \n\nДанный метод используется для сравнения двух "
+                f"зависимых групп пациентов. Примеры сравниваемых "
+                f"величин: частота сердечных сокращений до и после "
+                f"приема.\n\nВам необходимо указать две переменные.",
             )
 
         keyboard = generate_column_keyboard(columns, 0, command)
@@ -444,7 +429,8 @@ def handle_t_criterion_student_dependent(bot, call, command):
 def handle_t_criteria_for_dependent(bot, call, command):
     if not "dependent_column" in user_columns[call.from_user.id]:
         user_columns[call.from_user.id]["dependent_column"] = [
-            int(command.replace("dependent_column_", ""))]
+            int(command.replace("dependent_column_", ""))
+        ]
 
         bot.send_message(
             chat_id=call.from_user.id,
@@ -452,10 +438,10 @@ def handle_t_criteria_for_dependent(bot, call, command):
         )
 
     elif len(user_columns[call.from_user.id]["dependent_column"]) == 1:
-
-        if int(command.replace("dependent_column_", "")) not in \
-                user_columns[call.from_user.id]["dependent_column"]:
-
+        if (
+            int(command.replace("dependent_column_", ""))
+            not in user_columns[call.from_user.id]["dependent_column"]
+        ):
             user_columns[call.from_user.id]["dependent_column"].append(
                 int(command.replace("dependent_column_", ""))
             )
@@ -470,8 +456,10 @@ def handle_t_criteria_for_dependent(bot, call, command):
     else:
         user_columns[call.from_user.id]["dependent_column"].pop(0)
 
-        if int(command.replace("dependent_column_", "")) not in \
-                user_columns[call.from_user.id]["dependent_column"]:
+        if (
+            int(command.replace("dependent_column_", ""))
+            not in user_columns[call.from_user.id]["dependent_column"]
+        ):
             user_columns[call.from_user.id]["dependent_column"].append(
                 int(command.replace("dependent_column_", ""))
             )
@@ -491,8 +479,7 @@ def build_t_criteria_table_dependent(bot, call, command):
     )
 
     module = ComparativeModule(df, call.from_user.id)
-    columns = user_columns[call.from_user.id][
-        "dependent_column"]
+    columns = user_columns[call.from_user.id]["dependent_column"]
 
     if not columns:
         bot.send_message(
@@ -524,14 +511,14 @@ def build_t_criteria_table_dependent(bot, call, command):
                 bot.send_message(
                     chat_id=call.from_user.id,
                     text=f"На основе Ваших данных была построена таблица "
-                         f"T-критерия Стьюдента для переменной '{names_of_columns[columns[0]]}' "
-                         f"и переменной '{names_of_columns[columns[1]]}'. "
-                         f"\n\nЕсли p < 0.05, нулевая гипотеза отвергается, "
-                         f"принимается альтернативная, различия обладают "
-                         f"статистической значимостью и носят системный "
-                         f"характер.\n\nЕсли p ≥ 0.05, принимается нулевая "
-                         f"гипотеза, различия не являются статистически "
-                         f"значимыми и носят случайный характер."
+                    f"T-критерия Стьюдента для переменной '{names_of_columns[columns[0]]}' "
+                    f"и переменной '{names_of_columns[columns[1]]}'. "
+                    f"\n\nЕсли p < 0.05, нулевая гипотеза отвергается, "
+                    f"принимается альтернативная, различия обладают "
+                    f"статистической значимостью и носят системный "
+                    f"характер.\n\nЕсли p ≥ 0.05, принимается нулевая "
+                    f"гипотеза, различия не являются статистически "
+                    f"значимыми и носят случайный характер.",
                 )
 
                 file_cur = open(table_file, "rb")
