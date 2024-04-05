@@ -23,6 +23,7 @@ from describe_analysis.DescribeModule import (
 )
 from describe_analysis.functions_descriptive import get_user_file_df
 from functions import send_document_from_file, create_dataframe_and_save_file
+from preprocessing.preprocessing import get_numeric_df
 
 number_of_clusters = {}
 
@@ -67,7 +68,11 @@ def handle_cluster_method(bot, call, command):
         call.from_user.id,
     )
 
-    df = filter_columns_with_more_than_2_unique_values(df)
+    print(df)
+
+    df = get_numeric_df(df)
+
+    print(df)
 
     module = ClusterModule(df, call.from_user.id)
 
@@ -97,9 +102,9 @@ def handle_cluster_method(bot, call, command):
         bot.send_message(
             chat_id=chat_id,
             text=f"На основе Ваших данных был построен график Метод локтя для определения "
-            f"оптимального количества кластеров по данным.\n\n"
-            f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
-            "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
+                 f"оптимального количества кластеров по данным.\n\n"
+                 f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
+                 "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
             reply_markup=keyboard,
         )
 
@@ -135,7 +140,8 @@ def handle_pagination_columns_cluster(bot, call, command) -> None:
             page -= 1
 
         edit_column_selection_message(
-            bot, call.message.chat.id, call.message.message_id, columns, page, command
+            bot, call.message.chat.id, call.message.message_id, columns, page,
+            command
         )
 
     elif command.startswith("hierarchical"):
@@ -146,11 +152,13 @@ def handle_pagination_columns_cluster(bot, call, command) -> None:
             page -= 1
 
         edit_column_selection_message(
-            bot, call.message.chat.id, call.message.message_id, columns, page, command
+            bot, call.message.chat.id, call.message.message_id, columns, page,
+            command
         )
 
 
-def edit_column_selection_message(bot, chat_id, message_id, columns, page, command):
+def edit_column_selection_message(bot, chat_id, message_id, columns, page,
+                                  command):
     """
     Редактирует сообщение для выбора столбца для построения ящика с усами.
 
@@ -174,7 +182,8 @@ def edit_column_selection_message(bot, chat_id, message_id, columns, page, comma
     )
 
 
-def generate_column_keyboard(columns: list, page: int, command) -> InlineKeyboardMarkup:
+def generate_column_keyboard(columns: list, page: int,
+                             command) -> InlineKeyboardMarkup:
     """
     Создает клавиатуру с названиями колонок для пагинации.
 
@@ -207,7 +216,7 @@ def generate_column_keyboard(columns: list, page: int, command) -> InlineKeyboar
 
 
 def add_pagination_buttons(
-    keyboard: InlineKeyboardMarkup, columns: list, page: int, prefix
+        keyboard: InlineKeyboardMarkup, columns: list, page: int, prefix
 ) -> None:
     """
     Добавляет кнопки пагинации на клавиатуру.
@@ -221,12 +230,14 @@ def add_pagination_buttons(
         None
     """
     prev_button = (
-        InlineKeyboardButton("Назад", callback_data=f"{prefix}cluster_prev_{page}")
+        InlineKeyboardButton("Назад",
+                             callback_data=f"{prefix}cluster_prev_{page}")
         if page > 0
         else None
     )
     next_button = (
-        InlineKeyboardButton("Далее", callback_data=f"{prefix}cluster_next_{page + 1}")
+        InlineKeyboardButton("Далее",
+                             callback_data=f"{prefix}cluster_next_{page + 1}")
         if (page + 1) * 4 < len(columns)
         else None
     )
@@ -271,8 +282,8 @@ def handle_cluster_numbers(bot, call, command):
         bot.send_message(
             chat_id=call.from_user.id,
             text="По заданному количеству кластеров с помощью Метода k-средних"
-            " был построен точечный график,"
-            " а также создана таблица распределения элементов по кластерам.",
+                 " был построен точечный график,"
+                 " а также создана таблица распределения элементов по кластерам.",
         )
 
         file_cur = open(png_file_path, "rb")
@@ -313,7 +324,7 @@ def handle_hierarchical(bot, call):
         bot.send_message(
             chat_id=call.from_user.id,
             text="По Вашим данным с помощью метода Иерархической кластеризации"
-            " была построена дендрограмма. Вы можете поменять количество кластеров:",
+                 " была построена дендрограмма. Вы можете поменять количество кластеров:",
             reply_markup=keyboard,
         )
 
