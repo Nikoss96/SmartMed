@@ -29,7 +29,6 @@ def handle_choose_column_comparative(bot, call, columns, command):
 
 
 def handle_pagination_columns_comparative(bot, call, command, columns) -> None:
-    # if command.startswith("continuous_columns_"):
     data = call.data.split("_") if "_" in call.data else (call.data, 0)
     _, prefix, action, page = data[0], data[1], data[2], int(data[3])
 
@@ -37,11 +36,29 @@ def handle_pagination_columns_comparative(bot, call, command, columns) -> None:
         page -= 1
 
     edit_column_selection_message(
-        bot, call.message.chat.id, call.message.message_id, columns, page, command
+        bot, call.message.chat.id, call.message.message_id, columns, page,
+        command
     )
 
 
-def edit_column_selection_message(bot, chat_id, message_id, columns, page, command):
+def handle_pagination_columns_t_criteria_dependent_comparative(
+        bot, call, command, columns
+) -> None:
+    data = call.data.split("_") if "_" in call.data else (call.data, 0)
+
+    action, page = data[-2], int(data[-1])
+
+    if action == "prev":
+        page -= 1
+
+    edit_column_selection_message(
+        bot, call.message.chat.id, call.message.message_id, columns, page,
+        command
+    )
+
+
+def edit_column_selection_message(bot, chat_id, message_id, columns, page,
+                                  command):
     """
     Редактирует сообщение для выбора столбца для построения ящика с усами.
 
@@ -74,7 +91,8 @@ def edit_column_selection_message(bot, chat_id, message_id, columns, page, comma
         )
 
 
-def generate_column_keyboard(columns: list, page: int, command) -> InlineKeyboardMarkup:
+def generate_column_keyboard(columns: list, page: int,
+                             command) -> InlineKeyboardMarkup:
     """
     Создает клавиатуру с названиями колонок для пагинации.
 
@@ -94,13 +112,14 @@ def generate_column_keyboard(columns: list, page: int, command) -> InlineKeyboar
     if command.startswith("categorical_columns"):
         for index, column in enumerate(current_columns):
             button = InlineKeyboardButton(
-                column, callback_data=f"categorical_column_{start_index + index}"
+                column,
+                callback_data=f"categorical_column_{start_index + index}"
             )
             keyboard.add(button)
 
         add_pagination_buttons(keyboard, columns, page, command)
 
-    else:
+    elif command.startswith("continuous_columns"):
         for index, column in enumerate(current_columns):
             button = InlineKeyboardButton(
                 column, callback_data=f"continuous_column_{start_index + index}"
@@ -109,10 +128,20 @@ def generate_column_keyboard(columns: list, page: int, command) -> InlineKeyboar
 
         add_pagination_buttons(keyboard, columns, page, command)
 
+    else:
+        for index, column in enumerate(current_columns):
+            button = InlineKeyboardButton(
+                column, callback_data=f"dependent_column_{start_index + index}"
+            )
+            keyboard.add(button)
+
+        add_pagination_buttons(keyboard, columns, page, command)
+
     return keyboard
 
 
-def generate_categorical_value_column_keyboard(columns: dict) -> InlineKeyboardMarkup:
+def generate_categorical_value_column_keyboard(
+        columns: dict) -> InlineKeyboardMarkup:
     """
     Создает клавиатуру с названиями колонок для пагинации.
 
@@ -134,7 +163,7 @@ def generate_categorical_value_column_keyboard(columns: dict) -> InlineKeyboardM
 
 
 def add_pagination_buttons(
-    keyboard: InlineKeyboardMarkup, columns: list, page: int, command: str
+        keyboard: InlineKeyboardMarkup, columns: list, page: int, command: str
 ) -> None:
     """
     Добавляет кнопки пагинации на клавиатуру.
@@ -164,7 +193,7 @@ def add_pagination_buttons(
             else None
         )
 
-    else:
+    elif command.startswith("continuous_columns"):
         prev_button = (
             InlineKeyboardButton(
                 "Назад", callback_data=f"continuous_columns_prev_{page}"
@@ -179,6 +208,25 @@ def add_pagination_buttons(
             if (page + 1) * 4 < len(columns)
             else None
         )
+
+    else:
+        prev_button = (
+            InlineKeyboardButton(
+                "Назад",
+                callback_data=f"t_criterion_student_dependent_comparative_prev_{page}"
+            )
+            if page > 0
+            else None
+        )
+        next_button = (
+            InlineKeyboardButton(
+                "Далее",
+                callback_data=f"t_criterion_student_dependent_comparative_next_{page + 1}"
+            )
+            if (page + 1) * 4 < len(columns)
+            else None
+        )
+
     home_button = InlineKeyboardButton("Главное меню", callback_data="back")
 
     if prev_button and next_button:

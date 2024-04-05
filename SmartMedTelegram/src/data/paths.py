@@ -21,3 +21,4 @@ COMPARATIVE_ANALYSIS = "comparative_analysis"
 KOLMOGOROVA_SMIRNOVA = "kolmogorova_smirnova"
 
 T_CRITERIA_INDEPENDENT = "t_criteria_independent"
+T_CRITERIA_DEPENDENT = "t_criteria_dependent"

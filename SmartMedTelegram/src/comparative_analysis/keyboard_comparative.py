@@ -11,7 +11,8 @@ keyboard_choice: Выбор опции описательного анализа
 
 keyboard_comparative_analysis = InlineKeyboardMarkup()
 keyboard_comparative_analysis.add(
-    InlineKeyboardButton(text="Пример файла", callback_data="example_comparative")
+    InlineKeyboardButton(text="Пример файла",
+                         callback_data="example_comparative")
 )
 keyboard_comparative_analysis.add(
     InlineKeyboardButton(
@@ -56,6 +57,12 @@ keyboard_choice_comparative.add(
     InlineKeyboardButton(
         text="Т-критерий Стьюдента для независимых переменных",
         callback_data="t_criterion_student_independent_comparative",
+    )
+)
+keyboard_choice_comparative.add(
+    InlineKeyboardButton(
+        text="T-критерий Стьюдента для зависимых переменных",
+        callback_data="t_criterion_student_dependent_comparative",
     )
 )
 keyboard_choice_comparative.add(

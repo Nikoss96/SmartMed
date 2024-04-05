@@ -7,7 +7,7 @@ from comparative_analysis.keyboard_comparative import (
 )
 from comparative_analysis.keyboard_implementation import (
     handle_choose_column_comparative,
-    generate_categorical_value_column_keyboard,
+    generate_categorical_value_column_keyboard, generate_column_keyboard,
 )
 from data.paths import (
     MEDIA_PATH,
@@ -16,7 +16,7 @@ from data.paths import (
     USER_DATA_PATH,
     COMPARATIVE_ANALYSIS,
     KOLMOGOROVA_SMIRNOVA,
-    T_CRITERIA_INDEPENDENT,
+    T_CRITERIA_INDEPENDENT, T_CRITERIA_DEPENDENT,
 )
 from describe_analysis.functions_descriptive import get_user_file_df
 from functions import send_document_from_file, create_dataframe_and_save_file
@@ -391,3 +391,152 @@ def handle_t_criteria_categorical_value(bot, call, command):
             chat_id=call.from_user.id,
             text="Выберите вторую переменную на клавиатуре:"
         )
+
+
+def handle_t_criterion_student_dependent(bot, call, command):
+    """
+    Обработка при выборе метода после прочтения файла сравнительного анализа.
+    """
+
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
+        call.from_user.id,
+    )
+
+    module = ComparativeModule(df, call.from_user.id)
+
+    columns = module.get_all_columns()
+
+    if len(columns) < 1:
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="В Вашем файле отсутствуют переменные. "
+                 "Загрузите файл, который содержит переменные.",
+            reply_markup=keyboard_comparative_analysis,
+        )
+
+    else:
+        user_columns[call.from_user.id] = {}
+        user_columns[call.from_user.id][
+            "columns"] = columns
+        user_columns[call.from_user.id]["command"] = command
+
+        if command == "t_criterion_student_dependent_comparative":
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text=f"Для применения t-критерия Стьюдента необходимо, чтобы"
+                     f" исходные данные имели нормальное распределение."
+                     f" \n\nДанный метод используется для сравнения двух "
+                     f"зависимых групп пациентов. Примеры сравниваемых "
+                     f"величин: частота сердечных сокращений до и после "
+                     f"приема.\n\nВам необходимо указать две переменные.",
+            )
+
+        keyboard = generate_column_keyboard(columns, 0, command)
+
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Выберите первую переменную:",
+            reply_markup=keyboard,
+        )
+
+
+def handle_t_criteria_for_dependent(bot, call, command):
+    if not "dependent_column" in user_columns[call.from_user.id]:
+        user_columns[call.from_user.id]["dependent_column"] = [
+            int(command.replace("dependent_column_", ""))]
+
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Выберите вторую переменную:",
+        )
+
+    elif len(user_columns[call.from_user.id]["dependent_column"]) == 1:
+
+        if int(command.replace("dependent_column_", "")) not in \
+                user_columns[call.from_user.id]["dependent_column"]:
+
+            user_columns[call.from_user.id]["dependent_column"].append(
+                int(command.replace("dependent_column_", ""))
+            )
+            build_t_criteria_table_dependent(bot, call, command)
+
+        else:
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text="Вы уже выбрали эту переменную. Выберите другую вторую переменную",
+            )
+
+    else:
+        user_columns[call.from_user.id]["dependent_column"].pop(0)
+
+        if int(command.replace("dependent_column_", "")) not in \
+                user_columns[call.from_user.id]["dependent_column"]:
+            user_columns[call.from_user.id]["dependent_column"].append(
+                int(command.replace("dependent_column_", ""))
+            )
+            build_t_criteria_table_dependent(bot, call, command)
+
+        else:
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text="Вы уже выбрали эту переменную. Выберите другую вторую переменную",
+            )
+
+
+def build_t_criteria_table_dependent(bot, call, command):
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
+        call.from_user.id,
+    )
+
+    module = ComparativeModule(df, call.from_user.id)
+    columns = user_columns[call.from_user.id][
+        "dependent_column"]
+
+    if not columns:
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Ошибка при обработке файла, попробуйте еще раз",
+            reply_markup=keyboard_comparative_analysis,
+        )
+
+    command = user_columns[call.from_user.id]["command"]
+
+    if not command:
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Ошибка при обработке файла, попробуйте еще раз",
+            reply_markup=keyboard_comparative_analysis,
+        )
+
+    else:
+        if command == "t_criterion_student_dependent_comparative":
+            names_of_columns = user_columns[call.from_user.id]["columns"]
+
+            module.generate_t_criteria_student_dependent(
+                names_of_columns[columns[0]], names_of_columns[columns[1]]
+            )
+
+            table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_DEPENDENT}/t_criteria_dependent_{call.from_user.id}.xlsx"
+
+            if os.path.isfile(table_file):
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text=f"На основе Ваших данных была построена таблица "
+                         f"T-критерия Стьюдента для переменной '{names_of_columns[columns[0]]}' "
+                         f"и переменной '{names_of_columns[columns[1]]}'. "
+                         f"\n\nЕсли p < 0.05, нулевая гипотеза отвергается, "
+                         f"принимается альтернативная, различия обладают "
+                         f"статистической значимостью и носят системный "
+                         f"характер.\n\nЕсли p ≥ 0.05, принимается нулевая "
+                         f"гипотеза, различия не являются статистически "
+                         f"значимыми и носят случайный характер."
+                )
+
+                file_cur = open(table_file, "rb")
+                bot.send_document(
+                    chat_id=call.from_user.id,
+                    document=file_cur,
+                    visible_file_name=f"T_критерий_Стьюдента_зависимых_{names_of_columns[columns[0]]}_{names_of_columns[columns[1]]}.xlsx",
+                )

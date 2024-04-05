@@ -15,10 +15,12 @@ from comparative_analysis.functions_comparative import (
     user_columns,
     handle_categorical_columns_comparative,
     handle_categorical_column_comparative,
-    handle_t_criteria_categorical_value,
+    handle_t_criteria_categorical_value, handle_t_criterion_student_dependent,
+    handle_t_criteria_for_dependent,
 )
 from comparative_analysis.keyboard_implementation import (
     handle_pagination_columns_comparative,
+    handle_pagination_columns_t_criteria_dependent_comparative,
 )
 from describe_analysis.functions_descriptive import (
     handle_example_describe,
@@ -62,25 +64,40 @@ def callback_query_handler(bot, call):
         if command.startswith("prev_") or command.startswith("next_"):
             handle_pagination_dictionary(bot, call)
 
-        elif command.startswith("continuous_columns_prev_") or command.startswith(
+        elif command.startswith(
+                "continuous_columns_prev_") or command.startswith(
             "continuous_columns_next_"
         ):
             columns = user_columns[call.from_user.id]["continuous_columns"]
             handle_pagination_columns_comparative(bot, call, command, columns)
 
-        elif command.startswith("categorical_columns_prev_") or command.startswith(
+        elif command.startswith(
+                "t_criterion_student_dependent_comparative_next_") or command.startswith(
+            "t_criterion_student_dependent_comparative_prev_"
+        ):
+            columns = user_columns[call.from_user.id]["columns"]
+            handle_pagination_columns_t_criteria_dependent_comparative(bot,
+                                                                       call,
+                                                                       command,
+                                                                       columns)
+
+        elif command.startswith(
+                "categorical_columns_prev_") or command.startswith(
             "categorical_columns_next_"
         ):
             columns = user_columns[call.from_user.id]["categorical_columns"]
             handle_pagination_columns_comparative(bot, call, command, columns)
 
-        elif command.startswith("boxplot_prev_") or command.startswith("boxplot_next_"):
+        elif command.startswith("boxplot_prev_") or command.startswith(
+                "boxplot_next_"):
             handle_pagination_columns(bot, call)
 
-        elif command.startswith("cluster_prev_") or command.startswith("cluster_next_"):
+        elif command.startswith("cluster_prev_") or command.startswith(
+                "cluster_next_"):
             handle_pagination_columns_cluster(bot, call, command)
 
-        elif command.startswith("hierarchical_cluster_prev_") or command.startswith(
+        elif command.startswith(
+                "hierarchical_cluster_prev_") or command.startswith(
             "hierarchical_cluster_next_"
         ):
             handle_pagination_columns_cluster(bot, call, command)
@@ -102,6 +119,9 @@ def callback_query_handler(bot, call):
 
         elif command.startswith("categorical_column_"):
             handle_categorical_column_comparative(bot, call, command)
+
+        elif command.startswith("dependent_column_"):
+            handle_t_criteria_for_dependent(bot, call, command)
 
         elif command.startswith("t_criteria_categorical_value_"):
             handle_t_criteria_categorical_value(bot, call, command)
@@ -178,6 +198,9 @@ def callback_query_handler(bot, call):
             "t_criterion_student_independent_comparative",
         ]:
             handle_comparative_module(bot, call, command)
+
+        elif command == "t_criterion_student_dependent_comparative":
+            handle_t_criterion_student_dependent(bot, call, command)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")
