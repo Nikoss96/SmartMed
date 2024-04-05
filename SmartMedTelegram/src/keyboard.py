@@ -10,27 +10,11 @@ keyboard_modules: Клавиатура, содержащая модули чат
 keyboard_main_menu: Клавиатура возвращения в главное меню.
 """
 
-keyboard_start = ReplyKeyboardMarkup(
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
-keyboard_start.row(
-    "Модули",
-    "Словарь",
-    "Искусственный интеллект"
-)
+keyboard_start = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+keyboard_start.row("Модули", "Словарь", "Искусственный интеллект")
 
-keyboard_modules = ReplyKeyboardMarkup(
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
-keyboard_modules.row(
-    "Описательный анализ",
-    "Кластерный анализ",
-    "Сравнительный анализ"
-)
+keyboard_modules = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+keyboard_modules.row("Описательный анализ", "Кластерный анализ", "Сравнительный анализ")
 
 keyboard_main_menu = InlineKeyboardMarkup()
-keyboard_main_menu.add(
-    InlineKeyboardButton(text="Главное меню", callback_data="back")
-)
+keyboard_main_menu.add(InlineKeyboardButton(text="Главное меню", callback_data="back"))

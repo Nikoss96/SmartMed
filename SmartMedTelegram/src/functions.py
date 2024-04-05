@@ -19,8 +19,7 @@ from describe_analysis.keyboard_descriptive import (
     keyboard_replace_null_values_describe,
 )
 from dictionary.functions_dictionary import generate_dictionary_keyboard
-from keyboard import keyboard_modules, \
-    keyboard_start
+from keyboard import keyboard_modules, keyboard_start
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
@@ -52,8 +51,7 @@ def send_text_message(bot, chat_id, text, reply_markup=None, parse_mode=None):
     Вспомогательная функция для отправки текстовых сообщений.
     """
     bot.send_message(
-        chat_id=chat_id, text=text, reply_markup=reply_markup,
-        parse_mode=parse_mode
+        chat_id=chat_id, text=text, reply_markup=reply_markup, parse_mode=parse_mode
     )
 
 
@@ -100,7 +98,9 @@ def get_user_file(bot):
                 raise ApiTelegramException
             file_info = bot.get_file(message.document.file_id)
 
-            file_url = f"https://api.telegram.org/file/bot{bot_token}/{file_info.file_path}"
+            file_url = (
+                f"https://api.telegram.org/file/bot{bot_token}/{file_info.file_path}"
+            )
 
             response = requests.get(file_url)
 
@@ -221,13 +221,13 @@ def handle_download(bot, call, command):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Загрузите Ваш файл.\n\n"
-             "Файл должен иметь следующие характеристики:\n"
-             "\n1. Формат файла: .xlsx или .xls"
-             "\n2. Размер файла: до 20 Мб"
-             "\n3. Рекомендуемое количество столбцов для более"
-             " наглядной визуализации — до 25."
-             "\n4. Названия столбцов в файле не должны состоять только из"
-             " цифр и содержать специальные символы.",
+        "Файл должен иметь следующие характеристики:\n"
+        "\n1. Формат файла: .xlsx или .xls"
+        "\n2. Размер файла: до 20 Мб"
+        "\n3. Рекомендуемое количество столбцов для более"
+        " наглядной визуализации — до 25."
+        "\n4. Названия столбцов в файле не должны состоять только из"
+        " цифр и содержать специальные символы.",
     )
     if call.from_user.id in user_commands:
         user_commands.pop(call.from_user.id)
@@ -324,8 +324,7 @@ def create_dataframe_and_save_file(chat_id, command):
     directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}"
     files_in_directory = os.listdir(directory)
 
-    file_name = [file for file in files_in_directory if
-                 file.startswith(f"{chat_id}")]
+    file_name = [file for file in files_in_directory if file.startswith(f"{chat_id}")]
 
     # Формируем настройки для корректной предобработки данных
     path = f"{directory}/{file_name[0]}"

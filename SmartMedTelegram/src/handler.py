@@ -67,8 +67,8 @@ def callback_query_handler(bot, call):
             handle_back(bot, user_id)
 
         # Обработка кнопок словаря
-        elif (command.startswith("dictionary_prev_")
-              or command.startswith("dictionary_next_")
+        elif command.startswith("dictionary_prev_") or command.startswith(
+            "dictionary_next_"
         ):
             handle_pagination_dictionary(bot, call)
 
@@ -106,43 +106,42 @@ def callback_query_handler(bot, call):
         elif command == "describe_box_plot":
             handle_describe_box_plot(bot, call)
 
-        elif command.startswith("boxplot_prev_") or command.startswith(
-                "boxplot_next_"):
+        elif command.startswith("boxplot_prev_") or command.startswith("boxplot_next_"):
             handle_pagination_columns(bot, call)
 
         elif command.startswith("boxplot_column_"):
             handle_box_plot(bot, call)
 
         # Обработка кнопок Кластерного анализа
-        elif command.startswith(
-                "continuous_columns_prev_") or command.startswith(
-            "continuous_columns_next_"
-        ):
-            columns = user_columns[call.from_user.id]["continuous_columns"]
-            handle_pagination_columns_comparative(bot, call, command, columns)
+        elif command == "example_cluster":
+            handle_example_cluster_analysis(bot, call)
 
-        elif command.startswith(
-                "t_criterion_student_dependent_comparative_next_"
-        ) or command.startswith(
-            "t_criterion_student_dependent_comparative_prev_"):
-            columns = user_columns[call.from_user.id]["columns"]
-            handle_pagination_columns_t_criteria_dependent_comparative(
-                bot, call, command, columns
-            )
+        elif command in [
+            "replace_null_with_mean_cluster",
+            "delete_null_rows_dropna_cluster",
+            "replace_null_with_median_cluster",
+        ]:
+            handle_downloaded_cluster_file(bot, call, command)
 
-        elif command.startswith(
-                "categorical_columns_prev_") or command.startswith(
-            "categorical_columns_next_"
-        ):
-            columns = user_columns[call.from_user.id]["categorical_columns"]
-            handle_pagination_columns_comparative(bot, call, command, columns)
+        elif command == "k_means_cluster":
+            handle_cluster_method(bot, call, command)
 
-        elif command.startswith("cluster_prev_") or command.startswith(
-                "cluster_next_"):
+        elif command == "choose_number_of_clusters":
+            handle_choose_number_of_clusters(bot, call, command)
+
+        elif command == "recommended_number_of_clusters":
+            handle_cluster_numbers(bot, call, command)
+
+        elif command == "hierarchical_cluster":
+            handle_hierarchical(bot, call)
+
+        elif command == "choose_number_of_clusters_hierarchical":
+            handle_choose_number_of_clusters(bot, call, command)
+
+        elif command.startswith("cluster_prev_") or command.startswith("cluster_next_"):
             handle_pagination_columns_cluster(bot, call, command)
 
-        elif command.startswith(
-                "hierarchical_cluster_prev_") or command.startswith(
+        elif command.startswith("hierarchical_cluster_prev_") or command.startswith(
             "hierarchical_cluster_next_"
         ):
             handle_pagination_columns_cluster(bot, call, command)
@@ -152,6 +151,47 @@ def callback_query_handler(bot, call):
 
         elif command.startswith("hierarchical_cluster_"):
             handle_hierarchical_cluster_numbers(bot, call, command)
+
+        # Обработка кнопок Сравнительного анализа
+
+        elif command == "example_comparative":
+            handle_example_comparative_analysis(bot, call)
+
+        elif command in [
+            "replace_null_with_mean_comparative",
+            "delete_null_rows_dropna_comparative",
+            "replace_null_with_median_comparative",
+        ]:
+            handle_downloaded_comparative_file(bot, call, command)
+
+        elif command in [
+            "kolmogorov_smirnov_test_comparative",
+            "t_criterion_student_independent_comparative",
+        ]:
+            handle_comparative_module(bot, call, command)
+
+        elif command == "t_criterion_student_dependent_comparative":
+            handle_t_criterion_student_dependent(bot, call, command)
+
+        elif command.startswith("continuous_columns_prev_") or command.startswith(
+            "continuous_columns_next_"
+        ):
+            columns = user_columns[call.from_user.id]["continuous_columns"]
+            handle_pagination_columns_comparative(bot, call, command, columns)
+
+        elif command.startswith(
+            "t_criterion_student_dependent_comparative_next_"
+        ) or command.startswith("t_criterion_student_dependent_comparative_prev_"):
+            columns = user_columns[call.from_user.id]["columns"]
+            handle_pagination_columns_t_criteria_dependent_comparative(
+                bot, call, command, columns
+            )
+
+        elif command.startswith("categorical_columns_prev_") or command.startswith(
+            "categorical_columns_next_"
+        ):
+            columns = user_columns[call.from_user.id]["categorical_columns"]
+            handle_pagination_columns_comparative(bot, call, command, columns)
 
         elif command.startswith("continuous_column_"):
             handle_categorical_columns_comparative(bot, call, command)
@@ -164,50 +204,6 @@ def callback_query_handler(bot, call):
 
         elif command.startswith("t_criteria_categorical_value_"):
             handle_t_criteria_categorical_value(bot, call, command)
-
-        elif command == "example_cluster":
-            handle_example_cluster_analysis(bot, call)
-
-        elif command == "example_comparative":
-            handle_example_comparative_analysis(bot, call)
-
-        elif command in [
-            "replace_null_with_mean_cluster",
-            "delete_null_rows_dropna_cluster",
-            "replace_null_with_median_cluster",
-        ]:
-            handle_downloaded_cluster_file(bot, call, command)
-
-        elif command in [
-            "replace_null_with_mean_comparative",
-            "delete_null_rows_dropna_comparative",
-            "replace_null_with_median_comparative",
-        ]:
-            handle_downloaded_comparative_file(bot, call, command)
-
-        elif command == "choose_number_of_clusters":
-            handle_choose_number_of_clusters(bot, call, command)
-
-        elif command == "recommended_number_of_clusters":
-            handle_cluster_numbers(bot, call, command)
-
-        elif command == "k_means_cluster":
-            handle_cluster_method(bot, call, command)
-
-        elif command == "hierarchical_cluster":
-            handle_hierarchical(bot, call)
-
-        elif command == "choose_number_of_clusters_hierarchical":
-            handle_choose_number_of_clusters(bot, call, command)
-
-        elif command in [
-            "kolmogorov_smirnov_test_comparative",
-            "t_criterion_student_independent_comparative",
-        ]:
-            handle_comparative_module(bot, call, command)
-
-        elif command == "t_criterion_student_dependent_comparative":
-            handle_t_criterion_student_dependent(bot, call, command)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")
@@ -255,7 +251,7 @@ def text_handler(bot, message):
         if command in [
             "описательный анализ",
             "кластерный анализ",
-            "сравнительный анализ"
+            "сравнительный анализ",
         ]:
             send_text_message(
                 bot,

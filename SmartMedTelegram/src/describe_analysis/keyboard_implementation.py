@@ -79,7 +79,7 @@ def generate_column_keyboard(columns: list, page: int) -> InlineKeyboardMarkup:
 
 
 def add_pagination_buttons(
-        keyboard: InlineKeyboardMarkup, columns: list, page: int
+    keyboard: InlineKeyboardMarkup, columns: list, page: int
 ) -> None:
     """
     Добавляет кнопки пагинации на клавиатуру.

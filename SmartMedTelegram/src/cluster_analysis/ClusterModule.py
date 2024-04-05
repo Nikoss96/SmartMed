@@ -2,17 +2,14 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import colors as mcolors
-import plotly.graph_objects as go
 from scipy.cluster.hierarchy import linkage
 from sklearn.cluster import KMeans, AgglomerativeClustering
-from scipy.cluster.hierarchy import dendrogram, fcluster
 import plotly.figure_factory as ff
 
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
     CLUSTER_ANALYSIS,
-    USER_DATA_PATH,
     ELBOW_METHOD,
     K_MEANS,
     HIERARCHICAL,
@@ -67,7 +64,7 @@ class ClusterModule:
 
     def generate_k_means(self, num_clusters):
         df_numeric = get_numeric_df(self.df)
-        kmeans = KMeans(n_clusters=num_clusters, init="k-means++")
+        kmeans = KMeans(n_clusters=num_clusters, n_init="auto")
         kmeans.fit(df_numeric)
         labels = kmeans.labels_
         centers = kmeans.cluster_centers_

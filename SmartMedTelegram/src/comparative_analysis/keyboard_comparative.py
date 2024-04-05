@@ -12,22 +12,15 @@ keyboard_choice_comparative: Выбор опции сравнительного 
 
 keyboard_comparative_analysis = InlineKeyboardMarkup()
 keyboard_comparative_analysis.add(
-    InlineKeyboardButton(
-        text="Пример файла",
-        callback_data="example_comparative"
-    )
+    InlineKeyboardButton(text="Пример файла", callback_data="example_comparative")
 )
 keyboard_comparative_analysis.add(
     InlineKeyboardButton(
-        text="Загрузить свой файл",
-        callback_data="download_comparative"
+        text="Загрузить свой файл", callback_data="download_comparative"
     )
 )
 keyboard_comparative_analysis.add(
-    InlineKeyboardButton(
-        text="Главное меню",
-        callback_data="back"
-    )
+    InlineKeyboardButton(text="Главное меню", callback_data="back")
 )
 
 keyboard_replace_null_values_comparative = InlineKeyboardMarkup()
@@ -73,8 +66,5 @@ keyboard_choice_comparative.add(
     )
 )
 keyboard_choice_comparative.add(
-    InlineKeyboardButton(
-        text="Главное меню",
-        callback_data="back"
-    )
+    InlineKeyboardButton(text="Главное меню", callback_data="back")
 )

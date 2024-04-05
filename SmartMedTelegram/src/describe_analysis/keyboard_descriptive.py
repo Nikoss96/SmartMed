@@ -12,22 +12,13 @@ keyboard_choice_describe: Выбор опции описательного ан�
 
 keyboard_describe_analysis = InlineKeyboardMarkup()
 keyboard_describe_analysis.add(
-    InlineKeyboardButton(
-        text="Пример файла",
-        callback_data="example_describe"
-    )
+    InlineKeyboardButton(text="Пример файла", callback_data="example_describe")
 )
 keyboard_describe_analysis.add(
-    InlineKeyboardButton(
-        text="Загрузить свой файл",
-        callback_data="download_describe"
-    )
+    InlineKeyboardButton(text="Загрузить свой файл", callback_data="download_describe")
 )
 keyboard_describe_analysis.add(
-    InlineKeyboardButton(
-        text="Главное меню",
-        callback_data="back"
-    )
+    InlineKeyboardButton(text="Главное меню", callback_data="back")
 )
 
 keyboard_replace_null_values_describe = InlineKeyboardMarkup()
@@ -56,31 +47,20 @@ keyboard_replace_null_values_describe.add(
 keyboard_choice_describe = InlineKeyboardMarkup()
 keyboard_choice_describe.add(
     InlineKeyboardButton(
-        text="Гистограммы данных",
-        callback_data="describe_build_graphs"
+        text="Гистограммы данных", callback_data="describe_build_graphs"
     )
 )
 keyboard_choice_describe.add(
     InlineKeyboardButton(
-        text="Матрица корреляции",
-        callback_data="describe_correlation_analysis"
+        text="Матрица корреляции", callback_data="describe_correlation_analysis"
     )
 )
 keyboard_choice_describe.add(
-    InlineKeyboardButton(
-        text="Описательная таблица",
-        callback_data="describe_table"
-    )
+    InlineKeyboardButton(text="Описательная таблица", callback_data="describe_table")
 )
 keyboard_choice_describe.add(
-    InlineKeyboardButton(
-        text="График Ящик с усами",
-        callback_data="describe_box_plot"
-    )
+    InlineKeyboardButton(text="График Ящик с усами", callback_data="describe_box_plot")
 )
 keyboard_choice_describe.add(
-    InlineKeyboardButton(
-        text="Главное меню",
-        callback_data="back"
-    )
+    InlineKeyboardButton(text="Главное меню", callback_data="back")
 )
