@@ -51,7 +51,8 @@ def send_text_message(bot, chat_id, text, reply_markup=None, parse_mode=None):
     Вспомогательная функция для отправки текстовых сообщений.
     """
     bot.send_message(
-        chat_id=chat_id, text=text, reply_markup=reply_markup, parse_mode=parse_mode
+        chat_id=chat_id, text=text, reply_markup=reply_markup,
+        parse_mode=parse_mode
     )
 
 
@@ -221,13 +222,13 @@ def handle_download(bot, call, command):
     bot.send_message(
         chat_id=call.from_user.id,
         text="Загрузите Ваш файл.\n\n"
-        "Файл должен иметь следующие характеристики:\n"
-        "\n1. Формат файла: .xlsx или .xls"
-        "\n2. Размер файла: до 20 Мб"
-        "\n3. Рекомендуемое количество столбцов для более"
-        " наглядной визуализации — до 25."
-        "\n4. Названия столбцов в файле не должны состоять только из"
-        " цифр и содержать специальные символы.",
+             "Файл должен иметь следующие характеристики:\n"
+             "\n1. Формат файла: .xlsx или .xls"
+             "\n2. Размер файла: до 20 Мб"
+             "\n3. Рекомендуемое количество столбцов для более"
+             " наглядной визуализации — до 25."
+             "\n4. Названия столбцов в файле не должны состоять только из"
+             " цифр и содержать специальные символы.",
     )
     if call.from_user.id in user_commands:
         user_commands.pop(call.from_user.id)
@@ -278,14 +279,14 @@ def check_input_file(bot, message, file_path, command):
                 bot.reply_to(
                     message,
                     f"Файл {message.document.file_name} успешно прочитан."
-                    f" Выберите метод обработки пустых значений в Вашем файле:",
+                    f" Выберите метод обработки пропущенных значений в Вашем файле:",
                     reply_markup=keyboard_replace_null_values_describe,
                 )
             elif command == "download_cluster":
                 bot.reply_to(
                     message,
                     f"Файл {message.document.file_name} успешно прочитан."
-                    f" Выберите метод обработки пустых значений в Вашем файле:",
+                    f" Выберите метод обработки пропущенных значений в Вашем файле:",
                     reply_markup=keyboard_replace_null_values_cluster,
                 )
 
@@ -293,7 +294,7 @@ def check_input_file(bot, message, file_path, command):
                 bot.reply_to(
                     message,
                     f"Файл {message.document.file_name} успешно прочитан."
-                    f" Выберите метод обработки пустых значений в Вашем файле:",
+                    f" Выберите метод обработки пропущенных значений в Вашем файле:",
                     reply_markup=keyboard_replace_null_values_comparative,
                 )
 
@@ -324,7 +325,8 @@ def create_dataframe_and_save_file(chat_id, command):
     directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}"
     files_in_directory = os.listdir(directory)
 
-    file_name = [file for file in files_in_directory if file.startswith(f"{chat_id}")]
+    file_name = [file for file in files_in_directory if
+                 file.startswith(f"{chat_id}")]
 
     # Формируем настройки для корректной предобработки данных
     path = f"{directory}/{file_name[0]}"
