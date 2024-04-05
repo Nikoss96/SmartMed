@@ -30,9 +30,9 @@ from describe_analysis.functions_descriptive import (
     handle_downloaded_describe_file,
     handle_describe_table,
     handle_describe_box_plot,
-    handle_pagination_columns,
     handle_box_plot,
 )
+from describe_analysis.keyboard_implementation import handle_pagination_columns
 from dictionary.functions_dictionary import (
     handle_pagination_dictionary,
     handle_statistical_term,
@@ -110,11 +110,10 @@ def callback_query_handler(bot, call):
                 "boxplot_next_"):
             handle_pagination_columns(bot, call)
 
-        elif command.startswith("column_"):
+        elif command.startswith("boxplot_column_"):
             handle_box_plot(bot, call)
 
-        # Конец
-
+        # Обработка кнопок Кластерного анализа
         elif command.startswith(
                 "continuous_columns_prev_") or command.startswith(
             "continuous_columns_next_"

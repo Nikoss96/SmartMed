@@ -7,7 +7,6 @@ import plotly.express as px
 from scipy.stats import variation
 
 from data.paths import (
-    USER_DATA_PATH,
     DATA_PATH,
     MEDIA_PATH,
     DESCRIBE_ANALYSIS,
@@ -96,7 +95,6 @@ class DescribeModule:
             Pearson=True,
             Spearman=True,
             title="",
-            cmap=sns.color_palette("viridis", as_cmap=True),
             fmt=".2f",
     ):
 
@@ -120,7 +118,7 @@ class DescribeModule:
                     i / (num_colors - 1),
                     tuple(
                         (color1[j] + (color2[j] - color1[j]) * (
-                                    i / (num_colors - 1)))
+                                i / (num_colors - 1)))
                         for j in range(4)
                     ),
                 )
