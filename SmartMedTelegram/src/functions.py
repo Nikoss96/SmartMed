@@ -10,6 +10,7 @@ from cluster_analysis.keyboard_cluster import (
     keyboard_cluster_analysis,
     keyboard_replace_null_values_cluster,
 )
+from comparative_analysis.functions_comparative import save_comparative_file
 from comparative_analysis.keyboard_comparative import (
     keyboard_comparative_analysis,
     keyboard_replace_null_values_comparative,
@@ -24,7 +25,6 @@ from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
     USER_DATA_PATH,
-    COMPARATIVE_ANALYSIS,
 )
 from preprocessing.preprocessing import PandasPreprocessor
 from settings import bot_token
@@ -66,21 +66,6 @@ def save_file(file_content, file_name, chat_id):
                 return
 
     file_path = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/{chat_id}_{file_name}"
-    with open(file_path, "wb") as file:
-        file.write(file_content)
-    return file_path
-
-
-def save_comparative_file(file_content, file_name, chat_id):
-    directory = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}"
-    pattern = f"{chat_id}"
-
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if pattern in file:
-                return
-
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}/{chat_id}_{file_name}"
     with open(file_path, "wb") as file:
         file.write(file_content)
     return file_path
@@ -156,16 +141,6 @@ def get_user_file(bot):
                 "Произошла ошибка при загрузке файла.\nВыберите модуль еще раз:",
                 reply_markup=keyboard_modules,
             )
-
-
-def find_user_file(chat_id):
-    directory = f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}/"
-    pattern = f"{chat_id}"
-
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if pattern in file:
-                return os.path.join(root, file)
 
 
 def handle_back(bot, user_id):

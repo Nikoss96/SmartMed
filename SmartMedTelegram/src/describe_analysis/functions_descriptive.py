@@ -4,7 +4,8 @@ from describe_analysis.DescribeModule import DescribeModule
 from describe_analysis.keyboard_descriptive import (
     keyboard_choice_describe,
 )
-from describe_analysis.keyboard_implementation import generate_column_keyboard
+from describe_analysis.keyboard_implementation_describe import \
+    generate_column_keyboard
 
 from functions import (
     send_document_from_file,
