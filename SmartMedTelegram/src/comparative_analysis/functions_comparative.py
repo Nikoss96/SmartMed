@@ -20,8 +20,8 @@ from data.paths import (
     T_CRITERIA_INDEPENDENT,
     T_CRITERIA_DEPENDENT,
 )
-from describe_analysis.functions_descriptive import get_user_file_df
-from functions import send_document_from_file, create_dataframe_and_save_file
+from functions import send_document_from_file, create_dataframe_and_save_file, \
+    get_user_file_df
 
 user_columns = {}
 
@@ -57,21 +57,6 @@ def handle_downloaded_comparative_file(bot, call, command):
         text="Выберите интересующий Вас метод сравнительного анализа:",
         reply_markup=keyboard_choice_comparative,
     )
-
-
-def save_comparative_file(file_content, file_name, chat_id):
-    directory = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}"
-    pattern = f"{chat_id}"
-
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            if pattern in file:
-                return
-
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}/{chat_id}_{file_name}"
-    with open(file_path, "wb") as file:
-        file.write(file_content)
-    return file_path
 
 
 def handle_comparative_module(bot, call, command):

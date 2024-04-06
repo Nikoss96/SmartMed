@@ -10,7 +10,6 @@ from cluster_analysis.keyboard_cluster import (
     keyboard_cluster_analysis,
     keyboard_replace_null_values_cluster,
 )
-from comparative_analysis.functions_comparative import save_comparative_file
 from comparative_analysis.keyboard_comparative import (
     keyboard_comparative_analysis,
     keyboard_replace_null_values_comparative,
@@ -24,7 +23,7 @@ from keyboard import keyboard_modules, keyboard_start
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
-    USER_DATA_PATH,
+    USER_DATA_PATH, COMPARATIVE_ANALYSIS,
 )
 from preprocessing.preprocessing import PandasPreprocessor
 from settings import bot_token
@@ -340,3 +339,18 @@ def get_user_file_df(directory, chat_id):
             df = pd.read_excel(file_path)
 
         return df
+
+
+def save_comparative_file(file_content, file_name, chat_id):
+    directory = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}"
+    pattern = f"{chat_id}"
+
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if pattern in file:
+                return
+
+    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}/{chat_id}_{file_name}"
+    with open(file_path, "wb") as file:
+        file.write(file_content)
+    return file_path

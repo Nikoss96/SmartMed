@@ -19,8 +19,7 @@ from data.paths import (
 )
 from functions import (
     send_document_from_file,
-    create_dataframe_and_save_file,
-    get_user_file_df,
+    create_dataframe_and_save_file, get_user_file_df,
 )
 from preprocessing.preprocessing import get_numeric_df
 

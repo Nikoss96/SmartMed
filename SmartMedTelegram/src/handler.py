@@ -3,11 +3,12 @@ from cluster_analysis.functions_cluster import (
     handle_downloaded_cluster_file,
     handle_cluster_method,
     handle_choose_number_of_clusters,
-    handle_pagination_columns_cluster,
     handle_cluster_numbers,
     handle_hierarchical,
     handle_hierarchical_cluster_numbers,
 )
+from cluster_analysis.keyboard_implementation_cluster import \
+    handle_pagination_columns_cluster
 from comparative_analysis.functions_comparative import (
     handle_example_comparative_analysis,
     handle_downloaded_comparative_file,
@@ -146,7 +147,7 @@ def callback_query_handler(bot, call):
 
         elif command.startswith(
                 "hierarchical_cluster_prev_") or command.startswith(
-                "hierarchical_cluster_next_"
+            "hierarchical_cluster_next_"
         ):
             handle_pagination_columns_cluster(bot, call, command)
 
@@ -179,7 +180,7 @@ def callback_query_handler(bot, call):
 
         elif command.startswith(
                 "continuous_columns_prev_") or command.startswith(
-                "continuous_columns_next_"
+            "continuous_columns_next_"
         ):
             columns = user_columns[call.from_user.id]["continuous_columns"]
             handle_pagination_columns_comparative(bot, call, command, columns)
@@ -195,7 +196,7 @@ def callback_query_handler(bot, call):
 
         elif command.startswith(
                 "categorical_columns_prev_") or command.startswith(
-                "categorical_columns_next_"
+            "categorical_columns_next_"
         ):
             columns = user_columns[call.from_user.id]["categorical_columns"]
             handle_pagination_columns_comparative(bot, call, command, columns)

@@ -1,3 +1,4 @@
+import os
 import pathlib
 
 import numpy as np
@@ -14,7 +15,6 @@ from data.paths import (
     T_CRITERIA_INDEPENDENT,
     T_CRITERIA_DEPENDENT,
 )
-from describe_analysis.functions_descriptive import get_user_file_df
 from preprocessing.preprocessing import get_categorical_col
 from sklearn import preprocessing
 
@@ -52,7 +52,8 @@ class ComparativeModule:
         dict_classes = dict(zip(number_class, init_unique_values))
         return dict_classes
 
-    def generate_test_kolmagorova_smirnova(self, categorical_column, continuous_column):
+    def generate_test_kolmagorova_smirnova(self, categorical_column,
+                                           continuous_column):
         classes = self.get_class_names(categorical_column, self.df)
 
         def test_kolmagorova_smirnova(group_value):
@@ -86,16 +87,17 @@ class ComparativeModule:
         )
 
     def generate_t_criterion_student_independent(
-        self, categorical_column, continuous_column, classes
+            self, categorical_column, continuous_column, classes
     ):
         def independent_ttest(x, y, alpha):
             mean1, mean2 = np.mean(x), np.mean(y)
             se1, se2 = sem(x), sem(y)
-            sed = sqrt(se1**2.0 + se2**2.0)
+            sed = sqrt(se1 ** 2.0 + se2 ** 2.0)
             t_stat = abs(mean1 - mean2) / sed
 
             if se1 / se2 > 10 or se1 / se2 > 10:
-                f = (len(x) + len(y) - 2) * (0.5 + se1 * se2 / (se1**2 + se2**2))
+                f = (len(x) + len(y) - 2) * (
+                        0.5 + se1 * se2 / (se1 ** 2 + se2 ** 2))
             else:
                 f = len(x) + len(y) - 2
 
@@ -117,8 +119,10 @@ class ComparativeModule:
         ]
         class1 = list(classes.keys())[0]
         class2 = list(classes.keys())[1]
-        data1 = self.df[self.df[categorical_column] == class1][continuous_column]
-        data2 = self.df[self.df[categorical_column] == class2][continuous_column]
+        data1 = self.df[self.df[categorical_column] == class1][
+            continuous_column]
+        data2 = self.df[self.df[categorical_column] == class2][
+            continuous_column]
 
         results = independent_ttest(data1, data2, 0.05)
         res_list = ["alpha = 0.95", results[0], results[2], results[1]]
@@ -146,11 +150,12 @@ class ComparativeModule:
         df2.loc[1] = res_list2
 
         with pd.ExcelWriter(
-            f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_INDEPENDENT}/t_criteria_independent_{self.chat_id}.xlsx",
-            engine="xlsxwriter",
+                f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_INDEPENDENT}/t_criteria_independent_{self.chat_id}.xlsx",
+                engine="xlsxwriter",
         ) as writer:
             df.to_excel(writer, sheet_name="Sheet1", index=False)
-            df2.to_excel(writer, sheet_name="Sheet1", startrow=len(df) + 2, index=False)
+            df2.to_excel(writer, sheet_name="Sheet1", startrow=len(df) + 2,
+                         index=False)
 
     def generate_t_criteria_student_dependent(self, var_1, var_2):
         def dependent_ttest(data1, data2, alpha):
@@ -160,9 +165,9 @@ class ComparativeModule:
             d1 = sum([(data1[i] - data2[i]) ** 2 for i in range(n)])
             d2 = sum([data1[i] - data2[i] for i in range(n)])
 
-            sd = sqrt((d1 - (d2**2 / n)) / (n - 1))
+            sd = sqrt((d1 - (d2 ** 2 / n)) / (n - 1))
             sed = sd / sqrt(n)
-            sed += 10**-5
+            sed += 10 ** -5
 
             t_stat = abs(mean1 - mean2) / sed
             df = n - 1
@@ -213,11 +218,12 @@ class ComparativeModule:
         df2.loc[1] = res_list2
 
         with pd.ExcelWriter(
-            f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_DEPENDENT}/t_criteria_dependent_{self.chat_id}.xlsx",
-            engine="xlsxwriter",
+                f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{T_CRITERIA_DEPENDENT}/t_criteria_dependent_{self.chat_id}.xlsx",
+                engine="xlsxwriter",
         ) as writer:
             df.to_excel(writer, sheet_name="Sheet1", index=False)
-            df2.to_excel(writer, sheet_name="Sheet1", startrow=len(df) + 2, index=False)
+            df2.to_excel(writer, sheet_name="Sheet1", startrow=len(df) + 2,
+                         index=False)
 
 
 def read_file(path):
@@ -229,3 +235,21 @@ def read_file(path):
     else:
         df = pd.DataFrame()
     return df
+
+
+def get_user_file_df(directory, chat_id):
+    files = os.listdir(directory)
+    pattern = f"{chat_id}"
+
+    matching_files = [file for file in files if pattern in file]
+
+    if matching_files:
+        df = None
+        file_path = os.path.join(directory, matching_files[0])
+
+        ext = pathlib.Path(file_path).suffix
+
+        if ext == ".xlsx" or ext == ".xls":
+            df = pd.read_excel(file_path)
+
+        return df
