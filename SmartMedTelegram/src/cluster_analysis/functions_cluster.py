@@ -98,7 +98,7 @@ def handle_cluster_method(bot, call, command):
             text=f"На основе Ваших данных был построен график Метод локтя для определения "
                  f"оптимального количества кластеров по данным.\n\n"
                  f"Рекомендованное количество кластеров – {optimal_clusters}.\n\n"
-                 "Вы можете оставить рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
+                 "Вы можете выбрать рекомендованное количество кластеров, либо выбрать количество кластеров самостоятельно.",
             reply_markup=keyboard,
         )
 
@@ -176,8 +176,7 @@ def handle_hierarchical(bot, call):
     df = get_numeric_df(df)
 
     module = ClusterModule(df, call.from_user.id)
-    optimal_clusters = module.elbow_method_and_optimal_clusters(max_clusters=10)
-    module.plot_dendrogram(optimal_clusters)
+    module.plot_dendrogram()
 
     chat_id = call.from_user.id
 
