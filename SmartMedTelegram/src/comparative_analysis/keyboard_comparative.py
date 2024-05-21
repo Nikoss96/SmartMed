@@ -12,7 +12,8 @@ keyboard_choice_comparative: Выбор опции сравнительного 
 
 keyboard_comparative_analysis = InlineKeyboardMarkup()
 keyboard_comparative_analysis.add(
-    InlineKeyboardButton(text="Пример файла", callback_data="example_comparative")
+    InlineKeyboardButton(text="Пример файла",
+                         callback_data="example_comparative")
 )
 keyboard_comparative_analysis.add(
     InlineKeyboardButton(
@@ -63,6 +64,12 @@ keyboard_choice_comparative.add(
     InlineKeyboardButton(
         text="T-критерий Стьюдента для зависимых переменных",
         callback_data="t_criterion_student_dependent_comparative",
+    )
+)
+keyboard_choice_comparative.add(
+    InlineKeyboardButton(
+        text="Непараметрический критерий Манна-Уитни",
+        callback_data="nonparametric_mann_whitney_test_comparative",
     )
 )
 keyboard_choice_comparative.add(

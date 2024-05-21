@@ -5,13 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebf72a9a-2b8a-44bc-a11b-98d3ebcd3f86" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/SmartMed.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SmartMed.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/bot_dump.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/bot_dump.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/sending_files/describe_corr_521106451.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/sending_files/describe_corr_521106451.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/sending_files/describe_plots_521106451.png" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/sending_files/describe_plots_521106451.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/cluster_analysis/hierarchical/hierarchical_521106451.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/examples/Кластерный_анализ_пример.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/examples/Кластерный_анализ_пример.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/examples/Описательный_анализ_пример.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/examples/Описательный_анализ_пример.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/examples/Сравнительный_анализ_пример.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/examples/Сравнительный_анализ_пример.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartMedTelegram/src/media/data/user_data/521106451_Описательный_анализ_пример.xlsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +40,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "timakozyr"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Nikoss96/SmartMed.git",
+    "accountId": "57b5210a-868d-4db0-a402-5d0e60a130bc"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -80,7 +90,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-d68999036c7f-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.14475.56" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-PY-241.14494.241" />
+        <option value="bundled-python-sdk-0509580d9d50-28c9f5db9ffe-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.14494.241" />
       </set>
     </attachedChunks>
   </component>
@@ -108,6 +119,7 @@
       <workItem from="1710862362062" duration="209000" />
       <workItem from="1710862578285" duration="3470000" />
       <workItem from="1710868237704" duration="237000" />
+      <workItem from="1715667567900" duration="45000" />
     </task>
     <servers />
   </component>

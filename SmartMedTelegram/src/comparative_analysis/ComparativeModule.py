@@ -3,6 +3,7 @@ import pathlib
 
 import numpy as np
 import pandas as pd
+from scipy import stats
 from scipy.stats import kstest, sem, t
 from math import sqrt
 
@@ -13,7 +14,7 @@ from data.paths import (
     USER_DATA_PATH,
     KOLMOGOROVA_SMIRNOVA,
     T_CRITERIA_INDEPENDENT,
-    T_CRITERIA_DEPENDENT,
+    T_CRITERIA_DEPENDENT, MANN_WHITNEY_TEST,
 )
 from preprocessing.preprocessing import get_categorical_col
 from sklearn import preprocessing
@@ -181,15 +182,12 @@ class ComparativeModule:
 
             return np.round(t_stat, 3), np.round(df, 3), np.round(cv, 3), p
 
-        cont_columns = np.array(self.df.columns)
         result_columns = [
             "Доверительная вероятность",
             "Эмпирическое значение",
             "Критическое значение",
             "Число степеней свободы",
         ]
-
-        # Get columns
 
         data1 = self.df[var_1]
         data2 = self.df[var_2]
@@ -224,6 +222,26 @@ class ComparativeModule:
             df.to_excel(writer, sheet_name="Sheet1", index=False)
             df2.to_excel(writer, sheet_name="Sheet1", startrow=len(df) + 2,
                          index=False)
+
+    def generate_mann_whitney_test_comparative(self, var_1, var_2):
+        result_columns = [
+            "Полученное значение",
+            "P-значение",
+        ]
+
+        data1 = self.df[var_1]
+        data2 = self.df[var_2]
+        stat, p_value = stats.mannwhitneyu(data1, data2,
+                                           alternative='two-sided')
+
+        df = pd.DataFrame(columns=result_columns)
+        df.loc[1] = [stat, p_value]
+
+        with pd.ExcelWriter(
+                f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{MANN_WHITNEY_TEST}/mann_whitney_test_comparative_{self.chat_id}.xlsx",
+                engine="xlsxwriter",
+        ) as writer:
+            df.to_excel(writer, sheet_name="Sheet1", index=False)
 
 
 def read_file(path):
