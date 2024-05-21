@@ -51,7 +51,8 @@ from functions import (
 )
 from variance_analysis.functions_variance_analysis import \
     handle_example_variance, handle_downloaded_variance_file, \
-    handle_variance_module, handle_test_kruskal_wallis_variance
+    handle_variance_module, handle_test_kruskal_wallis_variance, \
+    handle_test_friedman_variance
 from variance_analysis.keyboard_implementation_variance import \
     handle_pagination_columns_variance
 
@@ -251,6 +252,7 @@ def callback_query_handler(bot, call):
 
         elif command in [
             "test_kruskal_wallis",
+            "test_friedman"
         ]:
             handle_variance_module(bot, call, command)
 
@@ -261,8 +263,18 @@ def callback_query_handler(bot, call):
             columns = user_columns[call.from_user.id]["columns"]
             handle_pagination_columns_variance(bot, call, command, columns)
 
+        elif command.startswith(
+                "test_friedman_prev_") or command.startswith(
+            "test_friedman_next_"
+        ):
+            columns = user_columns[call.from_user.id]["columns"]
+            handle_pagination_columns_variance(bot, call, command, columns)
+
         elif command.startswith("test_kruskal_wallis_"):
             handle_test_kruskal_wallis_variance(bot, call, command)
+
+        elif command.startswith("test_friedman_"):
+            handle_test_friedman_variance(bot, call, command)
 
     except Exception as e:
         print(f"Ошибка: \n{e}")

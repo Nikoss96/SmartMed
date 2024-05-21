@@ -42,5 +42,9 @@ keyboard_choice_variance.add(
                          callback_data="test_kruskal_wallis")
 )
 keyboard_choice_variance.add(
+    InlineKeyboardButton(text="Тест Фридмана",
+                         callback_data="test_friedman")
+)
+keyboard_choice_variance.add(
     InlineKeyboardButton(text="Главное меню", callback_data="back")
 )

@@ -27,3 +27,4 @@ WILCOXON_TEST = "wilcoxon_test"
 
 VARIANCE_ANALYSIS = "variance_analysis"
 KRUSKAL_TEST = "kruskal_test"
+FRIEDMAN_TEST = "friedman_test"

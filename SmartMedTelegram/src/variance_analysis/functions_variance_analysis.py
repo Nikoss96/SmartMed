@@ -2,7 +2,7 @@ import os
 
 from comparative_analysis.functions_comparative import user_columns
 from data.paths import MEDIA_PATH, DATA_PATH, EXAMPLES, USER_DATA_PATH, \
-    VARIANCE_ANALYSIS, KRUSKAL_TEST
+    VARIANCE_ANALYSIS, KRUSKAL_TEST, FRIEDMAN_TEST
 from functions import send_document_from_file, create_dataframe_and_save_file, \
     get_user_file_df
 from variance_analysis.VarianceModule import VarianceModule
@@ -93,6 +93,37 @@ def handle_variance_module(bot, call, command):
                          f"критерием Манна-Уитни из сравнительного анализа."
                          f"\n\nВам необходимо указать три переменные, "
                          f"представляющие независимые выборки данных.",
+                )
+
+                keyboard = generate_column_keyboard(columns, 0, command)
+
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text="Выберите первую переменную:",
+                    reply_markup=keyboard,
+                )
+
+        elif command == "test_friedman":
+            if len(columns) < 2:
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text="В Вашем файле отсутствует 2 группы переменных. "
+                         "Загрузите файл, который содержит 2 группы переменных.",
+                    reply_markup=keyboard_variance_analysis,
+                )
+            else:
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text=f"Для применения теста Фридмана необходимо, "
+                         f"чтобы количество выборок в данных было не менее трех."
+                         f"\n\nЭтот метод позволяет определить, "
+                         f"есть ли статистически значимые различия между "
+                         f"средними значениями хотя бы в двух из групп. Обычно "
+                         f"он используется для повторяющихся выборок "
+                         f"(например, когда мы хотим оценить изменения в "
+                         f"группах после какого-нибудь события)."
+                         f"\n\nВам необходимо выбрать две переменных, "
+                         f"изменения относительно которых вы хотите оценить:",
                 )
 
                 keyboard = generate_column_keyboard(columns, 0, command)
@@ -239,4 +270,142 @@ def build_test_kruskal_wallis_variance(bot, call, command):
                     chat_id=call.from_user.id,
                     document=file_cur,
                     visible_file_name=f"Критерий_Краскела_Уоллиса_{names_of_columns[columns[0]]}_{names_of_columns[columns[1]]}_{names_of_columns[columns[2]]}.xlsx",
+                )
+
+
+def handle_test_friedman_variance(bot, call, command):
+    if not "test_friedman" in user_columns[call.from_user.id]:
+        user_columns[call.from_user.id]["test_friedman"] = [
+            int(command.replace("test_friedman_", ""))
+        ]
+
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Выберите вторую переменную:",
+        )
+
+
+    elif len(user_columns[call.from_user.id][
+                 "test_friedman"]) == 1:
+        if (
+                int(command.replace("test_friedman_", ""))
+                not in user_columns[call.from_user.id][
+            "test_friedman"]
+        ):
+            user_columns[call.from_user.id][
+                "test_friedman"].append(
+                int(command.replace("test_friedman_", ""))
+            )
+
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text="Выберите третью переменную:",
+            )
+
+        else:
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text="Вы уже выбрали эту переменную. Выберите другую переменную",
+            )
+
+    elif len(user_columns[call.from_user.id][
+                 "test_friedman"]) == 2:
+        if (
+                int(command.replace("test_friedman_", ""))
+                not in user_columns[call.from_user.id][
+            "test_friedman"]
+        ):
+            user_columns[call.from_user.id][
+                "test_friedman"].append(
+                int(command.replace("test_friedman_", ""))
+            )
+            build_test_friedman_variance(bot, call, command)
+
+        else:
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text="Вы уже выбрали эту переменную. Выберите другую переменную",
+            )
+
+    else:
+        user_columns[call.from_user.id]["test_friedman"].pop(0)
+
+        if (
+                int(command.replace("test_friedman_", ""))
+                not in user_columns[call.from_user.id][
+            "test_friedman"]
+        ):
+            user_columns[call.from_user.id][
+                "test_friedman"].append(
+                int(command.replace("test_friedman_", ""))
+            )
+            build_test_friedman_variance(bot, call, command)
+
+        else:
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text="Вы уже выбрали эту переменную. Выберите другую переменную",
+            )
+
+
+def build_test_friedman_variance(bot, call, command):
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
+        call.from_user.id,
+    )
+
+    module = VarianceModule(df, call.from_user.id)
+    columns = user_columns[call.from_user.id]["test_friedman"]
+
+    if not columns:
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Ошибка при обработке файла, попробуйте еще раз",
+            reply_markup=keyboard_variance_analysis,
+        )
+
+    command = user_columns[call.from_user.id]["command"]
+
+    if not command:
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Ошибка при обработке файла, попробуйте еще раз",
+            reply_markup=keyboard_variance_analysis,
+        )
+
+    else:
+        if command == "test_friedman":
+            names_of_columns = user_columns[call.from_user.id]["columns"]
+
+            module.generate_test_friedman(
+                names_of_columns[columns[0]], names_of_columns[columns[1]],
+                names_of_columns[columns[2]]
+            )
+            table_file = f"{MEDIA_PATH}/{DATA_PATH}/{VARIANCE_ANALYSIS}/{FRIEDMAN_TEST}/test_friedman_{call.from_user.id}.xlsx"
+
+            if os.path.isfile(table_file):
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text=f"На основе Ваших данных был проведен тест Фридмана для"
+                         f" переменных: '{names_of_columns[columns[0]]}', "
+                         f"'{names_of_columns[columns[1]]}' и "
+                         f"'{names_of_columns[columns[2]]}'.\n\nЕсли p ≤ 0.05,"
+                         f" нулевая гипотеза отвергается. Нулевая гипотеза в "
+                         f"данном случае утверждает, что распределения всех "
+                         f"переменных одинаковы. Поскольку нулевая гипотеза "
+                         f"отвергается, можно сделать вывод о наличии "
+                         f"статистически значимых различий между переменными."
+                         f"\n\nЕсли p-value больше 0.05, нулевая гипотеза не "
+                         f"отвергается. Это означает, что нет статистически "
+                         f"значимых различий между переменными. В таком случае "
+                         f"различия между переменными могут быть случайными и"
+                         f" не свидетельствовать о наличии значимых различий в "
+                         f"их распределениях."
+                )
+
+                file_cur = open(table_file, "rb")
+                bot.send_document(
+                    chat_id=call.from_user.id,
+                    document=file_cur,
+                    visible_file_name=f"Тест_Фридмана_{names_of_columns[columns[0]]}_{names_of_columns[columns[1]]}_{names_of_columns[columns[2]]}.xlsx",
                 )

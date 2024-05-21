@@ -3,8 +3,12 @@ from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 def handle_pagination_columns_variance(bot, call, command, columns) -> None:
     data = call.data.split("_") if "_" in call.data else (call.data, 0)
-    l, _, prefix, action, page = data[0], data[1], data[2], data[3], int(
-        data[4])
+    if command.startswith("test_kruskal_wallis"):
+        l, _, prefix, action, page = data[0], data[1], data[2], data[3], int(
+            data[4])
+    else:
+        _, prefix, action, page = data[0], data[1], data[2], int(
+            data[3])
 
     if action == "prev":
         page -= 1
@@ -68,6 +72,16 @@ def generate_column_keyboard(columns: list, page: int,
 
         add_pagination_buttons(keyboard, columns, page, command)
 
+    elif command.startswith("test_friedman"):
+        for index, column in enumerate(current_columns):
+            button = InlineKeyboardButton(
+                column,
+                callback_data=f"test_friedman_{start_index + index}"
+            )
+            keyboard.add(button)
+
+        add_pagination_buttons(keyboard, columns, page, command)
+
     return keyboard
 
 
@@ -100,6 +114,24 @@ def add_pagination_buttons(
             InlineKeyboardButton(
                 "Далее",
                 callback_data=f"test_kruskal_wallis_next_{page + 1}",
+            )
+            if (page + 1) * 4 < len(columns)
+            else None
+        )
+
+    elif command.startswith("test_friedman"):
+        prev_button = (
+            InlineKeyboardButton(
+                "Назад",
+                callback_data=f"test_friedman_prev_{page}",
+            )
+            if page > 0
+            else None
+        )
+        next_button = (
+            InlineKeyboardButton(
+                "Далее",
+                callback_data=f"test_friedman_next_{page + 1}",
             )
             if (page + 1) * 4 < len(columns)
             else None
