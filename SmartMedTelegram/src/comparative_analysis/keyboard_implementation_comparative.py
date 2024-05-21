@@ -137,7 +137,7 @@ def generate_column_keyboard(columns: list, page: int,
 
         add_pagination_buttons(keyboard, columns, page, command)
 
-    else:
+    elif command.startswith("mann_whitney_test_comparative"):
         for index, column in enumerate(current_columns):
             button = InlineKeyboardButton(
                 column,
@@ -146,7 +146,15 @@ def generate_column_keyboard(columns: list, page: int,
             keyboard.add(button)
 
         add_pagination_buttons(keyboard, columns, page, command)
+    else:
+        for index, column in enumerate(current_columns):
+            button = InlineKeyboardButton(
+                column,
+                callback_data=f"wilcoxon_test_comparative_{start_index + index}"
+            )
+            keyboard.add(button)
 
+        add_pagination_buttons(keyboard, columns, page, command)
     return keyboard
 
 
@@ -238,7 +246,7 @@ def add_pagination_buttons(
             else None
         )
 
-    else:
+    elif command == "mann_whitney_test_comparative":
         prev_button = (
             InlineKeyboardButton(
                 "Назад",
@@ -251,6 +259,23 @@ def add_pagination_buttons(
             InlineKeyboardButton(
                 "Далее",
                 callback_data=f"mann_whitney_test_comparative_next_{page + 1}",
+            )
+            if (page + 1) * 4 < len(columns)
+            else None
+        )
+    else:
+        prev_button = (
+            InlineKeyboardButton(
+                "Назад",
+                callback_data=f"wilcoxon_test_comparative_prev_{page}",
+            )
+            if page > 0
+            else None
+        )
+        next_button = (
+            InlineKeyboardButton(
+                "Далее",
+                callback_data=f"wilcoxon_test_comparative_next_{page + 1}",
             )
             if (page + 1) * 4 < len(columns)
             else None

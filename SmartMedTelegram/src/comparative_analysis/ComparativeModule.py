@@ -14,7 +14,7 @@ from data.paths import (
     USER_DATA_PATH,
     KOLMOGOROVA_SMIRNOVA,
     T_CRITERIA_INDEPENDENT,
-    T_CRITERIA_DEPENDENT, MANN_WHITNEY_TEST,
+    T_CRITERIA_DEPENDENT, MANN_WHITNEY_TEST, WILCOXON_TEST,
 )
 from preprocessing.preprocessing import get_categorical_col
 from sklearn import preprocessing
@@ -239,6 +239,26 @@ class ComparativeModule:
 
         with pd.ExcelWriter(
                 f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{MANN_WHITNEY_TEST}/mann_whitney_test_comparative_{self.chat_id}.xlsx",
+                engine="xlsxwriter",
+        ) as writer:
+            df.to_excel(writer, sheet_name="Sheet1", index=False)
+
+    def generate_wilcoxon_test_comparative(self, var_1, var_2):
+        result_columns = [
+            "Полученное значение",
+            "P-значение",
+        ]
+
+        data1 = self.df[var_1]
+        data2 = self.df[var_2]
+        result = stats.wilcoxon(data1, data2)
+        statistics, p_value = result[0], result[1]
+
+        df = pd.DataFrame(columns=result_columns)
+        df.loc[1] = [statistics, p_value]
+
+        with pd.ExcelWriter(
+                f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{WILCOXON_TEST}/wilcoxon_test_comparative_{self.chat_id}.xlsx",
                 engine="xlsxwriter",
         ) as writer:
             df.to_excel(writer, sheet_name="Sheet1", index=False)

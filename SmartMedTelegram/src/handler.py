@@ -19,8 +19,8 @@ from comparative_analysis.functions_comparative import (
     handle_t_criteria_categorical_value,
     handle_t_criterion_student_dependent,
     handle_t_criteria_for_dependent,
-    handle_nonparametric_mann_whitney_test_comparative,
-    handle_mann_whitney_test_comparative,
+    handle_nonparametric_tests_comparative,
+    handle_mann_whitney_test_comparative, handle_wilcoxon_test_comparative,
 )
 from comparative_analysis.keyboard_implementation_comparative import (
     handle_pagination_columns_comparative,
@@ -180,9 +180,10 @@ def callback_query_handler(bot, call):
         elif command == "t_criterion_student_dependent_comparative":
             handle_t_criterion_student_dependent(bot, call, command)
 
-        elif command == "nonparametric_mann_whitney_test_comparative":
-            handle_nonparametric_mann_whitney_test_comparative(bot, call,
-                                                               command)
+        elif command in ["mann_whitney_test_comparative",
+                         "wilcoxon_test_comparative"]:
+            handle_nonparametric_tests_comparative(bot, call,
+                                                   command)
 
         elif command.startswith(
                 "continuous_columns_prev_") or command.startswith(
@@ -194,16 +195,13 @@ def callback_query_handler(bot, call):
         elif command.startswith(
                 "t_criterion_student_dependent_comparative_next_"
         ) or command.startswith(
-            "t_criterion_student_dependent_comparative_prev_"):
-            columns = user_columns[call.from_user.id]["columns"]
-            handle_pagination_columns_t_criteria_dependent_comparative(
-                bot, call, command, columns
-            )
-
-        elif command.startswith(
-                "mann_whitney_test_comparative_next_"
+            "t_criterion_student_dependent_comparative_prev_") or command.startswith(
+            "mann_whitney_test_comparative_next_"
         ) or command.startswith(
-            "mann_whitney_test_comparative_prev_"):
+            "mann_whitney_test_comparative_prev_") or command.startswith(
+            "wilcoxon_test_comparative_next_"
+        ) or command.startswith(
+            "wilcoxon_test_comparative_prev_"):
             columns = user_columns[call.from_user.id]["columns"]
             handle_pagination_columns_t_criteria_dependent_comparative(
                 bot, call, command, columns
@@ -227,6 +225,9 @@ def callback_query_handler(bot, call):
 
         elif command.startswith("mann_whitney_test_comparative_"):
             handle_mann_whitney_test_comparative(bot, call, command)
+
+        elif command.startswith("wilcoxon_test_comparative_"):
+            handle_wilcoxon_test_comparative(bot, call, command)
 
         elif command.startswith("t_criteria_categorical_value_"):
             handle_t_criteria_categorical_value(bot, call, command)

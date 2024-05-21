@@ -18,7 +18,7 @@ from data.paths import (
     COMPARATIVE_ANALYSIS,
     KOLMOGOROVA_SMIRNOVA,
     T_CRITERIA_INDEPENDENT,
-    T_CRITERIA_DEPENDENT, MANN_WHITNEY_TEST,
+    T_CRITERIA_DEPENDENT, MANN_WHITNEY_TEST, WILCOXON_TEST,
 )
 from functions import send_document_from_file, create_dataframe_and_save_file, \
     get_user_file_df
@@ -544,7 +544,7 @@ def build_t_criteria_table_dependent(bot, call, command):
                 )
 
 
-def handle_nonparametric_mann_whitney_test_comparative(bot, call, command):
+def handle_nonparametric_tests_comparative(bot, call, command):
     """
     Обработка при выборе метода после прочтения файла сравнительного анализа.
     """
@@ -571,10 +571,10 @@ def handle_nonparametric_mann_whitney_test_comparative(bot, call, command):
         user_columns[call.from_user.id]["columns"] = columns
         user_columns[call.from_user.id]["command"] = command
 
-        if command == "nonparametric_mann_whitney_test_comparative":
+        if command == "mann_whitney_test_comparative":
             bot.send_message(
                 chat_id=call.from_user.id,
-                text=f"Для применения критериев Манна-Уитни необходимо, "
+                text=f"Для применения критерия Манна-Уитни необходимо, "
                      f"чтобы исходные данные соответствовали определённым "
                      f"требованиям.\n\nЭтот метод используется для сравнения"
                      f" двух независимых групп, когда данные не обязательно "
@@ -582,6 +582,21 @@ def handle_nonparametric_mann_whitney_test_comparative(bot, call, command):
                      f" критерий Манна-Уитни особенно полезным для анализа"
                      f" данных, которые не соответствуют предположению о "
                      f"нормальности.\n\nПримеры сравниваемых величин: уровни "
+                     f"стресса у двух различных групп людей.\n\nВам необходимо"
+                     f" указать две переменные, представляющие независимые"
+                     f" выборки данных.",
+            )
+
+        elif command == "wilcoxon_test_comparative":
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text=f"Для применения критерия Уилкоксона необходимо, "
+                     f"чтобы исходные данные соответствовали определённым "
+                     f"требованиям.\n\nОн используется для проверки наличия"
+                     f" значительной разницы между двумя средними значениями "
+                     f"генеральной совокупности, когда распределение различий "
+                     f"между двумя выборками нельзя считать нормальным."
+                     f"\n\nПримеры сравниваемых величин: уровни "
                      f"стресса у двух различных групп людей.\n\nВам необходимо"
                      f" указать две переменные, представляющие независимые"
                      f" выборки данных.",
@@ -674,7 +689,7 @@ def build_mann_whitney_test_comparative(bot, call, command):
         )
 
     else:
-        if command == "nonparametric_mann_whitney_test_comparative":
+        if command == "mann_whitney_test_comparative":
             names_of_columns = user_columns[call.from_user.id]["columns"]
 
             module.generate_mann_whitney_test_comparative(
@@ -688,12 +703,15 @@ def build_mann_whitney_test_comparative(bot, call, command):
                     text=f"На основе Ваших данных была построена таблица "
                          f"критерия Манна-Уитни для переменной '{names_of_columns[columns[0]]}' "
                          f"и переменной '{names_of_columns[columns[1]]}'. "
-                         f"\n\nЕсли p < 0.05, нулевая гипотеза отвергается, "
-                         f"принимается альтернативная, выборки считаются "
-                         f"однородными и носят системный "
-                         f"характер.\n\nЕсли p ≥ 0.05, не отвергается нулевая "
-                         f"гипотеза, выборки не считаются однородными "
-                         f"и носят случайный характер.",
+                         f"\n\nЕсли p <= 0.05, нулевая гипотеза отвергается. "
+                         f"Есть статистически значимые различия между двумя "
+                         f"независимыми выборками. Это означает, что "
+                         f"распределения двух групп различаются.\n\nЕсли "
+                         f"p > 0.05, то нет статистически значимых различий "
+                         f"между двумя независимыми выборками. Это означает, "
+                         f"что различия между группами могут быть случайными "
+                         f"и не свидетельствуют о значимых различиях в их "
+                         f"распределениях.",
                 )
 
                 file_cur = open(table_file, "rb")
@@ -702,3 +720,113 @@ def build_mann_whitney_test_comparative(bot, call, command):
                     document=file_cur,
                     visible_file_name=f"Критерий_Манна_Уитни_{names_of_columns[columns[0]]}_{names_of_columns[columns[1]]}.xlsx",
                 )
+
+
+def handle_wilcoxon_test_comparative(bot, call, command):
+    if not "wilcoxon_test_comparative" in user_columns[call.from_user.id]:
+        user_columns[call.from_user.id]["wilcoxon_test_comparative"] = [
+            int(command.replace("wilcoxon_test_comparative_", ""))
+        ]
+
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Выберите вторую переменную:",
+        )
+
+
+    elif len(user_columns[call.from_user.id][
+                 "wilcoxon_test_comparative"]) == 1:
+        if (
+                int(command.replace("wilcoxon_test_comparative_", ""))
+                not in user_columns[call.from_user.id][
+            "wilcoxon_test_comparative"]
+        ):
+            user_columns[call.from_user.id][
+                "wilcoxon_test_comparative"].append(
+                int(command.replace("wilcoxon_test_comparative_", ""))
+            )
+            build_wilcoxon_test_comparative(bot, call, command)
+
+        else:
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text="Вы уже выбрали эту переменную. Выберите другую вторую переменную",
+            )
+
+    else:
+        user_columns[call.from_user.id]["wilcoxon_test_comparative"].pop(0)
+
+        if (
+                int(command.replace("wilcoxon_test_comparative_", ""))
+                not in user_columns[call.from_user.id][
+            "wilcoxon_test_comparative"]
+        ):
+            user_columns[call.from_user.id][
+                "wilcoxon_test_comparative"].append(
+                int(command.replace("wilcoxon_test_comparative_", ""))
+            )
+            build_wilcoxon_test_comparative(bot, call, command)
+
+
+        else:
+            bot.send_message(
+                chat_id=call.from_user.id,
+                text="Вы уже выбрали эту переменную. Выберите другую вторую переменную",
+            )
+
+
+def build_wilcoxon_test_comparative(bot, call, command):
+    df = get_user_file_df(
+        f"{MEDIA_PATH}/{DATA_PATH}/{USER_DATA_PATH}",
+        call.from_user.id,
+    )
+
+    module = ComparativeModule(df, call.from_user.id)
+    columns = user_columns[call.from_user.id]["wilcoxon_test_comparative"]
+
+    if not columns:
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Ошибка при обработке файла, попробуйте еще раз",
+            reply_markup=keyboard_comparative_analysis,
+        )
+
+    command = user_columns[call.from_user.id]["command"]
+
+    if not command:
+        bot.send_message(
+            chat_id=call.from_user.id,
+            text="Ошибка при обработке файла, попробуйте еще раз",
+            reply_markup=keyboard_comparative_analysis,
+        )
+
+    else:
+        if command == "wilcoxon_test_comparative":
+            names_of_columns = user_columns[call.from_user.id]["columns"]
+
+            module.generate_wilcoxon_test_comparative(
+                names_of_columns[columns[0]], names_of_columns[columns[1]]
+            )
+            table_file = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{WILCOXON_TEST}/wilcoxon_test_comparative_{call.from_user.id}.xlsx"
+
+            if os.path.isfile(table_file):
+                bot.send_message(
+                    chat_id=call.from_user.id,
+                    text=f"На основе Ваших данных была построена таблица "
+                         f"критерия Уилкоксона для переменной '{names_of_columns[columns[0]]}' "
+                         f"и переменной '{names_of_columns[columns[1]]}'. "
+                         f"\n\nЕсли p <= 0.05, можно сделать вывод о наличии "
+                         f"статистически значимых различий между двумя "
+                         f"связанными выборками.\n\nЕсли p > 0.05, это не"
+                         f" позволяет отвергнуть нулевую гипотезу, и мы "
+                         f"заключаем, что нет статистически значимых различий "
+                         f"между двумя независимыми выборками."
+                )
+
+                file_cur = open(table_file, "rb")
+                bot.send_document(
+                    chat_id=call.from_user.id,
+                    document=file_cur,
+                    visible_file_name=f"Критерий_Уилкоксона_{names_of_columns[columns[0]]}_{names_of_columns[columns[1]]}.xlsx",
+                )
+#

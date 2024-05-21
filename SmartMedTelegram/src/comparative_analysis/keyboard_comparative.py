@@ -69,7 +69,14 @@ keyboard_choice_comparative.add(
 keyboard_choice_comparative.add(
     InlineKeyboardButton(
         text="Непараметрический критерий Манна-Уитни",
-        callback_data="nonparametric_mann_whitney_test_comparative",
+        callback_data="mann_whitney_test_comparative",
+    )
+)
+
+keyboard_choice_comparative.add(
+    InlineKeyboardButton(
+        text="Непараметрический критерий Уилкоксона",
+        callback_data="wilcoxon_test_comparative",
     )
 )
 keyboard_choice_comparative.add(
