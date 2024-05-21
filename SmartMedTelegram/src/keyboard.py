@@ -18,9 +18,8 @@ keyboard_start.row("Искусственный интеллект")
 
 keyboard_modules = ReplyKeyboardMarkup(resize_keyboard=True,
                                        one_time_keyboard=True)
-keyboard_modules.row("Описательный анализ")
-keyboard_modules.row("Кластерный анализ")
-keyboard_modules.row("Сравнительный анализ")
+keyboard_modules.row("Описательный анализ", "Кластерный анализ")
+keyboard_modules.row("Сравнительный анализ", "Дисперсионный анализ")
 
 keyboard_main_menu = InlineKeyboardMarkup()
 keyboard_main_menu.add(

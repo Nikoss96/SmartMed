@@ -24,3 +24,6 @@ T_CRITERIA_INDEPENDENT = "t_criteria_independent"
 T_CRITERIA_DEPENDENT = "t_criteria_dependent"
 MANN_WHITNEY_TEST = "mann_whitney_test"
 WILCOXON_TEST = "wilcoxon_test"
+
+VARIANCE_ANALYSIS = "variance_analysis"
+KRUSKAL_TEST = "kruskal_test"

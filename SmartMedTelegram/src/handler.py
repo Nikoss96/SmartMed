@@ -49,6 +49,11 @@ from functions import (
     send_text_message,
     handle_download,
 )
+from variance_analysis.functions_variance_analysis import \
+    handle_example_variance, handle_downloaded_variance_file, \
+    handle_variance_module, handle_test_kruskal_wallis_variance
+from variance_analysis.keyboard_implementation_variance import \
+    handle_pagination_columns_variance
 
 
 def callback_query_handler(bot, call):
@@ -84,6 +89,7 @@ def callback_query_handler(bot, call):
             "download_describe",
             "download_cluster",
             "download_comparative",
+            "download_variance",
         ]:
             handle_download(bot, call, command)
 
@@ -232,6 +238,32 @@ def callback_query_handler(bot, call):
         elif command.startswith("t_criteria_categorical_value_"):
             handle_t_criteria_categorical_value(bot, call, command)
 
+        # Обработка кнопок Дисперсионного анализа
+        elif command == "example_variance":
+            handle_example_variance(bot, call)
+
+        elif command in [
+            "replace_null_with_mean_variance",
+            "delete_null_rows_dropna_variance",
+            "replace_null_with_median_variance",
+        ]:
+            handle_downloaded_variance_file(bot, call, command)
+
+        elif command in [
+            "test_kruskal_wallis",
+        ]:
+            handle_variance_module(bot, call, command)
+
+        elif command.startswith(
+                "test_kruskal_wallis_prev_") or command.startswith(
+            "test_kruskal_wallis_next_"
+        ):
+            columns = user_columns[call.from_user.id]["columns"]
+            handle_pagination_columns_variance(bot, call, command, columns)
+
+        elif command.startswith("test_kruskal_wallis_"):
+            handle_test_kruskal_wallis_variance(bot, call, command)
+
     except Exception as e:
         print(f"Ошибка: \n{e}")
 
@@ -279,6 +311,7 @@ def text_handler(bot, message):
             "описательный анализ",
             "кластерный анализ",
             "сравнительный анализ",
+            "дисперсионный анализ",
         ]:
             send_text_message(
                 bot,

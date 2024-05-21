@@ -246,7 +246,7 @@ def add_pagination_buttons(
             else None
         )
 
-    elif command == "mann_whitney_test_comparative":
+    elif command.startswith("mann_whitney_test_comparative"):
         prev_button = (
             InlineKeyboardButton(
                 "Назад",

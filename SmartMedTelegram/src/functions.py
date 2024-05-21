@@ -23,10 +23,12 @@ from keyboard import keyboard_modules, keyboard_start
 from data.paths import (
     MEDIA_PATH,
     DATA_PATH,
-    USER_DATA_PATH, COMPARATIVE_ANALYSIS,
+    USER_DATA_PATH, COMPARATIVE_ANALYSIS, VARIANCE_ANALYSIS,
 )
 from preprocessing.preprocessing import PandasPreprocessor
 from settings import bot_token
+from variance_analysis.keyboard_variance_analysis import \
+    keyboard_variance_analysis, keyboard_replace_null_values_variance
 
 user_commands = {}
 
@@ -39,6 +41,7 @@ def get_reply_markup(command):
         "описательный анализ": keyboard_describe_analysis,
         "кластерный анализ": keyboard_cluster_analysis,
         "сравнительный анализ": keyboard_comparative_analysis,
+        "дисперсионный анализ": keyboard_variance_analysis,
         "модули": keyboard_modules,
         "словарь": generate_dictionary_keyboard(),
     }
@@ -96,11 +99,12 @@ def get_user_file(bot):
                     message.chat.id,
                 )
                 check_input_file(bot, message, file_name, command)
-                if command == "download_comparative":
-                    save_comparative_file(
+                if command in ["download_comparative", "download_variance"]:
+                    save_comparative_or_variance_file(
                         response.content,
                         message.document.file_name,
                         message.chat.id,
+                        command
                     )
 
             else:
@@ -272,6 +276,14 @@ def check_input_file(bot, message, file_path, command):
                     reply_markup=keyboard_replace_null_values_comparative,
                 )
 
+            elif command == "download_variance":
+                bot.reply_to(
+                    message,
+                    f"Файл {message.document.file_name} успешно прочитан."
+                    f" Выберите метод обработки пропущенных значений в Вашем файле:",
+                    reply_markup=keyboard_replace_null_values_variance,
+                )
+
             return True
 
         else:
@@ -321,6 +333,8 @@ def create_dataframe_and_save_file(chat_id, command):
         preprocessor.save_df_to_file()
     elif command == "download_comparative":
         preprocessor.preprocess()
+    elif command == "download_variance":
+        preprocessor.preprocess()
 
 
 def get_user_file_df(directory, chat_id):
@@ -341,16 +355,25 @@ def get_user_file_df(directory, chat_id):
         return df
 
 
-def save_comparative_file(file_content, file_name, chat_id):
-    directory = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}"
+def save_comparative_or_variance_file(file_content, file_name, chat_id,
+                                      command):
+    directory = ""
+    if command == "download_comparative":
+        directory = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}"
+    elif command == "download_variance":
+        directory = f"{MEDIA_PATH}/{DATA_PATH}/{VARIANCE_ANALYSIS}/{USER_DATA_PATH}"
     pattern = f"{chat_id}"
 
     for root, dirs, files in os.walk(directory):
         for file in files:
             if pattern in file:
                 return
+    file_path = ""
+    if command == "download_comparative":
+        file_path = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}/{chat_id}_{file_name}"
+    elif command == "download_variance":
+        file_path = f"{MEDIA_PATH}/{DATA_PATH}/{VARIANCE_ANALYSIS}/{USER_DATA_PATH}/{chat_id}_{file_name}"
 
-    file_path = f"{MEDIA_PATH}/{DATA_PATH}/{COMPARATIVE_ANALYSIS}/{USER_DATA_PATH}/{chat_id}_{file_name}"
     with open(file_path, "wb") as file:
         file.write(file_content)
     return file_path
