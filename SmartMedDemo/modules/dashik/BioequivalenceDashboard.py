@@ -7,7 +7,6 @@ import dash_table
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-
 from Dashboard import Dashboard
 from text.markdown_bio import *
 

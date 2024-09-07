@@ -1,59 +1,43 @@
+import os
 import re
 
 import dash
-import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
-from dash import callback_context
-from dash.exceptions import PreventUpdate
-from dash.dependencies import Input, Output, State
-
-
-from sklearn import tree
+import dash_table
+import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import scipy.stats as sps
 import sklearn.metrics as sm
-from scipy.sparse import issparse
-
-# from sklearn.feature_selection import chi2
-from sklearn.metrics import accuracy_score
 
 # from sklearn.preprocessing import KBinsDiscretizer
 import statsmodels.api as smapi
-from sklearn.metrics import roc_curve
-from sklearn.metrics import confusion_matrix
-
-import plotly.graph_objects as go
-import plotly.express as px
-
-import matplotlib.pyplot as plt
+from dash import callback_context
+from dash.dependencies import Input, Output, State
+from dash.exceptions import PreventUpdate
 from PIL import Image
-import os
+from scipy.sparse import issparse
+from scipy.stats import binomtest, f
+from sklearn import tree
 
-from scipy.stats import binomtest
-from scipy.stats import f
+# from sklearn.feature_selection import chi2
+from sklearn.metrics import accuracy_score, confusion_matrix, roc_curve
 from statsmodels.stats.proportion import proportion_confint
 
 # from GUI.apps.PredictionApp.utils import read_file
 from ..dataprep.PandasPreprocessor import read_file
-
-
-from .text.linear_text import *
-from .text.roc_text import *
-from .text.tree_text import *
-from .text.log import *
-from .DashExceptions import ModelChoiceException
-from .Dashboard import Dashboard
-from .text.linear_text import *
-from .text.roc_text import *
 from ..models.LinearRegressionModel import *
 from ..models.LogisticRegressionModel import *
 from ..models.TreeModel import *
-from ..dataprep.PandasPreprocessor import read_file
+from .Dashboard import Dashboard
+from .DashExceptions import ModelChoiceException
+from .text.linear_text import *
+from .text.log import *
+from .text.roc_text import *
+from .text.tree_text import *
 
-from ..dataprep.PandasPreprocessor import read_file
 
 global ansy
 

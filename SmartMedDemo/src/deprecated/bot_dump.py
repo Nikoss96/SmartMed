@@ -4,6 +4,7 @@ import telebot
 from src.deprecated.download_module import bot_token
 from src.tokens import main_bot_token
 
+
 # from telegram import Update
 # from telegram.ext import CallbackContext, CommandHandler, Updater
 # Токен бота
@@ -111,7 +112,7 @@ def callback_query(call):
                 with open(file_name, "wb") as file:
                     file.write(response.content)
                 bot.reply_to(message, f"Файл {file_name} успешно загружен")
-                # file = open("picdist.png","rb")
+                # file = open("statistical_term_15.png","rb")
                 bot.send_document(call.from_user.id, file)
             else:
                 bot.reply_to(message, "Произошла ошибка при загрузке файла")
@@ -144,7 +145,7 @@ def callback_query(call):
                 file = open("../../media/images/picdist.png", "rb")
                 bot.send_document(call.from_user.id, file)
                 # bot.send_message(call.from_user.id,"Результат анализа:")
-                # file = open("picdist.png","rb")
+                # file = open("statistical_term_15.png","rb")
                 # bot.send_document(call.from_user.id,file)
             else:
                 bot.reply_to(message, "Произошла ошибка при загрузке файла")
@@ -211,7 +212,7 @@ def default_test(message):
         )
         keyboard00.add(
             telebot.types.InlineKeyboardButton(
-                text="Загружу свой", callback_data="download_bioequal"
+                text="Загрузить свой файл", callback_data="download_bioequal"
             )
         )
         keyboard00.add(

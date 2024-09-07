@@ -1,19 +1,21 @@
+from datetime import date, datetime
+
 import dash
-from dash import Dash
-import dash_html_components as html
 import dash_core_components as dcc
+import dash_html_components as html
 import dash_table
-import plotly.graph_objects as go
 import pandas as pd
-from scipy.stats import variation
-from .Dashboard import Dashboard
+import plotly.graph_objects as go
+import plotly.graph_objs as go
+import scipy.stats
+from dash import Dash
 from dash.dependencies import Input, Output
 from lifelines import KaplanMeierFitter
-from datetime import datetime, date
 from lifelines.utils import survival_table_from_events
-import plotly.graph_objs as go
+from scipy.stats import variation
+
+from .Dashboard import Dashboard
 from .text.lifelines import *
-import scipy.stats
 
 
 def curve(self, dis, status, distance2, status2, number, about, inz):

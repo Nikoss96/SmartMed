@@ -1,30 +1,26 @@
 import dash
-from dash import Dash
-import dash_html_components as html
 import dash_core_components as dcc
+import dash_html_components as html
 import dash_table
-from dash.exceptions import PreventUpdate
+import networkx as nx
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
-import plotly.express as px
-import pandas as pd
-import numpy as np
-from scipy.stats import variation
-from .Dashboard import Dashboard
+from dash import Dash
 from dash.dependencies import Input, Output
-
-from scipy.cluster.hierarchy import dendrogram, linkage
-from sklearn.cluster import AgglomerativeClustering
-import networkx as nx
-from .text.cluster_text import *
-
-from .text.markdown_stats import *
+from dash.exceptions import PreventUpdate
+from pyclustering.cluster.center_initializer import kmeans_plusplus_initializer
 from pyclustering.cluster.kmeans import kmeans
 from pyclustering.utils.metric import distance_metric, type_metric
-from pyclustering.cluster.center_initializer import kmeans_plusplus_initializer
+from scipy.cluster.hierarchy import dendrogram, linkage
+from scipy.stats import variation
+from sklearn.cluster import AgglomerativeClustering
+
+from .Dashboard import Dashboard
+from .text.cluster_text import *
+from .text.markdown_stats import *
 
 
 class ClusterDashboard(Dashboard):

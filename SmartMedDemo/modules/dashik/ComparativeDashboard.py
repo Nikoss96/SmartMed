@@ -1,26 +1,32 @@
-from .Dashboard import Dashboard
-from ..dataprep.PandasPreprocessor import get_categorical_col
-from ..dash.text.comparative_text import *
-from sklearn import preprocessing
-from ..dataprep.PandasPreprocessor import get_confusion_matrix
-from ..dataprep.PandasPreprocessor import get_class_names
+from math import sqrt
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
 import numpy as np
 import pandas as pd
-from scipy.stats import sem
-from scipy.stats import t
-from math import sqrt
-from scipy.stats import mannwhitneyu
-from scipy.stats import wilcoxon
-from scipy.stats import chi2_contingency
-from scipy.stats import binomtest
-from scipy.stats import f
+from scipy.stats import (
+    binomtest,
+    chi2_contingency,
+    f,
+    kstest,
+    mannwhitneyu,
+    sem,
+    t,
+    wilcoxon,
+)
 from scipy.stats.distributions import chi2
-from scipy.stats import kstest
+from sklearn import preprocessing
 from sklearn.metrics import confusion_matrix
+
+from ..dash.text.comparative_text import *
+from ..dataprep.PandasPreprocessor import (
+    get_categorical_col,
+    get_class_names,
+    get_confusion_matrix,
+)
+from .Dashboard import Dashboard
 
 
 class ComparativeDashboard(Dashboard):

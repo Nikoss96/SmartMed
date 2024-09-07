@@ -1,154 +1,128 @@
-import requests
-
-from functions import get_anyfile, get_file_for_descriptive_analysis
-from tokens import main_bot_token
-from keyboard import (
-    keyboard_main_menu,
-    keyboard00,
-    keyboard01,
-    keyboard02,
-    keyboard_modules,
-    keyboard_dict,
+from functions import (
+    get_reply_markup,
+    handle_back,
+    handle_download_bioequal,
+    handle_download_describe,
+    handle_example_bioequal,
+    handle_example_describe,
+    handle_pagination,
+    handle_statistical_term,
+    send_text_message,
 )
+from keyboard import keyboard_in_development, keyboard_main_menu
 
 
 def callback_query_handler(bot, call):
     """
     Обработка нажатия кнопок.
+
+    Parameters:
+        bot (telebot.TeleBot): Экземпляр бота.
+        call (telebot.types.CallbackQuery): Callback-запрос от пользователя.
     """
-    if call.data == "example_bioequal":
-        bot.answer_callback_query(
-            callback_query_id=call.id,
-            text="Прислали вам пример файла. Оформляйте в точности так.",
-        )
+    try:
+        command: str = call.data
+        user_id = call.from_user.id
+        username = call.from_user.username
 
-        file = open("media/data/параллельный тестовый.xlsx", "rb")
+        print(f"User {username} in {user_id} chat asked for {command}")
 
-        bot.send_document(chat_id=call.from_user.id, document=file)
+        if command.startswith("prev_") or command.startswith("next_"):
+            handle_pagination(bot, call)
 
-    elif call.data == "download_bioequal":
-        bot.answer_callback_query(
-            callback_query_id=call.id, text="Можете прислать свой файл прямо сюда."
-        )
+        elif command.startswith("statistical_term"):
+            handle_statistical_term(bot, call)
 
-        get_anyfile(bot, call)
+        elif command == "example_bioequal":
+            handle_example_bioequal(bot, call)
 
-    elif call.data == "example_describe":
-        bot.answer_callback_query(
-            callback_query_id=call.id,
-            text="Прислали вам пример файла. Оформляйте в точности так.",
-        )
+        elif command == "download_bioequal":
+            handle_download_bioequal(bot, call)
 
-        file = open("media/data/Описательный_анализ_пример.xls", "rb")
+        elif command == "example_describe":
+            handle_example_describe(bot, call)
 
-        bot.send_document(chat_id=call.from_user.id, document=file)
+        elif command == "download_describe":
+            handle_download_describe(bot, call)
 
-    elif call.data == "download_describe":
-        get_file_for_descriptive_analysis(bot, call)
+        elif command == "back":
+            handle_back(bot, user_id)
 
-    elif call.data == "t-crit":
-        bot.send_message(
-            chat_id=call.from_user.id,
-            text=f"T-критерий Стьюдента для независимых переменных - \n {dict['T-критерий Стьюдента для независимых переменных']}",
-        )
-
-    elif call.data == "spearman-corr":
-        bot.send_message(
-            chat_id=call.from_user.id,
-            text=f"Коэффициент корреляции Спирмена - \n {dict['Коэффициент корреляции Спирмена']}",
-        )
-
-        file_cur = open("media/images/unnamed.png", "rb")
-
-        bot.send_document(chat_id=call.from_user.id, document=file_cur)
-
-    elif call.data == "curve":
-        bot.send_message(
-            chat_id=call.from_user.id,
-            text=f"Кривая выживаемости - \n {dict['Кривая выживаемости']}",
-        )
-
-    elif call.data == "box":
-        bot.send_message(
-            chat_id=call.from_user.id,
-            text=f"Диаграмма Ящик с усами - \n {dict['Диаграмма <ящик с усами>']}",
-        )
-
-        file_cur = open("media/images/box.jpg", "rb")
-
-        bot.send_document(chat_id=call.from_user.id, document=file_cur)
-
-    elif call.data == "back":
-        bot.send_message(
-            chat_id=call.from_user.id,
-            text="Вы снова можете выбрать модуль.",
-            reply_markup=keyboard_main_menu,
-        )
+    except Exception as e:
+        print(f"Ошибка: \n{e}")
 
 
 def start_message_handler(bot, message):
     """
     Обработка кнопки Start. Запускается при запуске бота пользователем.
     """
-    user_id = message.from_user.username
-    chat_id = message.chat.id
+    try:
+        user = message.from_user.username
+        chat_id = message.chat.id
 
-    bot.send_message(chat_id=chat_id, text="Доброго дня!")
-    bot.send_message(
-        chat_id=chat_id, text="Рады приветствовать вас в " "SmartMedicine!"
-    )
-    bot.send_message(
-        chat_id=chat_id,
-        text="Вам доступен следующий функционал: \n - Вызов медицинских "
-        "модулей; \n - Вызов словаря; \n - Общение с виртуальным "
-        "ассистентом.",
-        reply_markup=keyboard_main_menu,
-    )
+        print(f"User {user} in {chat_id} chat started the bot!")
+
+        greeting_text = "Доброго дня!"
+        welcome_text = "Рады приветствовать вас в Smart-Медицине!"
+        functionality_text = (
+            "Вам доступен следующий функционал: \n"
+            " - Вызов медицинских модулей; \n"
+            " - Вызов словаря; \n"
+            # " - Общение с виртуальным ассистентом."
+        )
+
+        send_text_message(bot, chat_id, greeting_text)
+        send_text_message(bot, chat_id, welcome_text)
+        send_text_message(
+            bot, chat_id, functionality_text, reply_markup=keyboard_main_menu
+        )
+
+    except Exception as e:
+        print(f"Ошибка: \n{e}")
 
 
 def text_handler(bot, message):
     """
     Обработка текста, присылаемого пользователем.
     """
-    command = message.text.lower()
+    try:
+        command = message.text.lower()
+        reply_markup = get_reply_markup(command)
+        chat_id = message.chat.id
+        username = message.from_user.username
 
-    switch = {
-        "bioequal": keyboard00,
-        "describe": keyboard01,
-        "predict": keyboard02,
-        "модули": keyboard_modules,
-        "назад": keyboard_main_menu,
-        "словарь": keyboard_dict,
-        "chat-gpt": None,
-        "cluster": keyboard_modules,
-    }
-
-    reply_markup = switch.get(command, None)
-
-    if reply_markup is not None:
-        if command == "модули":
-            bot.send_message(
+        if reply_markup is keyboard_in_development:
+            send_text_message(
+                bot,
                 chat_id=message.chat.id,
-                text="Выберите модуль из предложенных ниже.",
+                text="Данный модуль пока находится в разработке",
                 reply_markup=reply_markup,
             )
-        elif command == "назад":
-            bot.send_message(
+            return
+
+        print(f"User {username} in {chat_id} chat wrote {command}")
+
+        if command in ["describe", "bioequal"]:
+            send_text_message(
+                bot,
                 chat_id=message.chat.id,
-                text="Вы снова можете выбрать модуль.",
+                text="Выберите опцию при работе с модулем:",
                 reply_markup=reply_markup,
             )
-        elif command == "словарь":
-            bot.send_message(
+
+        elif command == "модули":
+            send_text_message(
+                bot,
+                chat_id=message.chat.id,
+                text="Выберите интересующий вас модуль:",
+                reply_markup=reply_markup,
+            )
+        else:
+            send_text_message(
+                bot,
                 chat_id=message.chat.id,
                 text="Выберите интересующий вас термин:",
                 reply_markup=reply_markup,
             )
-        else:
-            bot.send_message(
-                chat_id=message.chat.id,
-                text="Готовы загрузить сразу или требуется пояснение?",
-                reply_markup=reply_markup,
-            )
-    else:
-        bot.send_message(chat_id=message.chat.id, text="Coming soon")
+    except Exception as e:
+        print(f"Ошибка: \n{e}")

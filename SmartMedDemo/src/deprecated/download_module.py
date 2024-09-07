@@ -3,6 +3,7 @@ import telebot
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler, Updater
 
+
 # Токен бота
 # Main_test_bot
 # First_test_bot
@@ -141,7 +142,7 @@ def default_test(message):
         )
         keyboard00.add(
             telebot.types.InlineKeyboardButton(
-                text="Загружу свой", callback_data="download_bioequal"
+                text="Загрузить свой файл", callback_data="download_bioequal"
             )
         )
         keyboard00.add(
@@ -161,7 +162,7 @@ def default_test(message):
         )
         keyboard01.add(
             telebot.types.InlineKeyboardButton(
-                text="Загружу свой", callback_data="download_lifeline"
+                text="Загрузить свой файл", callback_data="download_lifeline"
             )
         )
         bot.send_message(
@@ -178,7 +179,7 @@ def default_test(message):
         )
         keyboard02.add(
             telebot.types.InlineKeyboardButton(
-                text="Загружу свой", callback_data="download_predict"
+                text="Загрузить свой файл", callback_data="download_predict"
             )
         )
         bot.send_message(
@@ -230,7 +231,7 @@ def default_test(message):
     if message.text.lower() == 'параллельный_реф':
         keyboard00 = telebot.types.InlineKeyboardMarkup()
         keyboard00.add(telebot.types.InlineKeyboardButton(text="Пример файла",callback_data="example_bioequal") )
-        keyboard00.add(telebot.types.InlineKeyboardButton(text="Загружу свой",callback_data="download_bioequal") )
+        keyboard00.add(telebot.types.InlineKeyboardButton(text="Загрузить свой файл",callback_data="download_bioequal") )
         bot.send_message(message.chat.id, "Готовы загрузить сразу или требуется пояснение?", reply_markup = keyboard00)
     if message.text.lower() == "тестовый_референсный"
     """

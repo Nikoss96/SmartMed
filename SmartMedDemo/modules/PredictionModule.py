@@ -4,11 +4,11 @@ import sklearn.model_selection as sm
 import sklearn.preprocessing as sp
 from sklearn.preprocessing import KBinsDiscretizer
 
-from .ModelManipulator import ModelManipulator
-from .ModuleInterface import Module
 from .dash import PredictionDashboard
 from .dataprep import PandasPreprocessor
 from .dataprep.PandasPreprocessor import read_file
+from .ModelManipulator import ModelManipulator
+from .ModuleInterface import Module
 
 
 class PredictionModule(Module, PredictionDashboard):

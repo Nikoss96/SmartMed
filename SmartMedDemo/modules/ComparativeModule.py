@@ -1,7 +1,6 @@
-from .ModuleInterface import Module
 from .dash import ComparativeDashboard
-
 from .dataprep import PandasPreprocessor
+from .ModuleInterface import Module
 
 
 class ComparativeModule(Module, ComparativeDashboard):

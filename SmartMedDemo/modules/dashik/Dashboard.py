@@ -1,7 +1,6 @@
+import socket
 import webbrowser
 from abc import ABC, abstractmethod
-
-import socket
 
 import dash
 
